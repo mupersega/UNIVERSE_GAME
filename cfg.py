@@ -4,7 +4,7 @@ import random
 import pygame
 import sqlite3
 
-ship_image = pygame.image.load('assets/visual/mining_ship_1.png')
+ship_image = pygame.image.load('mining_ship_1.png')
 
 
 # CLASS SETTINGS #

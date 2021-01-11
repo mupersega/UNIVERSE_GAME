@@ -7,6 +7,7 @@ from sun import Sun
 from station import Station
 from player import Player
 
+admins = ['mupersega']
 conn = sqlite3.connect('/C:/Users/cambo/OneDrive/documents/bot_queue/queue.db')
 c = conn.cursor()
 
