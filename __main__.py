@@ -1,4 +1,4 @@
-from game import Game
+from class_game import Game
 import pygame
 import threading
 
