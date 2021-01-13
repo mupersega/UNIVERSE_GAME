@@ -9,12 +9,16 @@ class Player:
         self.name = name
         self.kind = 'player'
         self.index = 1
-        self.mupees = cfg.player_starting_mupees
 
         # behaviours
         self.favouring = None
 
         self.hangars = []
+        self.trades = []
+        self.rubine = 0
+        self.verdite = 0
+        self.ceruliun = 0
+        self.mupees = cfg.player_starting_mupees
 
         self.player_setup()
 
@@ -65,6 +69,15 @@ class Player:
             return
         if cmd == '!hunt':
             self.hunt(args)
+            return
+        if cmd == 'take':
+            self.take_trade(args)
+            return
+        if cmd == 'list':
+            self.init_trade(args)
+            return
+        if cmd == 'delist':
+            self.cancel_trade(args)
             return
 
     def upgrade(self, args):
@@ -154,6 +167,38 @@ class Player:
                 print(f"{b} is not a valid upgrade request.")
         else:
             print(f"{fk} is not a valid facility kind.")
+
+    def init_trade(self, args):
+        # example trade syntax = !list 20 rubine for 300 mupees
+        if len(args) != 4:
+            print('check trade syntax')
+        offer_qty = args[0]
+        request_material = args[2]
+        request_qty = args[3]
+        offer_material = args[1]
+        if offer_material in cfg.tradables:
+            material_attribute = getattr(self, offer_material)
+            if material_attribute >= offer_qty:
+                req_list = [0, 0, 0, 0]
+                dem_list = [0, 0, 0, 0]
+                count = 0
+                for i in cfg.tradables:
+                    if i == offer_material:
+                        req_list[count] = offer_qty
+                    if i == request_material:
+                        dem_list[count] = request_qty
+                    count += 1
+                self.game.new_trade(self.name, req_list, dem_list)
+            else:
+                print(f'Not enough {offer_material} for that trade.')
+        else:
+            print(f'{offer_material} not a trade commodity.')
+
+    def take_trade(self, game, trade_id):
+        pass
+
+    def cancel_trade(self):
+        pass
 
     def hunt(self, args):
         # example args

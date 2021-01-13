@@ -34,11 +34,12 @@ class Game:
 		self.game_setup()
 
 	def game_setup(self):
+		# setup starting stations and players
 		for i in range(cfg.start_stations):
 			self.new_station()
 		for i in range(cfg.start_suns):
 			self.new_sun()
-		for i in range(0):
+		for i in range(cfg.start_entities):
 			self.new_player("mupersega")
 
 	def new_player(self, name):

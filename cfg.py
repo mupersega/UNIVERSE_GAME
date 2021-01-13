@@ -16,7 +16,7 @@ universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 15
+start_entities = 10
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -111,12 +111,14 @@ loc_arrived_distance = 2
 
 # --Miscellaneous-- #
 composition_rolls = 5
+tradables = ["rubine", "verdite", "ceruliun", "mupees"]
 mineral_list = ["rubine", "verdite", "ceruliun"]
 mineral_info = {
 	"rubine": {"rgb": [255, 0, 0]},
 	"verdite": {"rgb": [0, 255, 0]},
 	"ceruliun": {"rgb": [0, 0, 255]}
 }
+
 # the values in these lists correspond to [mupees, rubine, verdite, ceruliun]
 upgrade_values = {
 	"bay": {
@@ -242,4 +244,20 @@ def on_screen_check(self):
 	if self.y > screen_height:
 		return False
 	return True
+
+
+def trade(self, client, particulars)
+	# player initiating the trade.
+
+	# player approached if not 'public'
+
+
+
+def take_trade():
+
+def transaction(buyer, target, particulars:list):
+
+	# take transaction values from buyer and give to 'seller'
+
+
 
