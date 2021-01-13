@@ -6,6 +6,7 @@ import sqlite3
 from class_sun import Sun
 from class_station import Station
 from class_player import Player
+from class_trade import Trade
 
 admins = ['mupersega']
 conn = sqlite3.connect('/C:/Users/cambo/OneDrive/documents/bot_queue/queue.db')
@@ -30,6 +31,7 @@ class Game:
 		self.entities = []
 		self.players = []
 		self.player_names = []
+		self.trades = []
 
 		self.game_setup()
 
@@ -56,6 +58,11 @@ class Game:
 		new_sun = Sun(self, 6)
 		self.suns.append(new_sun)
 
+	def new_trade(self, name, list_qty, list_material, list_price):
+		new_trade = Trade(name, list_qty, list_material, list_price)
+		self.trades.append.new_trade()
+		##### add players trade to player also
+
 	def random_crash(self):
 		potentials = []
 		for i in self.suns:
@@ -74,19 +81,20 @@ class Game:
 			c.execute("SELECT * FROM queue WHERE completed=0")
 			full = c.fetchone()
 			print(full)
-			name = full[0]
-			msg = full[1]
+			sub_status = [0]
+			name = full[1]
+			msg = full[2]
 			c.execute("""
 					UPDATE queue
 					SET completed = 1
 					WHERE user = ? AND message = ?;""", (name, msg))
 			conn.commit()
-			self.process(name, msg.split())
-
+			self.process(sub_status, name, msg.split())
 		except:
 			return
 
-	def process(self, name, msg):
+	def process(self, sub_status, name, msg):
+		sub_status = sub_status
 		user = name.lower()
 		print(msg)
 		message = msg

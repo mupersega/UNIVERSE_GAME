@@ -246,18 +246,14 @@ def on_screen_check(self):
 	return True
 
 
-def trade(self, client, particulars)
-	# player initiating the trade.
-
-	# player approached if not 'public'
-
-
-
-def take_trade():
-
 def transaction(buyer, target, particulars:list):
+	count = 0
+	# if the target has no room for the resources the transaction is cancelled.
+	for i in particulars:
+		pass
 
-	# take transaction values from buyer and give to 'seller'
 
+def assign_resources(self, resources):
+	# this function will take unassigned resources after a transaction and put them in available warehouses/wallet.
 
 

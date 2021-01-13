@@ -2,13 +2,13 @@
 
 
 class Trade:
-	def __init__(self, owner, offer, demand):
+	def __init__(self, name, offer, demand):
 		self.owner = owner
 		self.offer = offer
 		self.request = demand
 		self.fulfilled = False
 
-	def fulfill_transaction(self):
+	def fulfill(self):
 		i = 0
 		for resource in self.owner.resources.copy():
 			pass

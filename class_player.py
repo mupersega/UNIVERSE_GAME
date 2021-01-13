@@ -9,12 +9,14 @@ class Player:
         self.name = name
         self.kind = 'player'
         self.index = 1
+        self.sub_status = False
 
         # behaviours
         self.favouring = None
 
         self.hangars = []
         self.trades = []
+        self.unassigned_resources = [0, 0, 0, 0]
         self.rubine = 0
         self.verdite = 0
         self.ceruliun = 0
@@ -56,6 +58,7 @@ class Player:
                         return
 
     def perform(self, cmd, args):
+
         # upgrades can cost 'mupees'
         if cmd == '!upgrade':
             self.upgrade(args)
@@ -70,14 +73,14 @@ class Player:
         if cmd == '!hunt':
             self.hunt(args)
             return
-        if cmd == 'take':
-            self.take_trade(args)
+        if cmd == 'buy':
+            self.buy(args)
             return
-        if cmd == 'list':
-            self.init_trade(args)
+        if cmd == 'sell':
+            self.list(args)
             return
-        if cmd == 'delist':
-            self.cancel_trade(args)
+        if cmd == 'cancel':
+            self.cancel_sell(args)
             return
 
     def upgrade(self, args):
@@ -134,12 +137,14 @@ class Player:
     def set_behaviour(self, args):
         # upgrade syntax: ['facility kind', 'facility_index', 'behaviour']
         # facility_kind
+        if len(args) != 3:
+            print('check !set syntax (args)')
         fk = args[0]
         # facility_index
         fi = args[1]
         # behaviour
         b = args[2]
-        print('beginning upgrade')
+        print('setting behaviour')
         if fk in cfg.set_behaviours.keys():
             print(f"{fk} found!")
             if b in cfg.set_behaviours[fk].keys():
@@ -168,36 +173,31 @@ class Player:
         else:
             print(f"{fk} is not a valid facility kind.")
 
-    def init_trade(self, args):
-        # example trade syntax = !list 20 rubine for 300 mupees
+    def list(self, args):
+        # example trade syntax = !list 100 rubine @ 2
         if len(args) != 4:
-            print('check trade syntax')
-        offer_qty = args[0]
-        request_material = args[2]
-        request_qty = args[3]
-        offer_material = args[1]
-        if offer_material in cfg.tradables:
-            material_attribute = getattr(self, offer_material)
-            if material_attribute >= offer_qty:
-                req_list = [0, 0, 0, 0]
-                dem_list = [0, 0, 0, 0]
-                count = 0
-                for i in cfg.tradables:
-                    if i == offer_material:
-                        req_list[count] = offer_qty
-                    if i == request_material:
-                        dem_list[count] = request_qty
-                    count += 1
-                self.game.new_trade(self.name, req_list, dem_list)
+            print('check !list syntax')
+        list_material = args[1].lower()
+        try:
+            list_qty = int(round(args[0]))
+            list_price = int(round(args[3]))
+        except:
+            print(f'{self.name.title()} price/qty must be a number.')
+        if list_material in cfg.tradables:
+            # get players current amount of this material
+            material_attribute = getattr(self, list_material)
+            if material_attribute >= list_qty:
+                material_attribute -= list_qty
+                self.game.new_trade(self, list_qty, list_material, list_price)
             else:
-                print(f'Not enough {offer_material} for that trade.')
+                print(f'Not enough {list_material} to list that amount.')
         else:
-            print(f'{offer_material} not a trade commodity.')
+            print(f'{list_material} not a trade commodity.')
 
-    def take_trade(self, game, trade_id):
+    def buy(self, game, trade_id):
         pass
 
-    def cancel_trade(self):
+    def cancel_sell(self):
         pass
 
     def hunt(self, args):
