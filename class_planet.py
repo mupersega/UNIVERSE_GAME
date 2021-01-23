@@ -1,6 +1,8 @@
-import pygame
 import math
 import random
+
+import pygame
+
 import cfg
 from class_crash import Crash
 

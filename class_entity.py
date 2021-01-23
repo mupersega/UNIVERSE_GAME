@@ -1,8 +1,9 @@
-import pygame
 import math
 import random
-import cfg
 
+import pygame
+
+import cfg
 from class_asteroid import Asteroid
 
 

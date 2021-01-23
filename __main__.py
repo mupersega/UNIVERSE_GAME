@@ -1,7 +1,6 @@
-from class_game import Game
-import pygame
 import threading
 
+from class_game import Game
 
 threads = []
 

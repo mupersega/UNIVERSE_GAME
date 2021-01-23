@@ -1,5 +1,6 @@
-import cfg
 import random
+
+import cfg
 
 
 class Player:
@@ -73,13 +74,13 @@ class Player:
         if cmd == '!hunt':
             self.hunt(args)
             return
-        if cmd == 'buy':
+        if cmd == '!buy':
             self.buy(args)
             return
-        if cmd == 'sell':
+        if cmd == '!sell':
             self.list(args)
             return
-        if cmd == 'cancel':
+        if cmd == '!cancel':
             self.cancel_sell(args)
             return
 

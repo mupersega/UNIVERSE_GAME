@@ -1,8 +1,8 @@
-import numpy as np
 import math
 import random
+
+import numpy as np
 import pygame
-import sqlite3
 
 ship_image = pygame.image.load('mining_ship_1.png')
 
@@ -251,9 +251,3 @@ def transaction(buyer, target, particulars:list):
 	# if the target has no room for the resources the transaction is cancelled.
 	for i in particulars:
 		pass
-
-
-def assign_resources(self, resources):
-	# this function will take unassigned resources after a transaction and put them in available warehouses/wallet.
-
-

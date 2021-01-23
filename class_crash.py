@@ -1,6 +1,8 @@
-import random
 import math
+import random
+
 import pygame
+
 import cfg
 from class_asteroid import Asteroid
 from class_location import Location

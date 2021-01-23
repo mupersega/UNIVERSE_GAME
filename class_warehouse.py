@@ -1,4 +1,5 @@
 import pygame
+
 import cfg
 
 
@@ -24,7 +25,7 @@ class Warehouse:
 		self.approach_velocity = False
 
 		self.hold = []
-		self.hold_capacity = 200
+		self.hold_capacity = 100
 		self.ores = [0, 0, 0]
 		self.bar_w = cfg.facility_w - 2
 		self.hangar_space = cfg.facility_h - cfg.y_pad * 2

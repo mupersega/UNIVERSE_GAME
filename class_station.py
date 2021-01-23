@@ -1,4 +1,5 @@
 import pygame
+
 import cfg
 from class_hangar import Hangar
 from class_location import Location

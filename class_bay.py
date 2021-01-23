@@ -1,9 +1,8 @@
 import pygame
-import random
-import cfg
 
-from class_warehouse import Warehouse
+import cfg
 from class_entity import Entity
+from class_warehouse import Warehouse
 
 
 class Bay:

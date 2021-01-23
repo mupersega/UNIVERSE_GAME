@@ -1,5 +1,7 @@
-import pygame
 import random
+
+import pygame
+
 import cfg
 from class_planet import Planet
 

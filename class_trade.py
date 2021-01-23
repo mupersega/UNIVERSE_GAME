@@ -16,4 +16,4 @@ class Trade:
 	def check_trade(self, inquiring_player):
 		req = self.request
 		res = self.owner.resources
-		for i in req:
+		pass

@@ -1,12 +1,15 @@
-import sys
 import random
-import pygame
-import cfg
 import sqlite3
-from class_sun import Sun
-from class_station import Station
+import sys
+
+import pygame
+
+import cfg
 from class_player import Player
-from class_trade import Trade
+from class_station import Station
+from class_sun import Sun
+
+# from class_trade import Trade
 
 admins = ['mupersega']
 conn = sqlite3.connect('/C:/Users/cambo/OneDrive/documents/bot_queue/queue.db')

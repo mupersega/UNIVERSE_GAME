@@ -1,8 +1,9 @@
-import cfg
 import random
-from class_warehouse import Warehouse
+
+import cfg
 from class_bay import Bay
 from class_location import Location
+from class_warehouse import Warehouse
 
 
 class Hangar:
