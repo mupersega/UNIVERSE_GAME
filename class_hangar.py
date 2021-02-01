@@ -9,7 +9,6 @@ from class_warehouse import Warehouse
 class Hangar:
 	"""Hangar to manage a collection of facilities at a station index."""
 	def __init__(self, station, index):
-		self.owner = None
 		# station containing this hangar
 		self.station = station
 		# hangar number will determine all position values

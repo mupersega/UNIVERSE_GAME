@@ -32,6 +32,7 @@ class Bay:
 		self.occupant = None
 
 		# each bay always comes with a ship
+		self.owner.bays.append(self)
 		self.new_ship()
 
 	def new_ship(self):
@@ -42,14 +43,12 @@ class Bay:
 	def unload(self, actor):
 		for facility in self.hangar.facilities:
 			if isinstance(facility, Warehouse):
-				for i in actor.hold.copy():
-					if not cfg.hold_at_capacity(facility):
-						facility.hold.append(actor.hold.pop())
-						print(actor.hold)
-						facility.stock_count()
-					else:
-						break
-				print(len(facility.hold))
+				if sum(facility.ores) < facility.hold_capacity:
+					space_left = facility.hold_capacity - sum(facility.ores)
+					for i in range(3):
+						for j in range(actor.hold[i])
+
+				print(sum(facility.hold))
 				print(facility.ores)
 
 	def draw(self):

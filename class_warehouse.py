@@ -9,6 +9,7 @@ class Warehouse:
 		self.screen = hangar.station.game.screen
 		self.on_screen = True
 		self.hangar = hangar
+		self.owner = hangar.owner
 		self.kind = 'warehouse'
 		self.index = 1
 
@@ -49,8 +50,6 @@ class Warehouse:
 				# print(h, y)
 				rgb = cfg.warehouse_colours[cfg.mineral_list[i]]["rgb"]
 				pygame.draw.rect(self.screen, rgb, (x, y, w, h))
-				# pygame.draw.line(
-				# 	self.screen, [0, 0, 0], (x, y), (x + w, y), 1)
 			i += 1
 			# outline
 			pygame.draw.rect(self.screen, [150, 150, 150], (

@@ -16,7 +16,7 @@ universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 10
+start_entities = 0
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -122,7 +122,7 @@ mineral_info = {
 # the values in these lists correspond to [mupees, rubine, verdite, ceruliun]
 upgrade_values = {
 	"bay": {
-		"miner": [0, 60, 0, 0],
+		"miner": [2, 0, 0, 15],
 		"hold": [0, 60, 0, 0],
 		"thrusters": [0, 60, 0, 0],
 	},
@@ -182,7 +182,9 @@ def move(self):
 		self.y -= math.sin(self.angle) * self.vel
 
 
-def draw_beam(self, actor, colour=[250, 250, 250]):
+def draw_beam(self, actor, colour=None):
+	if colour is None:
+		colour = [250, 250, 250]
 	pygame.draw.line(self.screen, colour, (
 		self.rect.center[0], self.rect.center[1]), (
 		actor.rect.center[0], actor.rect.center[1]), 1)
@@ -212,25 +214,69 @@ def set_composition(primary, secondary):
 	for i in range(rolls):
 		choice = random.choice(choices)
 		choice_rgb = mineral_info[choice]["rgb"]
-		# print(f"{choice} - {choice_rgb}")
 		for i in range(3):
 			prep_rgb[i] += choice_rgb[i]
-			# print(prep_rgb)
 	final_rgb = []
 	for i in prep_rgb:
 		final_rgb.append(i / rolls)
-	# print(final_rgb)
-	# print("done")
 	return final_rgb
 
 
+def tally_resources(player):
+	total = [0, 0, 0, player.mupees]
+	for h in player.hangars:
+		for f in h.facilities:
+			if f.kind == 'warehouse':
+				for i in range(3):
+					total[i] += f.ores[i]
+	print(total)
+	return total
+
+
+def resource_check(required, available):
+	# check ores available[*, *, *, -]
+	for i in range(3):
+		if required[i] > available[i]:
+			print(f"Not enough {mineral_list[i]}")
+			return False
+	# check mupees available[-, -, -, *]
+	if required[3] > available[3]:
+		print(f"Not enough Mupees")
+		return False
+	else:
+		return True
+
+
+def withdraw_resources(player, resources):
+	# pull each resource from warehouses, one type at a time
+	# this should only ever run if availability of resources is guaranteed
+	# extract ores
+	for i in range(3):
+		withdraw_qty = resources[i]
+		while withdraw_qty > 0:
+			for h in player.hangars:
+				for f in h.facilities:
+					if f.kind == 'warehouse':
+						ores = f.ore.copy()
+						av = ores[i]
+						if av > withdraw_qty:
+							withdraw_qty = 0
+							f.ores[i] = withdraw_qty
+						elif av < withdraw_qty:
+							withdraw_qty -= av
+							f.ores[i] -= f.ores[i]
+	# extract mupees
+	player.mupees -= resources[3]
+	print("Transaction complete")
+
+
 def hold_at_capacity(self):
-	if len(self.hold) >= self.hold_capacity:
+	if sum(self.hold) >= self.hold_capacity:
 		return True
 
 
 def hold_empty(self):
-	if len(self.hold) <= 0:
+	if sum(self.hold) <= 0:
 		return True
 
 

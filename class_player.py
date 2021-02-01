@@ -15,7 +15,10 @@ class Player:
         # behaviours
         self.favouring = None
 
+        self.entities = []
         self.hangars = []
+        self.bays = []
+        self.warehouses = []
         self.trades = []
         self.unassigned_resources = [0, 0, 0, 0]
         self.rubine = 0
@@ -30,8 +33,6 @@ class Player:
         self.assign_start_hangar()
         # build starting hangar and bay
         self.build_starter_setup()
-        # build starter ship in
-        self.build_ship()
 
     def assign_start_hangar(self):
         # Choose a random hangar from available hangars in all stations.
@@ -41,7 +42,7 @@ class Player:
                 if hangar.owner is None:
                     choices.append(hangar)
         chosen = random.choice(choices)
-        chosen.owner = self.name
+        chosen.owner = self
         self.hangars.append(chosen)
 
     def build_starter_setup(self):
@@ -97,11 +98,14 @@ class Player:
                             if f.occupant is not None:
                                 # occupant commands will pertain to bay facilities.
                                 if ur == 'miner':
-                                    # check for required resources if enough:
-                                    # extract resources
-                                    f.occupant.miner_lvl += 1
-                                    print('miner upgraded')
-                                    # else return not enough resources
+                                    required = cfg.upgrade_values[fk][ur]
+                                    available = cfg.tally_resources(self)
+                                    if cfg.resource_check(required, available):
+                                        cfg.withdraw_resources(self, required)
+                                        f.occupant.miner_lvl += 1
+                                        print('miner upgraded')
+                                    else:
+                                        print("upgrade failed")
                                     return
                                 elif ur == 'hold':
                                     # check for required resources if enough:

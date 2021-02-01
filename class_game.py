@@ -87,6 +87,7 @@ class Game:
 			conn.commit()
 			self.process(sub_status, name, msg.split())
 		except:
+			print('error in try watch queue try block')
 			return
 
 	def process(self, sub_status, name, msg):
@@ -143,6 +144,8 @@ class Game:
 						sys.exit()
 					if event.key == pygame.K_s:
 						self.new_station()
+					if event.key == pygame.K_t:
+						cfg.tally_resources(self.players[0])
 				# bbs
 				# if event.type == pygame.KEYUP:
 				#     if event.key == pygame.K_LEFT:
@@ -169,8 +172,9 @@ class Game:
 					if j:
 						j.loop()
 
-			for i in self.entities:
-				i.loop()
+			for i in self.players:
+				for j in i.entities:
+					j.loop()
 
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)

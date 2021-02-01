@@ -24,14 +24,14 @@ class Entity:
 		self.width = self.size
 		self.height = self.size
 
-		self.normal_vel = .5
+		self.normal_vel = 1
 		self.vel = self.normal_vel
 		self.approach_velocity = False
 		self.normal_agility = .3
 		self.agility = self.normal_agility
 		self.angle = 0
 
-		self.miner_lvl = 0
+		self.miner_lvl = 50
 		self.weapon_type = None
 		self.weapon_range = None
 
@@ -45,10 +45,11 @@ class Entity:
 
 		self.target = self.bay
 		self.target_queue = []
-		self.hold = []
+		self.hold = [0, 0, 0]
 		self.hold_capacity = 10
+		print(self.hold)
 
-		self.game.entities.append(self)
+		self.owner.entities.append(self)
 
 		# self.choose_start_bay()
 		cfg.update_rect(self)
@@ -105,7 +106,7 @@ class Entity:
 			if isinstance(t, Asteroid):
 				if cfg.hold_at_capacity(self):
 					self.return_to_base()
-					return
+					returnt
 				t.mine(self)
 			# If target is home bay, return to bay and unload.
 			if t is self.bay:

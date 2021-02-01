@@ -38,8 +38,9 @@ class Asteroid:
 		if random.randint(0, 1000) >= (997 - actor.miner_lvl):
 			cfg.draw_explosion(self)
 			yielded = self.mine_yield()
-			actor.hold.append(yielded)
-			print(f"Mined {yielded}, hold = {len(actor.hold)}")
+			print(actor.hold)
+			actor.hold[yielded] += 1
+			print(f"Mined {cfg.mineral_list[yielded]}, hold = {sum(actor.hold)}")
 
 	def mine_yield(self):
 		self.size -= .5
@@ -53,7 +54,8 @@ class Asteroid:
 			if j > max:
 				max, choice = j, i
 				i += 1
-		return cfg.mineral_list[choice]
+		print(choice)
+		return choice
 
 	def draw(self):
 		# pygame.draw.rect(self.game.screen, self.rgb, self.rect)
