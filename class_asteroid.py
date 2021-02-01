@@ -33,9 +33,6 @@ class Asteroid:
 		self.arrived_distance = cfg.ast_arrived_distance
 		self.approach_velocity = False
 
-	def choose_type(self):
-		pass
-
 	def mine(self, actor):
 		cfg.draw_beam(self, actor)
 		if random.randint(0, 1000) >= (997 - actor.miner_lvl):
@@ -57,13 +54,6 @@ class Asteroid:
 				max, choice = j, i
 				i += 1
 		return cfg.mineral_list[choice]
-
-	def set_colour(self):
-		i = 0
-		for ast in cfg.mineral_list:
-			if self.primary_type == ast:
-				self.rgb = cfg.mineral_info[ast]["rgb"]
-			i += 1
 
 	def draw(self):
 		# pygame.draw.rect(self.game.screen, self.rgb, self.rect)

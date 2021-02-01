@@ -31,6 +31,9 @@ class Bay:
 		# class specific
 		self.occupant = None
 
+		# each bay always comes with a ship
+		self.new_ship()
+
 	def new_ship(self):
 		if self.occupant is None:
 			ship = Entity(self)

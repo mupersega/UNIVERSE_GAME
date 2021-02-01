@@ -33,19 +33,12 @@ class Warehouse:
 
 		self.capacity_glow = [100, 0, 100]
 
-	def store(self, mineral, amount):
-		pass
-
-	def use(self, mineral, amount):
-		pass
-
 	def draw(self):
 		# base background
 		pygame.draw.rect(self.screen, self.rgb, self.rect)
 		# draw bars
 		next_y = 0
 		i = 0
-		# print("startdraw")
 		for j in self.ores:
 			if j > 0:
 				x = self.x + 2

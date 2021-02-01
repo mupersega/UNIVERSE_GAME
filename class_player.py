@@ -49,15 +49,6 @@ class Player:
         self.hangars[0].new_warehouse()
         self.hangars[0].new_bay()
 
-    def build_ship(self):
-        for i in self.hangars:
-            for j in i.facilities:
-                # I have used the occupied attribute as the check here because only bays have it.
-                if j.kind == 'bay':
-                    if j.occupant is None:
-                        j.new_ship()
-                        return
-
     def perform(self, cmd, args):
 
         # upgrades can cost 'mupees'
