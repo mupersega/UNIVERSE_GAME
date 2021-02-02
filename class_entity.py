@@ -106,7 +106,7 @@ class Entity:
 			if isinstance(t, Asteroid):
 				if cfg.hold_at_capacity(self):
 					self.return_to_base()
-					returnt
+					return
 				t.mine(self)
 			# If target is home bay, return to bay and unload.
 			if t is self.bay:

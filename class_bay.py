@@ -41,15 +41,18 @@ class Bay:
 			self.occupant = ship
 
 	def unload(self, actor):
-		for facility in self.hangar.facilities:
-			if isinstance(facility, Warehouse):
-				if sum(facility.ores) < facility.hold_capacity:
-					space_left = facility.hold_capacity - sum(facility.ores)
-					for i in range(3):
-						for j in range(actor.hold[i])
-
-				print(sum(facility.hold))
-				print(facility.ores)
+		i = 0
+		for t in actor.hold.copy():
+			qty = t
+			for j in range(qty):
+				for h in actor.owner.hangars:
+					for f in h.facilities:
+						if f.kind == 'warehouse':
+							if sum(f.ores) < f.hold_capacity:
+								actor.hold[i] -= 1
+								f.ores[i] += 1
+								break
+			i += 1
 
 	def draw(self):
 		pygame.draw.rect(self.screen, self.rgb, self.rect, 2)

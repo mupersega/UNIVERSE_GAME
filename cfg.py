@@ -9,8 +9,8 @@ ship_image = pygame.image.load('mining_ship_1.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 1920
-screen_height = 1080
+screen_width = 800
+screen_height = 500
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
@@ -42,7 +42,7 @@ default_hangars = 30
 lane_width = 9
 x_pad = 3
 y_pad = 2
-st_x_offset = 390
+st_x_offset = 10 #390 for stream
 st_y_offset = 55
 station_spacing = station_width + (
 	x_pad + facility_w * max_facilities) + lane_width
