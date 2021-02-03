@@ -19,9 +19,9 @@ class Game:
 	"""Class to manage the whole game."""
 
 	def __init__(self):
-		# self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-		self.screen = pygame.display.set_mode((
-			cfg.screen_width, cfg.screen_height))
+		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+		# self.screen = pygame.display.set_mode((
+		# 	cfg.screen_width, cfg.screen_height))
 		self.fps = cfg.fps
 
 		self.universe_primary = cfg.universe_primary

@@ -9,14 +9,14 @@ ship_image = pygame.image.load('mining_ship_1.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 800
-screen_height = 500
+screen_width = 1920
+screen_height = 1080
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 1
+start_entities = 10
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -123,8 +123,8 @@ mineral_info = {
 upgrade_values = {
 	"bay": {
 		"miner": [2, 0, 0, 15],
-		"hold": [0, 60, 0, 0],
-		"thrusters": [0, 60, 0, 0],
+		"hold": [0, 10, 0, 0],
+		"thrusters": [5, 3, 0, 0],
 	},
 	"warehouse": {
 		"storage": [0, 0, 0, 0]
@@ -250,23 +250,34 @@ def resource_check(required, available):
 def withdraw_resources(player, resources):
 	# pull each resource from warehouses, one type at a time
 	# this should only ever run if availability of resources is guaranteed
-	# extract ores
-	for i in range(3):
-		withdraw_qty = resources[i]
-		while withdraw_qty > 0:
-			for h in player.hangars:
-				for f in h.facilities:
-					if f.kind == 'warehouse':
-						ores = f.ore.copy()
-						av = ores[i]
-						if av > withdraw_qty:
-							withdraw_qty = 0
-							f.ores[i] = withdraw_qty
-						elif av < withdraw_qty:
-							withdraw_qty -= av
-							f.ores[i] -= f.ores[i]
+	remaining_qty = resources.copy()
+	left_to_withdraw = sum(resources)
+	for h in player.hangars:
+		for f in h.facilities:
+			if f.kind == 'warehouse':
+				final_ores = []
+				i = 0
+				for j in remaining_qty.copy():
+					# if amount requested is less than total stock
+					if j < f.ores[i]:
+						# append new stock level equalling total minus
+						final_ores.append(int(f.ores[i] - j))
+						remaining_qty[i] = 0
+						left_to_withdraw -= j
+						print(left_to_withdraw)
+					# if amount requested is greater than stock available
+					else:
+						# withdraw all that is available and change remaining qty
+						final_ores.append(int(0))
+						remaining_qty[i] -= f.ores[i]
+						left_to_withdraw -= f.ores[i]
+						print(left_to_withdraw)
+					i += 1
+				print(final_ores)
+				f.ores = final_ores
 	# extract mupees
 	player.mupees -= resources[3]
+	left_to_withdraw -= resources[3]
 	print("Transaction complete")
 
 

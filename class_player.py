@@ -105,15 +105,17 @@ class Player:
                                         f.occupant.miner_lvl += 1
                                         print('miner upgraded')
                                     else:
-                                        print("upgrade failed")
+                                        print("miner upgrade failed")
                                     return
                                 elif ur == 'hold':
                                     required = cfg.upgrade_values[fk][ur]
                                     available = cfg.tally_resources(self)
                                     if cfg.resource_check(required, available):
                                         cfg.withdraw_resources(self, required)
-                                    f.occupant.hold_capacity += 1
-                                    print('hold upgraded')
+                                        f.occupant.hold_capacity += 1
+                                        print('hold upgraded')
+                                    else:
+                                        print("hold upgrade failed")
                                     # else return not enough resources
                                     return
                                 elif ur == 'thrusters':
@@ -121,9 +123,9 @@ class Player:
                                     available = cfg.tally_resources(self)
                                     if cfg.resource_check(required, available):
                                         cfg.withdraw_resources(self, required)
-                                    f.occupant.normal_vel += .1
-                                    print('thrusters upgraded')
-                                    # else return not enough resources
+                                        f.occupant.normal_vel += .1
+                                    else:
+                                        print("thrusters upgrade failed")
                                     return
                             else:
                                 print("No ship in this facility.")
