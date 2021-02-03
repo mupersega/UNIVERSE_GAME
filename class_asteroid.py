@@ -38,9 +38,9 @@ class Asteroid:
 		if random.randint(0, 1000) >= (997 - actor.miner_lvl):
 			cfg.draw_explosion(self)
 			yielded = self.mine_yield()
-			print(actor.hold)
-			actor.hold[yielded] += 1
-			print(f"Mined {cfg.mineral_list[yielded]}, hold = {sum(actor.hold)}")
+			print(actor.ores)
+			actor.ores[yielded] += 1
+			print(f"Mined {cfg.mineral_list[yielded]}, hold = {sum(actor.ores)}")
 
 	def mine_yield(self):
 		self.size -= .5

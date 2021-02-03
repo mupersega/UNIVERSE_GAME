@@ -42,14 +42,14 @@ class Bay:
 
 	def unload(self, actor):
 		i = 0
-		for t in actor.hold.copy():
+		for t in actor.ores.copy():
 			qty = t
 			for j in range(qty):
 				for h in actor.owner.hangars:
 					for f in h.facilities:
 						if f.kind == 'warehouse':
 							if sum(f.ores) < f.hold_capacity:
-								actor.hold[i] -= 1
+								actor.ores[i] -= 1
 								f.ores[i] += 1
 								break
 			i += 1

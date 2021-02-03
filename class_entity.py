@@ -45,9 +45,9 @@ class Entity:
 
 		self.target = self.bay
 		self.target_queue = []
-		self.hold = [0, 0, 0]
+		self.ores = [0, 0, 0]
 		self.hold_capacity = 10
-		print(self.hold)
+		print(self.ores)
 
 		self.owner.entities.append(self)
 

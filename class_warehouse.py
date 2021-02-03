@@ -26,7 +26,7 @@ class Warehouse:
 		self.approach_velocity = False
 
 		self.hold = []
-		self.hold_capacity = 30
+		self.hold_capacity = 20
 		self.ores = [0, 0, 0]
 		self.bar_w = cfg.facility_w - 2
 		self.hangar_space = cfg.facility_h - cfg.y_pad * 2
@@ -55,7 +55,7 @@ class Warehouse:
 			pygame.draw.rect(self.screen, [150, 150, 150], (
 				self.x + 1, self.y + 1, self.width - 2, self.height - 2), 2)
 			if cfg.hold_at_capacity(self):
-				pygame.draw.rect(self.screen, [150, 30, 30], self.rect, 2)
+				pygame.draw.rect(self.screen, [200, 30, 30], self.rect, 2)
 			else:
 				# if self.capacity_glow[1] >= 100:
 				# 	self.glow = -1
@@ -63,24 +63,6 @@ class Warehouse:
 				# 	self.glow = 1
 				# self.capacity_glow[1] += self.glow
 				pygame.draw.rect(self.screen, self.capacity_glow, self.rect, 2)
-
-	def stock_count(self):
-		# for i in self.hold:
-		# 	print(i)
-		self.ores[0] = 0
-		self.ores[1] = 0
-		self.ores[2] = 0
-		for i in self.hold:
-			if i == "rubine":
-				print(i)
-				print(self.ores[0])
-				self.ores[0] += 1
-				print(self.ores[0])
-			if i == "verdite":
-				self.ores[1] += 1
-			if i == "ceruliun":
-				self.ores[2] += 1
-		print(self.ores)
 
 	def loop(self):
 		self.draw()

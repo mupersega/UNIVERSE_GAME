@@ -16,7 +16,7 @@ universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 0
+start_entities = 1
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -271,12 +271,12 @@ def withdraw_resources(player, resources):
 
 
 def hold_at_capacity(self):
-	if sum(self.hold) >= self.hold_capacity:
+	if sum(self.ores) >= self.hold_capacity:
 		return True
 
 
 def hold_empty(self):
-	if sum(self.hold) <= 0:
+	if sum(self.ores) <= 0:
 		return True
 
 

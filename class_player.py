@@ -108,15 +108,19 @@ class Player:
                                         print("upgrade failed")
                                     return
                                 elif ur == 'hold':
-                                    # check for required resources if enough:
-                                    # extract resources
+                                    required = cfg.upgrade_values[fk][ur]
+                                    available = cfg.tally_resources(self)
+                                    if cfg.resource_check(required, available):
+                                        cfg.withdraw_resources(self, required)
                                     f.occupant.hold_capacity += 1
                                     print('hold upgraded')
                                     # else return not enough resources
                                     return
                                 elif ur == 'thrusters':
-                                    # check for required resources if enough:
-                                    # extract resources
+                                    required = cfg.upgrade_values[fk][ur]
+                                    available = cfg.tally_resources(self)
+                                    if cfg.resource_check(required, available):
+                                        cfg.withdraw_resources(self, required)
                                     f.occupant.normal_vel += .1
                                     print('thrusters upgraded')
                                     # else return not enough resources
