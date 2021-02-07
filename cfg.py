@@ -9,14 +9,14 @@ ship_image = pygame.image.load('mining_ship_1.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 1920
-screen_height = 1080
+screen_width = 800
+screen_height = 600
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 10
+start_entities = 0
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -122,7 +122,7 @@ mineral_info = {
 # the values in these lists correspond to [mupees, rubine, verdite, ceruliun]
 upgrade_values = {
 	"bay": {
-		"miner": [2, 0, 0, 15],
+		"miner": [3, 0, 0, 0],
 		"hold": [0, 10, 0, 0],
 		"thrusters": [5, 3, 0, 0],
 	},
@@ -229,7 +229,7 @@ def tally_resources(player):
 			if f.kind == 'warehouse':
 				for i in range(3):
 					total[i] += f.ores[i]
-	print(total)
+	print(f'tallied resources - {total}')
 	return total
 
 
@@ -244,40 +244,50 @@ def resource_check(required, available):
 		print(f"Not enough Mupees")
 		return False
 	else:
+		print('resources available for withdrawal')
 		return True
 
 
 def withdraw_resources(player, resources):
 	# pull each resource from warehouses, one type at a time
-	# this should only ever run if availability of resources is guaranteed
-	remaining_qty = resources.copy()
-	left_to_withdraw = sum(resources)
-	for h in player.hangars:
-		for f in h.facilities:
-			if f.kind == 'warehouse':
-				final_ores = []
-				i = 0
-				for j in remaining_qty.copy():
-					# if amount requested is less than total stock
-					if j < f.ores[i]:
-						# append new stock level equalling total minus
-						final_ores.append(int(f.ores[i] - j))
-						remaining_qty[i] = 0
-						left_to_withdraw -= j
-						print(left_to_withdraw)
-					# if amount requested is greater than stock available
-					else:
-						# withdraw all that is available and change remaining qty
-						final_ores.append(int(0))
-						remaining_qty[i] -= f.ores[i]
-						left_to_withdraw -= f.ores[i]
-						print(left_to_withdraw)
-					i += 1
-				print(final_ores)
-				f.ores = final_ores
+	# this should only ever run if availability of resources is guaranteed - see tally_resources
+	print(f'withdrawing - {resources}')
+	# rubine_cost = resources[0]
+	# verdite_cost = resources[1]
+	# ceruliun_cost = resources[2]
+	for k in range(3):
+		for i in range(resources[k]):
+			done = False
+			while not done:
+				for facility in player.hangars[0].facilities:
+					if facility.kind == 'warehouse' and facility.ores[0] > 0:
+						print(f'before - {facility.ores[0]}')
+						facility.ores[0] -= 1
+						print(f'after{facility.ores[0]}')
+						done = True
+	#
+	# for i in range(verdite_cost):
+	# 	print('v')
+	# 	done = False
+	# 	while not done:
+	# 		for facility in player.hangars[0].facilities:
+	# 			if facility.kind == 'warehouse' and facility.ores[1] > 0:
+	# 				print(f'before - {facility.ores[1]}')
+	# 				facility.ores[1] -= 1
+	# 				print(f'after{facility.ores[1]}')
+	# 				done = True
+	# for i in range(ceruliun_cost):
+	# 	print('c')
+	# 	done = False
+	# 	while not done:
+	# 		for facility in player.hangars[2].facilities:
+	# 			if facility.kind == 'warehouse' and facility.ores[2] > 0:
+	# 				print(f'before - {facility.ores[2]}')
+	# 				facility.ores[2] -= 1
+	# 				print(f'after{facility.ores[2]}')
+	# 				done = True
 	# extract mupees
 	player.mupees -= resources[3]
-	left_to_withdraw -= resources[3]
 	print("Transaction complete")
 
 
