@@ -122,9 +122,9 @@ mineral_info = {
 # the values in these lists correspond to [mupees, rubine, verdite, ceruliun]
 upgrade_values = {
 	"bay": {
-		"miner": [3, 0, 0, 0],
-		"hold": [0, 10, 0, 0],
-		"thrusters": [5, 3, 0, 0],
+		"miner": [5, 2, 0, 0],
+		"hold": [100, 100, 5, 0],
+		"thrusters": [2, 5, 0, 0],
 	},
 	"warehouse": {
 		"storage": [0, 0, 0, 0]
