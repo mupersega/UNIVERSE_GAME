@@ -1,9 +1,13 @@
 import random
+import pygame
 
 import cfg
 from class_bay import Bay
 from class_location import Location
 from class_warehouse import Warehouse
+
+pygame.font.init()
+HANGAR_FONT = pygame.font.SysFont('Comic Sans MS', 30)
 
 
 class Hangar:
@@ -24,6 +28,9 @@ class Hangar:
 			(self.station.dock_location.x, self.y + cfg.facility_h / 2), 1, .9)
 		self.approach_velocity = False
 
+		self.myfont = pygame.font.SysFont("Arial", 12)
+		self.label = None
+
 		# for i in range(random.randint(1, 1)):
 		for i in range(random.randint(0, 2)):
 			self.new_warehouse()
@@ -33,6 +40,10 @@ class Hangar:
 			self.new_bay()
 
 		self.set_facilities_pos()
+
+	def update_label(self):
+		self.label = self.myfont.render(
+			str(self.owner.name[0:3]).upper(), 0, (255, 255, 255))
 
 	def set_facilities_pos(self):
 		# set pos dependant on index and update rect
@@ -81,6 +92,10 @@ class Hangar:
 				print("bay removed")
 				break
 		self.set_facilities_pos()
+
+	def draw(self):
+		if self.owner:
+			self.station.game.screen.blit(self.label, (self.x - 35, self.y))
 
 	def loop(self):
 		for i in self.facilities:

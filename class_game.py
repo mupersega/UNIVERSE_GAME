@@ -1,6 +1,7 @@
 import random
 import sqlite3
 import sys
+import threading
 
 import pygame
 
@@ -85,7 +86,8 @@ class Game:
 					SET completed = 1
 					WHERE user = ? AND message = ?;""", (name, msg))
 			conn.commit()
-			self.process(sub_status, name, msg.split())
+			new_thread = threading.Thread(target=self.process, args=(sub_status, name, msg.split()))
+			new_thread.start()
 		except:
 			print('error in try watch queue try block')
 			return
@@ -99,13 +101,14 @@ class Game:
 		print(f'{user} time to {cmd}')
 		# game commands are those that are not player specific or are initiated by the creator. ME!!!
 		if cmd == "!asteroids":
-			try:
-				for i in range(int(msg[1])):
-					self.random_crash()
-			except:
-				# this is to catch incorrect number of args.
-				print("set num asteroids")
-				return
+			if user in admins:
+				try:
+					for i in range(int(msg[1])):
+						self.random_crash()
+				except:
+					# this is to catch incorrect number of args.
+					print("set num asteroids")
+					return
 		# this play command will be processed at the game level to init a new player.
 		if cmd == "!play":
 			if user not in self.player_names:
@@ -170,6 +173,7 @@ class Game:
 				i.loop()
 				for j in i.hangars:
 					if j:
+						j.draw()
 						j.loop()
 
 			for i in self.players:

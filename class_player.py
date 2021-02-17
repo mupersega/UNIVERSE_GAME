@@ -43,6 +43,7 @@ class Player:
                     choices.append(hangar)
         chosen = random.choice(choices)
         chosen.owner = self
+        chosen.update_label()
         self.hangars.append(chosen)
 
     def build_starter_setup(self):
