@@ -9,8 +9,8 @@ ship_image = pygame.image.load('mining_ship_1.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 800
-screen_height = 600
+screen_width = 1920
+screen_height = 1080
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"

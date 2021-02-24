@@ -24,14 +24,14 @@ class Entity:
 		self.width = self.size
 		self.height = self.size
 
-		self.normal_vel = 1.2
+		self.normal_vel = .5
 		self.vel = self.normal_vel
 		self.approach_velocity = False
 		self.normal_agility = .3
 		self.agility = self.normal_agility
 		self.angle = 0
 
-		self.miner_lvl = 50
+		self.miner_lvl = 1
 		self.weapon_type = None
 		self.weapon_range = None
 
