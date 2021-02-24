@@ -78,7 +78,7 @@ class Game:
 			c.execute("SELECT * FROM queue WHERE completed=0")
 			full = c.fetchone()
 			print(full)
-			sub_status = [0]
+			sub_status = full[0]
 			name = full[1]
 			msg = full[2]
 			c.execute("""
@@ -124,7 +124,7 @@ class Game:
 		for i in self.players:
 			print(i.name)
 			if i.name == user:
-				i.perform(cmd, args)
+				i.perform(cmd, sub_status, args)
 				print('beginning perform')
 
 	def mainloop(self):

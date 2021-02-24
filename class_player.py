@@ -51,7 +51,7 @@ class Player:
         self.hangars[0].new_warehouse()
         self.hangars[0].new_bay()
 
-    def perform(self, cmd, args):
+    def perform(self, cmd, sub_status, args):
 
         # upgrades can cost 'mupees'
         if cmd == '!upgrade':
@@ -59,7 +59,7 @@ class Player:
             return
         # builds can cost resources
         if cmd == '!build':
-            self.build(args)
+            self.build(sub_status, args)
             return
         if cmd == '!set':
             self.set_behaviour(args)
@@ -96,42 +96,45 @@ class Player:
                         print(f"facility index = {f.index}\n facility kind = {f.kind}")
                         if f.kind == fk and f.index == int(fi):
                             print("found match")
-                            if f.occupant is not None:
-                                # occupant commands will pertain to bay facilities.
-                                if ur == 'miner':
-                                    required = cfg.upgrade_values[fk][ur]
-                                    available = cfg.tally_resources(self)
-                                    if cfg.resource_check(required, available):
-                                        cfg.withdraw_resources(self, required)
-                                        f.occupant.miner_lvl += 1
-                                        print('miner upgraded')
+                            # if f.occupant is not None:
+                            # occupant commands will pertain to bay facilities.
+                            if ur == 'miner':
+                                required = cfg.upgrade_values[fk][ur]
+                                available = cfg.tally_resources(self)
+                                if cfg.resource_check(required, available):
+                                    cfg.withdraw_resources(self, required)
+                                    f.occupant.miner_lvl += 1
+                                    print('miner upgraded')
+                                else:
+                                    print("miner upgrade failed")
+                                return
+                            elif ur == 'hold':
+                                required = cfg.upgrade_values[fk][ur]
+                                available = cfg.tally_resources(self)
+                                if cfg.resource_check(required, available):
+                                    cfg.withdraw_resources(self, required)
+                                    if f.kind == "warehouse":
+                                        f.hold_capacity += cfg.upgrade_amounts[fk]
                                     else:
-                                        print("miner upgrade failed")
-                                    return
-                                elif ur == 'hold':
-                                    required = cfg.upgrade_values[fk][ur]
-                                    available = cfg.tally_resources(self)
-                                    if cfg.resource_check(required, available):
-                                        cfg.withdraw_resources(self, required)
-                                        f.occupant.hold_capacity += 1
-                                        print('hold upgraded')
-                                    else:
-                                        print("hold upgrade failed")
-                                    # else return not enough resources
-                                    return
-                                elif ur == 'thrusters':
-                                    required = cfg.upgrade_values[fk][ur]
-                                    available = cfg.tally_resources(self)
-                                    if cfg.resource_check(required, available):
-                                        cfg.withdraw_resources(self, required)
-                                        f.occupant.normal_vel += 1
-                                    else:
-                                        print("thrusters upgrade failed")
-                                    return
-                            else:
-                                print("No ship in this facility.")
+                                        f.occupant.hold_capacity += cfg.upgrade_amounts[fk]
+                                    print('hold upgraded')
+                                else:
+                                    print("hold upgrade failed")
+                                # else return not enough resources
+                                return
+                            elif ur == 'thrusters':
+                                required = cfg.upgrade_values[fk][ur]
+                                available = cfg.tally_resources(self)
+                                if cfg.resource_check(required, available):
+                                    cfg.withdraw_resources(self, required)
+                                    f.occupant.normal_vel += 1
+                                else:
+                                    print("thrusters upgrade failed")
+                                return
                         else:
-                            print("can not find a kind or index match.")
+                            print("No ship in this facility.")
+                    else:
+                        print("can not find a kind or index match.")
             else:
                 print(f"{ur} is not a valid upgrade request.")
         else:
@@ -207,37 +210,38 @@ class Player:
         # example args
         pass
 
-    def build(self, args):
+    def build(self, sub_status, args):
         # example args ['warehouse'] ['bay']
         # establish build type
         fk = args[0].lower()
-        # check to see that max facilities isn't reached
-        if len(self.hangars[0].facilities) < cfg.max_facilities:
-            # check to see if arg is valid
-            if fk in cfg.build_values.keys():
-                if fk == "warehouse":
-                    # check for resources
-                    required = cfg.build_values[fk]
-                    available = cfg.tally_resources(self)
-                    if cfg.resource_check(required, available):
-                        # withdraw resources
-                        cfg.withdraw_resources(self, required)
-                        self.hangars[0].new_warehouse()
-                    else:
-                        print(f'{self.name.title()}: not enough resources to build a {fk}')
-                if fk == "bay":
-                    required = cfg.build_values[fk]
-                    available = cfg.tally_resources(self)
-                    if cfg.resource_check(required, available):
-                        # withdraw resources
-                        cfg.withdraw_resources(self, required)
-                        self.hangars[0].new_bay()
-                    else:
-                        print(f'{self.name.title()}: not enough resources to build a {fk}')
+        print(f'{self.name}:{sub_status}')
+        if sub_status == '1':
+            # check to see that max facilities isn't reached
+            if len(self.hangars[0].facilities) < cfg.max_facilities:
+                # check to see if arg is valid
+                if fk in cfg.build_values.keys():
+                    if fk == "warehouse":
+                        # check for resources
+                        required = cfg.build_values[fk]
+                        available = cfg.tally_resources(self)
+                        if cfg.resource_check(required, available):
+                            # withdraw resources
+                            cfg.withdraw_resources(self, required)
+                            self.hangars[0].new_warehouse()
+                        else:
+                            print(f'{self.name.title()}: not enough resources to build a {fk}')
+                    if fk == "bay":
+                        required = cfg.build_values[fk]
+                        available = cfg.tally_resources(self)
+                        if cfg.resource_check(required, available):
+                            # withdraw resources
+                            cfg.withdraw_resources(self, required)
+                            self.hangars[0].new_bay()
+                        else:
+                            print(f'{self.name.title()}: not enough resources to build a {fk}')
+                else:
+                    print(f'{self.name.title()}: {fk.lower()} is not a valid build argument.')
             else:
-                print(f'{self.name.title()}: {fk.lower()} is not a valid build argument.')
+                print(f'{self.name.title()}: max facilities reached.')
         else:
-            print(f'{self.name.title()}: max facilities reached.')
-
-        pass
-
+            print(f'{self.name.title()}: building is for subs only.')

@@ -123,12 +123,16 @@ mineral_info = {
 upgrade_values = {
 	"bay": {
 		"miner": [5, 2, 0, 0],
-		"hold": [100, 100, 5, 0],
+		"hold": [20, 20, 2, 0],
 		"thrusters": [2, 5, 0, 0],
 	},
 	"warehouse": {
-		"storage": [0, 0, 0, 0]
+		"hold": [0, 0, 10, 0]
 	}
+}
+upgrade_amounts = {
+	'warehouse': 10,
+	'bay': 1
 }
 set_behaviours = {
 	"bay": {
