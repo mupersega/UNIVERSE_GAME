@@ -24,7 +24,7 @@ class Entity:
 		self.width = self.size
 		self.height = self.size
 
-		self.normal_vel = 1
+		self.normal_vel = 1.2
 		self.vel = self.normal_vel
 		self.approach_velocity = False
 		self.normal_agility = .3

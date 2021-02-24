@@ -59,7 +59,7 @@ class Player:
             return
         # builds can cost resources
         if cmd == '!build':
-            self.buy(args)
+            self.build(args)
             return
         if cmd == '!set':
             self.set_behaviour(args)
@@ -124,7 +124,7 @@ class Player:
                                     available = cfg.tally_resources(self)
                                     if cfg.resource_check(required, available):
                                         cfg.withdraw_resources(self, required)
-                                        f.occupant.normal_vel += .1
+                                        f.occupant.normal_vel += 1
                                     else:
                                         print("thrusters upgrade failed")
                                     return
@@ -209,5 +209,35 @@ class Player:
 
     def build(self, args):
         # example args ['warehouse'] ['bay']
+        # establish build type
+        fk = args[0].lower()
+        # check to see that max facilities isn't reached
+        if len(self.hangars[0].facilities) < cfg.max_facilities:
+            # check to see if arg is valid
+            if fk in cfg.build_values.keys():
+                if fk == "warehouse":
+                    # check for resources
+                    required = cfg.build_values[fk]
+                    available = cfg.tally_resources(self)
+                    if cfg.resource_check(required, available):
+                        # withdraw resources
+                        cfg.withdraw_resources(self, required)
+                        self.hangars[0].new_warehouse()
+                    else:
+                        print(f'{self.name.title()}: not enough resources to build a {fk}')
+                if fk == "bay":
+                    required = cfg.build_values[fk]
+                    available = cfg.tally_resources(self)
+                    if cfg.resource_check(required, available):
+                        # withdraw resources
+                        cfg.withdraw_resources(self, required)
+                        self.hangars[0].new_bay()
+                    else:
+                        print(f'{self.name.title()}: not enough resources to build a {fk}')
+            else:
+                print(f'{self.name.title()}: {fk.lower()} is not a valid build argument.')
+        else:
+            print(f'{self.name.title()}: max facilities reached.')
+
         pass
 

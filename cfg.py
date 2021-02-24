@@ -140,8 +140,8 @@ set_behaviours = {
 	}
 }
 build_values = {
-	"bay": [0, 60, 0, 0],
-	"warehouse": [0, 0, 0, 0],
+	"bay": [10, 5, 0, 0],
+	"warehouse": [5, 10, 0, 0],
 	"ship": [0, 20, 0, 0]
 }
 

@@ -26,8 +26,8 @@ class Warehouse:
 		self.approach_velocity = False
 
 		# self.hold = []
-		self.hold_capacity = 100
-		self.ores = [0, 0, 0]
+		self.hold_capacity = 150
+		self.ores = [30, 30, 20]
 		self.bar_w = cfg.facility_w - 2
 		self.hangar_space = cfg.facility_h - cfg.y_pad * 2
 		self.occupant = None

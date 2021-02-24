@@ -35,7 +35,7 @@ class Asteroid:
 
 	def mine(self, actor):
 		cfg.draw_beam(self, actor)
-		if random.randint(0, 1000) >= (997 - actor.miner_lvl):
+		if random.randint(0, 1000) >= (998 - actor.miner_lvl):
 			cfg.draw_explosion(self)
 			yielded = self.mine_yield()
 			print(actor.ores)
