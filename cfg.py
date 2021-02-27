@@ -41,7 +41,7 @@ station_width = facility_w * 2
 default_hangars = 30
 lane_width = 9
 x_pad = 3
-y_pad = 2
+y_pad = 1
 st_x_offset = 10 #390 for stream
 st_y_offset = 55
 station_spacing = station_width + (
@@ -90,13 +90,13 @@ max_facilities = 5
 fac_border_width = 2
 
 # --Warehouse-- #
-wh_colour = [38, 38, 38]
+wh_colour = [89, 89, 89]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 warehouse_colours = {
 	"rubine": {"rgb": [255, 51, 51]},
-	"verdite": {"rgb": [113, 244, 113]},
-	"ceruliun": {"rgb": [102, 102, 255]}
+	"verdite": {"rgb": [40, 244, 40]},
+	"ceruliun": {"rgb": [0, 0, 255]}
 }
 
 # --Bay-- #
