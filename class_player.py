@@ -127,7 +127,7 @@ class Player:
                                 available = cfg.tally_resources(self)
                                 if cfg.resource_check(required, available):
                                     cfg.withdraw_resources(self, required)
-                                    f.occupant.normal_vel += 1
+                                    f.occupant.normal_vel += .1
                                 else:
                                     print("thrusters upgrade failed")
                                 return
@@ -213,6 +213,7 @@ class Player:
     def build(self, sub_status, args):
         # example args ['warehouse'] ['bay']
         # establish build type
+        print(args)
         fk = args[0].lower()
         print(f'{self.name}:{sub_status}')
         if sub_status == '1':

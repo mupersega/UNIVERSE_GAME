@@ -9,14 +9,14 @@ ship_image = pygame.image.load('mining_ship_1.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 1920
-screen_height = 1080
+screen_width = 800
+screen_height = 600
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 0
+start_entities = 1
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -122,12 +122,12 @@ mineral_info = {
 # the values in these lists correspond to [mupees, rubine, verdite, ceruliun]
 upgrade_values = {
 	"bay": {
-		"miner": [5, 2, 0, 0],
-		"hold": [20, 20, 2, 0],
-		"thrusters": [2, 5, 0, 0],
+		"miner": [2, 10, 1, 0],
+		"hold": [10, 10, 5, 0],
+		"thrusters": [10, 0, 0, 0],
 	},
 	"warehouse": {
-		"hold": [0, 0, 10, 0]
+		"hold": [100, 0, 0, 0]
 	}
 }
 upgrade_amounts = {
@@ -144,9 +144,8 @@ set_behaviours = {
 	}
 }
 build_values = {
-	"bay": [10, 5, 0, 0],
-	"warehouse": [5, 10, 0, 0],
-	"ship": [0, 20, 0, 0]
+	"bay": [0, 20, 0, 0],
+	"warehouse": [0, 0, 10, 0]
 }
 
 
@@ -256,18 +255,15 @@ def withdraw_resources(player, resources):
 	# pull each resource from warehouses, one type at a time
 	# this should only ever run if availability of resources is guaranteed - see tally_resources
 	print(f'withdrawing - {resources}')
-	# rubine_cost = resources[0]
-	# verdite_cost = resources[1]
-	# ceruliun_cost = resources[2]
 	for k in range(3):
 		for i in range(resources[k]):
 			done = False
 			while not done:
 				for facility in player.hangars[0].facilities:
-					if facility.kind == 'warehouse' and facility.ores[0] > 0:
-						print(f'before - {facility.ores[0]}')
-						facility.ores[0] -= 1
-						print(f'after{facility.ores[0]}')
+					if facility.kind == 'warehouse' and facility.ores[k] > 0:
+						print(f'before - {facility.ores[k]}')
+						facility.ores[k] -= 1
+						print(f'after{facility.ores[k]}')
 						done = True
 	#
 	# for i in range(verdite_cost):

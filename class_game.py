@@ -20,9 +20,9 @@ class Game:
 	"""Class to manage the whole game."""
 
 	def __init__(self):
-		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-		# self.screen = pygame.display.set_mode((
-		# 	cfg.screen_width, cfg.screen_height))
+		# self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+		self.screen = pygame.display.set_mode((
+			cfg.screen_width, cfg.screen_height))
 		self.fps = cfg.fps
 
 		self.universe_primary = cfg.universe_primary
@@ -149,14 +149,18 @@ class Game:
 						self.new_station()
 					if event.key == pygame.K_t:
 						cfg.tally_resources(self.players[0])
-				# bbs
-				# if event.type == pygame.KEYUP:
-				#     if event.key == pygame.K_LEFT:
-				#         for i in self.entities:
-				#             i.turning_left = False
-				#     if event.key == pygame.K_RIGHT:
-				#         for i in self.entities:
-				#             i.turning_right = False
+					if event.key == pygame.K_u:
+						msg = "!upgrade bay 1 thrusters"
+						self.process("1", "mupersega", msg.split())
+					if event.key == pygame.K_i:
+						msg = "!upgrade bay 1 miner"
+						self.process("1", "mupersega", msg.split())
+					if event.key == pygame.K_b:
+						msg = "!build bay"
+						self.process("1", "mupersega", msg.split())
+					if event.key == pygame.K_n:
+						msg = "!build warehouse"
+						self.process("1", "mupersega", msg.split())
 
 			# Clear screen.
 			self.screen.fill((0, 0, 0))
