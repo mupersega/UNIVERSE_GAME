@@ -9,14 +9,14 @@ ship_image = pygame.image.load('mining_ship_1.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 800
-screen_height = 600
+screen_width = 1920
+screen_height = 1080
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 1
+start_entities = 0
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -42,7 +42,7 @@ default_hangars = 30
 lane_width = 9
 x_pad = 3
 y_pad = 1
-st_x_offset = 10 #390 for stream
+st_x_offset = 390 #390 for stream
 st_y_offset = 55
 station_spacing = station_width + (
 	x_pad + facility_w * max_facilities) + lane_width
@@ -122,12 +122,12 @@ mineral_info = {
 # the values in these lists correspond to [mupees, rubine, verdite, ceruliun]
 upgrade_values = {
 	"bay": {
-		"miner": [2, 10, 1, 0],
-		"hold": [10, 10, 5, 0],
+		"miner": [0, 15, 0, 0],
+		"hold": [10, 10, 2, 0],
 		"thrusters": [10, 0, 0, 0],
 	},
 	"warehouse": {
-		"hold": [100, 0, 0, 0]
+		"hold": [20, 20, 2, 0]
 	}
 }
 upgrade_amounts = {
@@ -144,8 +144,8 @@ set_behaviours = {
 	}
 }
 build_values = {
-	"bay": [0, 20, 0, 0],
-	"warehouse": [0, 0, 10, 0]
+	"bay": [0, 80, 0, 0],
+	"warehouse": [80, 0, 0, 0]
 }
 
 

@@ -13,7 +13,10 @@ class Station:
 		self.screen = game.screen
 		self.on_screen = True
 		self.sn = station_number
-		self.hangar_count = hangars
+		if self.sn == 0:
+			self.hangar_count = 20
+		else:
+			self.hangar_count = 6
 		self.kind = 'station'
 		self.x = cfg.st_x_offset + self.sn * cfg.station_spacing
 		self.y = cfg.st_y_offset
@@ -34,7 +37,11 @@ class Station:
 
 	def station_setup(self):
 		# construct i hangars
-		for i in range(self.hangar_count):
+		if self.sn == 0:
+			h = 20
+		else:
+			h = 6
+		for i in range(h):
 			self.new_hangar()
 
 	def new_hangar(self):
