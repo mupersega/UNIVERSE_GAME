@@ -24,7 +24,7 @@ class Entity:
 		self.width = self.size
 		self.height = self.size
 
-		self.normal_vel = .5
+		self.normal_vel = 3
 		self.vel = self.normal_vel
 		self.approach_velocity = False
 		self.normal_agility = .3
@@ -107,6 +107,8 @@ class Entity:
 				if cfg.hold_at_capacity(self):
 					self.return_to_base()
 					return
+				if t.size <= 0:
+					new_target = self.find_asteroid()
 				t.mine(self)
 			# If target is home bay, return to bay and unload.
 			if t is self.bay:
@@ -133,20 +135,6 @@ class Entity:
 		self.target = self.bay.hangar.station.dock_location
 		self.target_queue.append(self.bay.hangar.approach_location)
 		self.target_queue.append(self.bay)
-
-	# def choose_start_bay(self):
-	# 	potentials = []
-	# 	for station in self.game.stations:
-	# 		for i in station.hangars:
-	# 			if i:
-	# 				for facility in i.facilities:
-	# 					if isinstance(facility, Bay):
-	# 						if not facility.occupied:
-	# 							potentials.append(facility)
-	#
-	# 	self.bay = random.choice(potentials)
-	# 	self.bay.occupied = self
-	# 	self.return_to_base()
 
 	def in_range(self, target, range):
 		if self.distance_to_target(target) <= range:

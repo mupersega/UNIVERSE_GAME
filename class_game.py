@@ -20,9 +20,9 @@ class Game:
 	"""Class to manage the whole game."""
 
 	def __init__(self):
-		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-		# self.screen = pygame.display.set_mode((
-		# 	cfg.screen_width, cfg.screen_height))
+		# self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+		self.screen = pygame.display.set_mode((
+			cfg.screen_width, cfg.screen_height))
 		self.fps = cfg.fps
 
 		self.universe_primary = cfg.universe_primary
@@ -67,6 +67,18 @@ class Game:
 				potentials.append(j)
 		chosen_planet = random.choice(potentials)
 		chosen_planet.spawn_asteroids()
+
+	def count_asteroids(self):
+		total_asteroids = 0
+		for sun in self.suns:
+			for planet in sun.planets:
+				total_asteroids += len(planet.asteroids)
+		return total_asteroids
+
+	def populate_asteroids(self):
+		# I need to connect the spawning of asteroids to the current amount of asteroids in the world.
+		if random.randint(0, 1000) > ((self.count_asteroids() / cfg.universe_max_asteroids) * 1000):
+			self.random_crash()
 
 	def watch_queue(self):
 		# clear any completed rows
@@ -132,6 +144,7 @@ class Game:
 		while True:
 			# Watch for quit event.
 			if loop_counter > 260:
+				self.populate_asteroids()
 				self.watch_queue()
 				loop_counter = 0
 			for event in pygame.event.get():

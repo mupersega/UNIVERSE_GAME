@@ -9,14 +9,15 @@ ship_image = pygame.image.load('mining_ship_1.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 1920
-screen_height = 1080
+screen_width = 800
+screen_height = 600
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 0
+start_entities = 15
+universe_max_asteroids = 200
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -42,7 +43,7 @@ default_hangars = 30
 lane_width = 9
 x_pad = 3
 y_pad = 1
-st_x_offset = 390 #390 for stream
+st_x_offset = 5 #390 for stream
 st_y_offset = 55
 station_spacing = station_width + (
 	x_pad + facility_w * max_facilities) + lane_width
@@ -53,7 +54,7 @@ sun_interactable_distance = 20
 sun_arrived_distance = 10
 sun_start_size = 1
 sun_max_size = 100
-max_planets_per_sun = 9
+max_planets_per_sun = 8
 sun_exclusion_range = 140
 
 # --Planet-- #
@@ -110,7 +111,7 @@ loc_interactable_distance = 2
 loc_arrived_distance = 2
 
 # --Miscellaneous-- #
-composition_rolls = 5
+composition_rolls = 3
 tradables = ["rubine", "verdite", "ceruliun", "mupees"]
 mineral_list = ["rubine", "verdite", "ceruliun"]
 mineral_info = {
@@ -119,12 +120,12 @@ mineral_info = {
 	"ceruliun": {"rgb": [0, 0, 255]}
 }
 
-# the values in these lists correspond to [mupees, rubine, verdite, ceruliun]
+# the values in these lists correspond to [rubine, verdite, ceruliun, mupees]
 upgrade_values = {
 	"bay": {
-		"miner": [0, 15, 0, 0],
+		"miner": [15, 0, 0, 0],
 		"hold": [10, 10, 2, 0],
-		"thrusters": [10, 0, 0, 0],
+		"thrusters": [0, 10, 0, 0],
 	},
 	"warehouse": {
 		"hold": [20, 20, 2, 0]
@@ -193,15 +194,16 @@ def draw_beam(self, actor, colour=None):
 		actor.rect.center[0], actor.rect.center[1]), 1)
 
 
-def draw_explosion(object):
-	tx, ty = int(object.x), int(object.y)
+def draw_explosion(explode_object):
+	tx = int(explode_object.x)
+	ty = int(explode_object.y)
 	variance = [-4, -2, 2, 4]
 	for i in range(random.randint(20, 50)):
-		pygame.draw.circle(object.screen, [255, 255, 255], (tx + random.choice(
+		pygame.draw.circle(explode_object.screen, [255, 255, 255], (tx + random.choice(
 			variance), ty + random.choice(variance)), random.randint(1, 5))
-		pygame.draw.circle(object.screen, [0, 0, 0], (tx + random.choice(
+		pygame.draw.circle(explode_object.screen, [0, 0, 0], (tx + random.choice(
 			variance), ty + random.choice(variance)), random.randint(1, 5))
-		pygame.draw.circle(object.screen, [255, 255, 255], (tx + random.choice(
+		pygame.draw.circle(explode_object.screen, [255, 255, 255], (tx + random.choice(
 			variance), ty + random.choice(variance)), random.randint(1, 5))
 
 
@@ -217,8 +219,8 @@ def set_composition(primary, secondary):
 	for i in range(rolls):
 		choice = random.choice(choices)
 		choice_rgb = mineral_info[choice]["rgb"]
-		for i in range(3):
-			prep_rgb[i] += choice_rgb[i]
+		for j in range(3):
+			prep_rgb[j] += choice_rgb[j]
 	final_rgb = []
 	for i in prep_rgb:
 		final_rgb.append(i / rolls)
@@ -265,27 +267,6 @@ def withdraw_resources(player, resources):
 						facility.ores[k] -= 1
 						print(f'after{facility.ores[k]}')
 						done = True
-	#
-	# for i in range(verdite_cost):
-	# 	print('v')
-	# 	done = False
-	# 	while not done:
-	# 		for facility in player.hangars[0].facilities:
-	# 			if facility.kind == 'warehouse' and facility.ores[1] > 0:
-	# 				print(f'before - {facility.ores[1]}')
-	# 				facility.ores[1] -= 1
-	# 				print(f'after{facility.ores[1]}')
-	# 				done = True
-	# for i in range(ceruliun_cost):
-	# 	print('c')
-	# 	done = False
-	# 	while not done:
-	# 		for facility in player.hangars[2].facilities:
-	# 			if facility.kind == 'warehouse' and facility.ores[2] > 0:
-	# 				print(f'before - {facility.ores[2]}')
-	# 				facility.ores[2] -= 1
-	# 				print(f'after{facility.ores[2]}')
-	# 				done = True
 	# extract mupees
 	player.mupees -= resources[3]
 	print("Transaction complete")

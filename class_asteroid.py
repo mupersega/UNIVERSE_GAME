@@ -38,12 +38,12 @@ class Asteroid:
 		if random.randint(0, 1000) >= (998 - actor.miner_lvl):
 			cfg.draw_explosion(self)
 			yielded = self.mine_yield()
+			self.decay()
 			print(actor.ores)
 			actor.ores[yielded] += 1
 			print(f"Mined {cfg.mineral_list[yielded]}, hold = {sum(actor.ores)}")
 
 	def mine_yield(self):
-		self.size -= .5
 		rolls = []
 		for i in self.rgb:
 			rolls.append(random.randint(0, i))
@@ -56,6 +56,16 @@ class Asteroid:
 				i += 1
 		print(choice)
 		return choice
+
+	"""When thinking about decay, I know that I want the asteroid to "die". For it to "die" I need to establish its 
+	"life". I could do this either by ascribing it mass dependent on its dimensions, or by simply making it smaller 
+	by .1 after every successful mining cycle. Important to note is that I also need to update the rect/size of the 
+	asteroid."""
+	def decay(self):
+		self.size -= .1
+		self.width, self.height = self.size, self.size
+		if self.size <= 0 and self in self.planet.asteroids:
+			self.planet.asteroids.remove(self)
 
 	def draw(self):
 		# pygame.draw.rect(self.game.screen, self.rgb, self.rect)

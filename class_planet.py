@@ -22,7 +22,7 @@ class Planet:
 		self.width, self.height = self.size, self.size
 		self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 		self.orbit_step = random.randint(0, 360)
-		self.angular_velocity = random.randint(1, 5) / 10000
+		self.angular_velocity = random.randint(2, 6) / 10000
 		self.polarity = random.choice([-1, 1])
 		self.interactable_distance = cfg.pl_interactable_distance
 		self.arrived_distance = cfg.pl_arrived_distance
