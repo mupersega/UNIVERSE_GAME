@@ -9,15 +9,15 @@ ship_image = pygame.image.load('mining_ship_1.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 800
-screen_height = 600
+screen_width = 1920
+screen_height = 1080
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 15
-universe_max_asteroids = 200
+start_entities = 0
+universe_max_asteroids = 180
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -43,7 +43,7 @@ default_hangars = 30
 lane_width = 9
 x_pad = 3
 y_pad = 1
-st_x_offset = 5 #390 for stream
+st_x_offset = 390 #390 for stream
 st_y_offset = 55
 station_spacing = station_width + (
 	x_pad + facility_w * max_facilities) + lane_width
@@ -109,6 +109,14 @@ bay_arrived_distance = 1
 loc_colour = [255, 0, 255]
 loc_interactable_distance = 2
 loc_arrived_distance = 2
+
+# --Projectile-- #
+bearing_conversions = [
+	"draw_top_left=True",
+	"draw_top_right=True",
+	"draw_bottom_left=True",
+	"draw_bottom_right=True",
+]
 
 # --Miscellaneous-- #
 composition_rolls = 3
