@@ -31,7 +31,7 @@ class Bay:
 		# class specific
 		self.occupant = None
 
-		# each bay always comes with a ship
+		# each bay always comes with a ship at init
 		self.owner.bays.append(self)
 		self.new_ship()
 

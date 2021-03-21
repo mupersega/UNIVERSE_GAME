@@ -25,7 +25,7 @@ class Entity:
 		self.width = self.size
 		self.height = self.size
 
-		self.normal_vel = .5
+		self.normal_vel = 1
 		self.vel = self.normal_vel
 		self.approach_velocity = False
 		self.normal_agility = .3
@@ -136,6 +136,11 @@ class Entity:
 		self.target = self.bay.hangar.station.dock_location
 		self.target_queue.append(self.bay.hangar.approach_location)
 		self.target_queue.append(self.bay)
+
+	def shoot(self):
+		if self.target:
+			new_projectile = Projectile(self, 1, self.target)
+			self.game.projectiles.append(new_projectile)
 
 	def in_range(self, target, range):
 		if self.distance_to_target(target) <= range:

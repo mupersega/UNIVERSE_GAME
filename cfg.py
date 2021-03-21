@@ -16,7 +16,7 @@ universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 0
+start_entities = 1
 universe_max_asteroids = 180
 
 # --Entity-- #

@@ -32,6 +32,7 @@ class Game:
 		self.suns = []
 		self.stations = []
 		self.entities = []
+		self.projectiles = []
 		self.players = []
 		self.player_names = []
 
@@ -153,6 +154,16 @@ class Game:
 					sys.exit()
 
 				if event.type == pygame.KEYDOWN:
+					# EXIT = Esc
+					# SPAWN asteroid = space
+					# SPAWN station = s
+					# PRINT resource tally = r
+					# BUILD bay = b
+					# BUILD warehouse = w
+					# UPGRADE miner = m
+					# UPGRADE thrusters = t
+					# SHOOT projectile = p
+
 					if event.key == pygame.K_SPACE:
 						self.random_crash()
 					if event.key == pygame.K_ESCAPE:
@@ -160,20 +171,22 @@ class Game:
 						sys.exit()
 					if event.key == pygame.K_s:
 						self.new_station()
-					if event.key == pygame.K_t:
+					if event.key == pygame.K_r:
 						cfg.tally_resources(self.players[0])
-					if event.key == pygame.K_u:
+					if event.key == pygame.K_t:
 						msg = "!upgrade bay 1 thrusters"
 						self.process("1", "mupersega", msg.split())
-					if event.key == pygame.K_i:
+					if event.key == pygame.K_m:
 						msg = "!upgrade bay 1 miner"
 						self.process("1", "mupersega", msg.split())
 					if event.key == pygame.K_b:
 						msg = "!build bay"
 						self.process("1", "mupersega", msg.split())
-					if event.key == pygame.K_n:
+					if event.key == pygame.K_w:
 						msg = "!build warehouse"
 						self.process("1", "mupersega", msg.split())
+					if event.key == pygame.K_p:
+						self.players[0].bays[0].occupant.shoot()
 
 			# Clear screen.
 			self.screen.fill((0, 0, 0))
@@ -196,6 +209,9 @@ class Game:
 			for i in self.players:
 				for j in i.entities:
 					j.loop()
+
+			for i in self.projectiles:
+				i.loop()
 
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)

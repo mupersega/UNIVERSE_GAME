@@ -10,6 +10,7 @@ class Projectile:
 	"""The Projectile class manages objects that move, gathering velocity, towards a target. If they collide, damage
 	will be dealt to the target entity. The drawing of the projectile has hitherto unique dynamism; Only the quarter of
 	the circle will be drawn that is closest to the target, which quarter will be ascertained upon instantiation."""
+
 	def __init__(self, parent, lvl, target):
 		self.x = parent.x
 		self.y = parent.y
@@ -18,8 +19,12 @@ class Projectile:
 		self.lvl = lvl
 		self.game = parent.game
 		self.screen = parent.screen
-		self.draw_bearing_arg = self.prepare_projectile_bearing()
-		self.vel = .02
+		self.draw_bools = [False, False, False, False]
+		self.vel = 0.001
+		self.trajectory = None
+
+		self.prepare_projectile_bearing()
+		self.prepare_trajectory()
 
 	def prepare_projectile_bearing(self):
 		# Check the target's location to ascertain which quarter of the circle should be drawn.
@@ -35,10 +40,28 @@ class Projectile:
 			bearing += 2
 		if east:
 			bearing += 1
-		return cfg.bearing_conversions[bearing]
+		self.draw_bools[bearing] = True
+
+
+	def prepare_trajectory(self):
+		self.trajectory = pygame.math.Vector2((self.target.x - self.x, self.target.y - self.y)).normalize()
 
 	def move(self):
-
+		if cfg.on_screen_check(self):
+			self.x += self.trajectory[0] * self.vel
+			self.y += self.trajectory[1] * self.vel
+			self.vel += self.vel ** .01
+		else:
+			if self in self.game.projectiles:
+				self.game.projectiles.remove(self)
 
 	def draw(self):
-		pygame.draw.circle(self.screen, ([0, 0, 200]), (self.x, self.y), 5, self.draw_bearing_arg)
+		pygame.draw.circle(self.screen, [0, 0, 200], (self.x, self.y), 5, draw_top_left=self.draw_bools[0],
+						   draw_top_right=self.draw_bools[1],
+						   draw_bottom_left=self.draw_bools[2],
+						   draw_bottom_right=self.draw_bools[3]
+						   )
+
+	def loop(self):
+		self.move()
+		self.draw()
