@@ -55,7 +55,13 @@ class Bay:
 			i += 1
 
 	def draw(self):
+		# Draw bay outline
 		pygame.draw.rect(self.screen, self.rgb, self.rect, 2)
+		# Draw Attribute bars
+		# Miner
+		pygame.draw.line(self.screen, cfg.miner_bar_colour, (self.x, self.y), (self.x, self.y + (
+				self.occupant.miner_lvl / 10 * self.width)), width=4)
+
 
 	def loop(self):
 		self.draw()

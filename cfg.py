@@ -104,6 +104,10 @@ warehouse_colours = {
 bay_colour = [180, 10, 180]
 bay_interactable_distance = 3
 bay_arrived_distance = 1
+miner_bar_colour = [200, 0, 0]
+thrusters_bar_colour = [0, 200, 0]
+hold_bar_colour = [100, 100, 50]
+weapon_bar_colour = [240, 30, 240]
 
 # --Location-- #
 loc_colour = [255, 0, 255]
@@ -111,12 +115,6 @@ loc_interactable_distance = 2
 loc_arrived_distance = 2
 
 # --Projectile-- #
-bearing_conversions = [
-	"draw_top_left=True",
-	"draw_top_right=True",
-	"draw_bottom_left=True",
-	"draw_bottom_right=True",
-]
 
 # --Miscellaneous-- #
 composition_rolls = 3
