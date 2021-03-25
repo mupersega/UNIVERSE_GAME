@@ -20,15 +20,16 @@ class Hangar:
 		self.kind = 'hangar'
 		self.owner = None
 		# x and y values exist for the top left from which to space facilities.
-		self.x = station.rect.right + cfg.x_pad
-		self.y = station.y + (cfg.facility_h + cfg.y_pad) * self.index + cfg.y_pad
+		self.x = station.rect.right
+		self.y = cfg.y_pad + station.y + (cfg.facility_h + cfg.y_pad) * self.index
+		self.rect = pygame.Rect(self.x, self.y, cfg.facility_w + cfg.x_pad * 2, cfg.y_pad * 2 + cfg.facility_h)
 		# warehouses to be inserted and bays appended
 		self.facilities = []
 		self.approach_location = Location(
 			(self.station.dock_location.x, self.y + cfg.facility_h / 2), 1, .9)
 		self.approach_velocity = False
 
-		self.myfont = pygame.font.SysFont("Arial", 12)
+		self.myfont = pygame.font.SysFont("Arial", 13)
 		self.label = None
 
 		# for i in range(random.randint(1, 1)):
@@ -57,9 +58,11 @@ class Hangar:
 			elif facility.kind == 'warehouse':
 				facility.index = wh_count
 				wh_count += 1
-			facility.x = self.x + (cfg.facility_w + cfg.x_pad) * i
-			facility.y = self.y
+			facility.x = self.station.rect.right + cfg.x_pad + (cfg.facility_w + cfg.x_pad) * i
+			facility.y = self.rect.top + cfg.y_pad
+			facility.update_vector()
 			cfg.update_rect(facility)
+
 			i += 1
 
 	def new_warehouse(self):
@@ -82,6 +85,7 @@ class Hangar:
 		# 'append' so that bays will be on the end of list, thus right side
 		self.facilities.append(new_bay)
 		self.set_facilities_pos()
+		new_bay.update_bar_lengths()
 		print("bay")
 
 	def remove_bay(self):
@@ -95,7 +99,10 @@ class Hangar:
 
 	def draw(self):
 		if self.owner:
-			self.station.game.screen.blit(self.label, (self.x - 35, self.y))
+			screen = self.station.game.screen
+			screen.blit(self.label, (self.station.rect.left + 15, self.y + cfg.y_pad * 2))
+			pygame.draw.line(screen, cfg.st_arm_colour, [self.station.rect.right, self.rect.center[1]],
+				[self.facilities[-1].rect.center[0], self.rect.center[1]], width=5)
 
 	def loop(self):
 		for i in self.facilities:

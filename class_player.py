@@ -20,7 +20,6 @@ class Player:
         self.bays = []
         self.warehouses = []
         self.trades = []
-        self.unassigned_resources = [0, 0, 0, 0]
         self.rubine = 0
         self.verdite = 0
         self.ceruliun = 0
@@ -61,6 +60,11 @@ class Player:
         if cmd == '!build':
             self.build(sub_status, args)
             return
+        if cmd == '!auto':
+            self.set_auto(args)
+            return
+        if cmd == '!cxauto':
+            pass
         if cmd == '!set':
             self.set_behaviour(args)
             return
@@ -104,6 +108,7 @@ class Player:
                                 if cfg.resource_check(required, available):
                                     cfg.withdraw_resources(self, required)
                                     f.occupant.miner_lvl += 1
+                                    f.update_bar_lengths()
                                     print('miner upgraded')
                                 else:
                                     print("miner upgrade failed")
@@ -114,9 +119,12 @@ class Player:
                                 if cfg.resource_check(required, available):
                                     cfg.withdraw_resources(self, required)
                                     if f.kind == "warehouse":
+                                        f.hold_lvl += 1
                                         f.hold_capacity += cfg.upgrade_amounts[fk]
                                     else:
+                                        f.occupant.hold_lvl += 1
                                         f.occupant.hold_capacity += cfg.upgrade_amounts[fk]
+                                        f.update_bar_lengths()
                                     print('hold upgraded')
                                 else:
                                     print("hold upgrade failed")
@@ -127,7 +135,9 @@ class Player:
                                 available = cfg.tally_resources(self)
                                 if cfg.resource_check(required, available):
                                     cfg.withdraw_resources(self, required)
+                                    f.occupant.thrusters_lvl += 1
                                     f.occupant.normal_vel += .1
+                                    f.update_bar_lengths()
                                 else:
                                     print("thrusters upgrade failed")
                                 return
@@ -199,6 +209,30 @@ class Player:
                 print(f'Not enough {list_material} to list that amount.')
         else:
             print(f'{list_material} not a trade commodity.')
+
+    def set_auto(self, args):
+        print(args)
+        if len(args) != 3:
+            print("Invalid arg count, check auto upgrade syntax.")
+            return
+        if args[0] in cfg.upgrade_values.keys():
+            if args[2] in cfg.upgrade_values[args[0]].keys():
+                for f in self.hangars[0].facilities:
+                    if f.kind == args[0] and str(f.index) == args[1]:
+                        f.auto = True
+                        f.auto_upgrade = args[2]
+                        return
+                print(f"There is no {args[0]} with an index position of {args[1]}")
+            else:
+                print(f"{args[2]} is not a valid upgrade type for {args[0]}")
+        else:
+            print(f"{args[0]} not a valid facility.")
+
+    def process_auto(self):
+        for f in self.hangars[0].facilities:
+            if f.auto:
+                args = [f.kind, f.index, f.auto_upgrade]
+                self.upgrade(args)
 
     def buy(self, game, trade_id):
         pass

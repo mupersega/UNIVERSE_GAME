@@ -20,9 +20,9 @@ class Game:
 	"""Class to manage the whole game."""
 
 	def __init__(self):
-		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-		# self.screen = pygame.display.set_mode((
-		# 	cfg.screen_width, cfg.screen_height))
+		# self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+		self.screen = pygame.display.set_mode((
+			cfg.screen_width, cfg.screen_height))
 		self.fps = cfg.fps
 
 		self.universe_primary = cfg.universe_primary
@@ -142,12 +142,18 @@ class Game:
 
 	def mainloop(self):
 		loop_counter = 0
+		secondary_loop = 0
 		while True:
 			# Watch for quit event.
 			if loop_counter > 260:
 				self.populate_asteroids()
 				self.watch_queue()
+				for player in self.players:
+					player.process_auto()
 				loop_counter = 0
+				secondary_loop += 1
+				if secondary_loop > 3:
+					secondary_loop = 0
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					pygame.quit()

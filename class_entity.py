@@ -25,14 +25,23 @@ class Entity:
 		self.width = self.size
 		self.height = self.size
 
-		self.normal_vel = 1
+		# Navigation
+		self.location = pygame.math.Vector2(bay.rect.center[0], bay.rect.center[1])
+		self.trajectory = pygame.math.Vector2(1, 1)
+
+		self.thrusters_lvl = 0
+		self.normal_vel = 3
 		self.vel = self.normal_vel
 		self.approach_velocity = False
-		self.normal_agility = .3
+		self.normal_agility = 1
 		self.agility = self.normal_agility
 		self.angle = 0
 
-		self.miner_lvl = 1
+		self.miner_lvl = 50
+		self.max_miner_lvl = 100
+		self.hold_lvl = 0
+		self.hold_capacity = 10
+		self.max_hold_lvl = 30
 		self.weapon_type = None
 		self.weapon_range = None
 
@@ -47,7 +56,6 @@ class Entity:
 		self.target = self.bay
 		self.target_queue = []
 		self.ores = [0, 0, 0]
-		self.hold_capacity = 10
 		print(self.ores)
 
 		self.owner.entities.append(self)
@@ -90,13 +98,18 @@ class Entity:
 		# if not in arrived distance of target, turn and move toward target
 		mod = 1
 		dist = cfg.distance_to_target(self)
-		if dist < 5:
-			mod = dist / 20
+
+		if dist < 30:
+			mod = dist / 40
 		if dist > self.target.arrived_distance:
-			self.angle = cfg.angle_to_target(self) * self.agility
-			self.x += math.cos(self.angle) * (self.vel * mod)
-			self.y -= math.sin(self.angle) * (self.vel * mod)
-			cfg.update_rect(self)
+			proposed_trajectory = pygame.math.Vector2(self.location - self.target.location)
+			self.trajectory = proposed_trajectory.normalize()
+			self.location -= self.trajectory * self.vel * mod
+			self.rect.center = self.location
+			self.x = self.location[0]
+			self.y = self.location[1]
+
+		self.angle = cfg.angle_to_target(self)
 
 	def interact(self):
 		t = self.target
@@ -143,7 +156,7 @@ class Entity:
 			self.game.projectiles.append(new_projectile)
 
 	def in_range(self, target, range):
-		if self.distance_to_target(target) <= range:
+		if cfg.distance_to_target(target) <= range:
 			return True
 
 	def find_asteroid(self):
@@ -159,7 +172,7 @@ class Entity:
 			return random.choice(choices)
 
 	def draw(self):
-		draw_image = pygame.transform.rotate(self.image, (self.angle * 3.14))
+		draw_image = pygame.transform.rotate(self.image, (self.angle))
 		self.screen.blit(draw_image, self.rect)
 		# pygame.draw.rect(self.screen, self.rgb, self.rect)
 

@@ -17,6 +17,10 @@ class Asteroid:
 		self.rgb = cfg.set_composition(self.primary_type, self.secondary_type)
 		self.x = 0
 		self.y = 0
+
+		# Navigation Controls
+		self.location = pygame.math.Vector2(self.x, self.y)
+		self.trajectory = pygame.math.Vector2(0, 0)
 		self.size = random.randint(2, 6)
 		self.width, self.height = self.size, self.size
 		self.orbit_distance = cfg.belt_exclusion_range + random.randint(
@@ -46,7 +50,7 @@ class Asteroid:
 	def mine_yield(self):
 		rolls = []
 		for i in self.rgb:
-			rolls.append(random.randint(0, i))
+			rolls.append(random.uniform(0, i))
 		max = 0
 		choice = 0
 		i = 0
@@ -77,6 +81,7 @@ class Asteroid:
 		self.x = self.planet.x + math.cos(self.orbit_step) * dist
 		self.y = self.planet.y - math.sin(self.orbit_step) * dist
 		cfg.update_rect(self)
+		self.location = (self.rect.center[0], self.rect.center[1])
 
 	def loop(self):
 		self.on_screen = cfg.on_screen_check(self)

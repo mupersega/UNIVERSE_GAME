@@ -8,6 +8,7 @@ class Location:
     def __init__(self, pos, approach_velocity=False, approach_angle=False):
         self.x = pos[0]
         self.y = pos[1]
+        self.location = pygame.math.Vector2(self.x, self.y)
         self.on_screen = True
         self.rect = pygame.Rect(self.x, self.y, 1, 1)
         self.approach_velocity = approach_velocity

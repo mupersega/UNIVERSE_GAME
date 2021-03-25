@@ -9,14 +9,14 @@ ship_image = pygame.image.load('mining_ship_1.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 1920
-screen_height = 1080
+screen_width = 800
+screen_height = 600
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
-start_entities = 1
+start_entities = 20
 universe_max_asteroids = 180
 
 # --Entity-- #
@@ -25,6 +25,7 @@ ent_interactable_distance = 20
 ent_arrived_distance = 2
 ent_size = 5
 ent_start_capacity = 10
+max_miner_lvl = 50
 dropoff_speed = 980  # larger number will make drop off slower out of 1000
 
 # --Station-- #
@@ -35,6 +36,7 @@ facility_h = 20
 max_facilities = 5
 # st_colour = [45, 89, 134] # pastel dark blue
 st_colour = [102, 102, 153]
+st_arm_colour = [75, 75, 100]
 
 st_arrived_distance = 5
 st_interactable_distance = 10
@@ -96,28 +98,25 @@ wh_interactable_distance = 2
 wh_arrived_distance = 1
 warehouse_colours = {
 	"rubine": {"rgb": [255, 51, 51]},
-	"verdite": {"rgb": [40, 244, 40]},
-	"ceruliun": {"rgb": [0, 0, 255]}
+	"verdite": {"rgb": [40, 180, 40]},
+	"ceruliun": {"rgb": [40, 40, 255]}
 }
 
 # --Bay-- #
 bay_colour = [180, 10, 180]
 bay_interactable_distance = 3
 bay_arrived_distance = 1
-miner_bar_colour = [200, 0, 0]
-thrusters_bar_colour = [0, 200, 0]
-hold_bar_colour = [100, 100, 50]
-weapon_bar_colour = [240, 30, 240]
+bar_colours = [[200, 0, 0], [0, 200, 0], [240, 30, 240], [100, 100, 50]]
 
 # --Location-- #
 loc_colour = [255, 0, 255]
 loc_interactable_distance = 2
-loc_arrived_distance = 2
+loc_arrived_distance = 3
 
 # --Projectile-- #
 
 # --Miscellaneous-- #
-composition_rolls = 3
+composition_rolls = 10
 tradables = ["rubine", "verdite", "ceruliun", "mupees"]
 mineral_list = ["rubine", "verdite", "ceruliun"]
 mineral_info = {
@@ -157,26 +156,29 @@ build_values = {
 
 
 def update_rect(self):
+	# self.rect.center = (self.x, self.y)
 	self.rect.x = self.x
 	self.rect.y = self.y
-	self.rect.width = self.width
-	self.rect.height = self.height
+	# self.rect.width = self.width
+	# self.rect.height = self.height
 
 
 def distance_to_target(self):
 	# print(self.target)
 	t = self.target.rect.center
-	x_dist = self.x - t[0]
-	y_dist = self.y - t[1]
+	x_dist = self.rect.center[0] - t[0]
+	y_dist = self.rect.center[1] - t[1]
 	return np.abs(math.hypot(x_dist, y_dist))
 
 
 def angle_to_target(self):
 	dx = self.target.rect.center[0]
 	dy = self.target.rect.center[1]
-	x = self.x - dx
-	y = self.y - dy
-	return math.degrees(math.atan2(x, y))
+	x = self.rect.center[0] - dx
+	y = self.rect.center[1] - dy
+	rads = math.atan2(x, y)
+	degs = math.degrees(rads)
+	return degs
 	# return math.atan2(x, y)
 
 
@@ -186,10 +188,17 @@ def turn(self):
 
 def move(self):
 	# if not in arrived distance of target, turn and move toward target
-	if distance_to_target(self, self.target) > self.target.arrived_distance:
-		self.angle = angle_to_target(self, self.target) * self.agility
-		self.x += math.cos(self.angle) * self.vel
-		self.y -= math.sin(self.angle) * self.vel
+	if distance_to_target(self) > self.target.arrived_distance:
+		self.trajectory = (math.cos(self.angle), -math.sin(self.angle))
+		self.location += self.trajectory + self.location
+		# self.x += math.cos(self.angle)
+		# self.y -= math.sin(self.angle)
+
+
+def find_bar_length(current_lvl, max_lvl, total_px):
+	bl = math.ceil((current_lvl / max_lvl) * total_px)
+	print(bl)
+	return bl
 
 
 def draw_beam(self, actor, colour=None):
