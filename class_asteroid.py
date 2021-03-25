@@ -61,10 +61,6 @@ class Asteroid:
 		print(choice)
 		return choice
 
-	"""When thinking about decay, I know that I want the asteroid to "die". For it to "die" I need to establish its 
-	"life". I could do this either by ascribing it mass dependent on its dimensions, or by simply making it smaller 
-	by .1 after every successful mining cycle. Important to note is that I also need to update the rect/size of the 
-	asteroid."""
 	def decay(self):
 		self.size -= .1
 		self.width, self.height = self.size, self.size

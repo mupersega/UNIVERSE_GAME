@@ -187,7 +187,7 @@ class Player:
             else:
                 print(f"{b} is not a valid upgrade request.")
         else:
-            print(f"{fk} is not a valid facility kind.")
+            print(f"{fk} is not a valid facility.")
 
     def list(self, args):
         # example trade syntax = !list 100 rubine @ 2
@@ -233,6 +233,21 @@ class Player:
             if f.auto:
                 args = [f.kind, f.index, f.auto_upgrade]
                 self.upgrade(args)
+
+    def cancel_auto(self, args):
+        if len(args) == 2:
+            if args[0] in cfg.upgrade_values.keys():
+                for f in self.hangars[0].facilities:
+                    if f.kind == args[0] and f.index == args[1]:
+                        f.auto = False
+                        f.auto_upgrade = None
+                        return
+                    print(f"There is no {args[0]} with an index position of {args[1]}")
+            else:
+                print(f"{args[0]} is not a valid facility.")
+        else:
+            print("Invalid arg count, check cancel auto syntax.")
+
 
     def buy(self, game, trade_id):
         pass
