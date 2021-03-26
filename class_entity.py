@@ -29,21 +29,22 @@ class Entity:
 		self.location = pygame.math.Vector2(bay.rect.center[0], bay.rect.center[1])
 		self.trajectory = pygame.math.Vector2(1, 1)
 
-		self.thrusters_lvl = 0
-		self.normal_vel = 3
+		self.normal_vel = 1
 		self.vel = self.normal_vel
 		self.approach_velocity = False
 		self.normal_agility = 1
 		self.agility = self.normal_agility
 		self.angle = 0
 
-		self.miner_lvl = 50
-		self.max_miner_lvl = 100
-		self.hold_lvl = 0
+		self.miner_lvl = 1
+		self.weapons_lvl = 1
+		self.thrusters_lvl = 1
+		self.hold_lvl = 1
+		self.max_miner_lvl = 1
+		self.max_weapons_lvl = 1
+		self.max_hold_lvl = 1
+		self.max_thrusters_lvl = 1
 		self.hold_capacity = 10
-		self.max_hold_lvl = 30
-		self.weapon_type = None
-		self.weapon_range = None
 
 		self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
 		self.rgb = cfg.ent_rgb
@@ -66,8 +67,12 @@ class Entity:
 	def update_current_target(self):
 		# if no target make target the next target in queue.
 		if not self.target:
-			# print(self.target_queue)
-			self.target = self.target_queue.pop(0)
+			if self.target_queue:
+				self.target = self.target_queue.pop(0)
+				return
+			else:
+				self.return_to_base()
+
 		if self.target.on_screen:
 			# update to next target if in stop_distance of current, if none then return
 			# print(self.target_queue)
@@ -112,8 +117,15 @@ class Entity:
 		self.angle = cfg.angle_to_target(self)
 
 	def interact(self):
+		if not self.target:
+			return
 		t = self.target
 		dist = cfg.distance_to_target(self)
+		if isinstance(t, Asteroid) and t.size <= 0:
+			self.target = self.find_asteroid()
+			if not self.target:
+				self.return_to_base()
+			return
 		if dist <= t.interactable_distance:
 			# Control interactions depending on the kind of target.
 			# If target is an asteroid, then mine it until hold is full.
@@ -121,8 +133,6 @@ class Entity:
 				if cfg.hold_at_capacity(self):
 					self.return_to_base()
 					return
-				if t.size <= 0:
-					new_target = self.find_asteroid()
 				t.mine(self)
 			# If target is home bay, return to bay and unload.
 			if t is self.bay:

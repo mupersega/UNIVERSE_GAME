@@ -5,6 +5,7 @@ import cfg
 from class_bay import Bay
 from class_location import Location
 from class_warehouse import Warehouse
+import colours as col
 
 pygame.font.init()
 HANGAR_FONT = pygame.font.SysFont('Comic Sans MS', 30)
@@ -21,7 +22,7 @@ class Hangar:
 		self.owner = None
 		# x and y values exist for the top left from which to space facilities.
 		self.x = station.rect.right
-		self.y = cfg.y_pad + station.y + (cfg.facility_h + cfg.y_pad) * self.index
+		self.y = station.y + (cfg.facility_h + cfg.y_pad) * self.index
 		self.rect = pygame.Rect(self.x, self.y, cfg.facility_w + cfg.x_pad * 2, cfg.y_pad * 2 + cfg.facility_h)
 		# warehouses to be inserted and bays appended
 		self.facilities = []
@@ -29,7 +30,7 @@ class Hangar:
 			(self.station.dock_location.x, self.y + cfg.facility_h / 2), 1, .9)
 		self.approach_velocity = False
 
-		self.myfont = pygame.font.SysFont("Arial", 13)
+		self.myfont = pygame.font.SysFont("Agency FB", cfg.facility_h, bold=True)
 		self.label = None
 
 		# for i in range(random.randint(1, 1)):
@@ -44,7 +45,7 @@ class Hangar:
 
 	def update_label(self):
 		self.label = self.myfont.render(
-			str(self.owner.name[0:3]).upper(), 0, (255, 255, 255))
+			str(self.owner.name[0:3]).upper(), 0, col.charcoal)
 
 	def set_facilities_pos(self):
 		# set pos dependant on index and update rect
@@ -100,9 +101,9 @@ class Hangar:
 	def draw(self):
 		if self.owner:
 			screen = self.station.game.screen
-			screen.blit(self.label, (self.station.rect.left + 15, self.y + cfg.y_pad * 2))
-			pygame.draw.line(screen, cfg.st_arm_colour, [self.station.rect.right, self.rect.center[1]],
-				[self.facilities[-1].rect.center[0], self.rect.center[1]], width=5)
+			screen.blit(self.label, (self.station.rect.left + cfg.x_pad * 2, self.rect.top))
+			pygame.draw.line(screen, cfg.st_arm_colour, [self.station.rect.right, self.rect.center[1] - 1],
+				[self.facilities[-1].rect.center[0], self.rect.center[1] - 1], width=4)
 
 	def loop(self):
 		for i in self.facilities:

@@ -64,7 +64,8 @@ class Player:
             self.set_auto(args)
             return
         if cmd == '!cxauto':
-            pass
+            self.cancel_auto(args)
+            return
         if cmd == '!set':
             self.set_behaviour(args)
             return
@@ -105,23 +106,27 @@ class Player:
                             if ur == 'miner':
                                 required = cfg.upgrade_values[fk][ur]
                                 available = cfg.tally_resources(self)
-                                if cfg.resource_check(required, available):
-                                    cfg.withdraw_resources(self, required)
-                                    f.occupant.miner_lvl += 1
-                                    f.update_bar_lengths()
-                                    print('miner upgraded')
+                                if f.occupant.miner_lvl < f.occupant.max_miner_lvl:
+                                    if cfg.resource_check(required, available):
+                                        cfg.withdraw_resources(self, required)
+                                        f.occupant.miner_lvl += 1
+                                        f.update_bar_lengths()
+                                        print('miner upgraded')
+                                        return
+                                    else:
+                                        print("miner upgrade failed")
                                 else:
-                                    print("miner upgrade failed")
+                                    print("Upgrade at max level.")
                                 return
                             elif ur == 'hold':
                                 required = cfg.upgrade_values[fk][ur]
                                 available = cfg.tally_resources(self)
                                 if cfg.resource_check(required, available):
                                     cfg.withdraw_resources(self, required)
-                                    if f.kind == "warehouse":
+                                    if f.kind == "warehouse" and f.hold_lvl < f.max_hold_lvl:
                                         f.hold_lvl += 1
                                         f.hold_capacity += cfg.upgrade_amounts[fk]
-                                    else:
+                                    elif f.kind == "bay" and f.occupant.hold_lvl < f.occupant.max_hold_lvl:
                                         f.occupant.hold_lvl += 1
                                         f.occupant.hold_capacity += cfg.upgrade_amounts[fk]
                                         f.update_bar_lengths()
@@ -134,10 +139,13 @@ class Player:
                                 required = cfg.upgrade_values[fk][ur]
                                 available = cfg.tally_resources(self)
                                 if cfg.resource_check(required, available):
-                                    cfg.withdraw_resources(self, required)
-                                    f.occupant.thrusters_lvl += 1
-                                    f.occupant.normal_vel += .1
-                                    f.update_bar_lengths()
+                                    if f.occupant.thrusters_lvl < f.occupant.max_thrusters_lvl:
+                                        cfg.withdraw_resources(self, required)
+                                        f.occupant.thrusters_lvl += 1
+                                        f.occupant.normal_vel += .1
+                                        f.update_bar_lengths()
+                                    else:
+                                        print("Upgrade max lvl")
                                 else:
                                     print("thrusters upgrade failed")
                                 return
@@ -238,7 +246,7 @@ class Player:
         if len(args) == 2:
             if args[0] in cfg.upgrade_values.keys():
                 for f in self.hangars[0].facilities:
-                    if f.kind == args[0] and f.index == args[1]:
+                    if f.kind == args[0] and f.index == int(args[1]):
                         f.auto = False
                         f.auto_upgrade = None
                         return
@@ -247,7 +255,6 @@ class Player:
                 print(f"{args[0]} is not a valid facility.")
         else:
             print("Invalid arg count, check cancel auto syntax.")
-
 
     def buy(self, game, trade_id):
         pass

@@ -48,17 +48,16 @@ class Warehouse:
 		i = 0
 		for j in self.ores:
 			if j > 0:
-				x = self.x + 2
+				x = self.x + 1
 				h = int(self.hangar_space * (j / (self.hold_capacity)))
 				y = self.rect.bottom - next_y - h - 2
 				w = self.bar_w
 				next_y += h
-				# print(h, y)
 				rgb = cfg.warehouse_colours[cfg.mineral_list[i]]["rgb"]
 				pygame.draw.rect(self.screen, rgb, (x, y, w, h))
 			i += 1
 			if cfg.hold_at_capacity(self):
-				pygame.draw.rect(self.screen, [200, 30, 30], self.rect, 2)
+				pygame.draw.rect(self.screen, [200, 30, 30], self.rect, 1)
 		# 	else:
 		# 		pass
 		# 		# if self.capacity_glow[1] >= 100:

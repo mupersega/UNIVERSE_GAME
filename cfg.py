@@ -4,20 +4,22 @@ import random
 import numpy as np
 import pygame
 
+import colours as col
+
 ship_image = pygame.image.load('mining_ship_1.png')
 
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 800
-screen_height = 600
+screen_width = 1920
+screen_height = 1080
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
-start_stations = 1
+start_stations = 5
 start_suns = 1
-start_entities = 20
-universe_max_asteroids = 180
+start_entities = 36
+universe_max_asteroids = 500
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -35,8 +37,8 @@ facility_w = 20
 facility_h = 20
 max_facilities = 5
 # st_colour = [45, 89, 134] # pastel dark blue
-st_colour = [102, 102, 153]
-st_arm_colour = [75, 75, 100]
+st_colour = col.bone  #[102, 102, 153]
+st_arm_colour = col.charcoal  #[75, 75, 100]
 
 st_arrived_distance = 5
 st_interactable_distance = 10
@@ -45,10 +47,10 @@ default_hangars = 30
 lane_width = 9
 x_pad = 3
 y_pad = 1
-st_x_offset = 390 #390 for stream
+st_x_offset = 10 #390 for stream
 st_y_offset = 55
 station_spacing = station_width + (
-	x_pad + facility_w * max_facilities) + lane_width
+	x_pad * 2 + facility_w * max_facilities) + lane_width
 
 # --Sun-- #
 sun_colour = [245, 245, 245]
@@ -106,7 +108,7 @@ warehouse_colours = {
 bay_colour = [180, 10, 180]
 bay_interactable_distance = 3
 bay_arrived_distance = 1
-bar_colours = [[200, 0, 0], [0, 200, 0], [240, 30, 240], [100, 100, 50]]
+bay_bar_colours = [[229, 140, 138], [64, 89, 173], [104, 241, 170], [255, 200, 0]]
 
 # --Location-- #
 loc_colour = [255, 0, 255]
