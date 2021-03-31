@@ -16,10 +16,11 @@ screen_height = 1080
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
-start_stations = 5
+# st 15 = ent 124
+start_stations = 1
 start_suns = 1
-start_entities = 36
-universe_max_asteroids = 500
+start_entities = 20
+universe_max_asteroids = 300
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -47,7 +48,7 @@ default_hangars = 30
 lane_width = 9
 x_pad = 3
 y_pad = 1
-st_x_offset = 10 #390 for stream
+st_x_offset = 390 #390 for stream
 st_y_offset = 55
 station_spacing = station_width + (
 	x_pad * 2 + facility_w * max_facilities) + lane_width
@@ -96,6 +97,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
+wh_starting_resources = [80, 80, 5]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 warehouse_colours = {
@@ -275,15 +277,16 @@ def withdraw_resources(player, resources):
 	# this should only ever run if availability of resources is guaranteed - see tally_resources
 	print(f'withdrawing - {resources}')
 	for k in range(3):
-		for i in range(resources[k]):
+		for i in range(resources.copy()[k]):
 			done = False
 			while not done:
 				for facility in player.hangars[0].facilities:
 					if facility.kind == 'warehouse' and facility.ores[k] > 0:
-						print(f'before - {facility.ores[k]}')
+						print(f'fac#{k}\nwdl #{i}\npre({facility.ores[k]})')
 						facility.ores[k] -= 1
-						print(f'after{facility.ores[k]}')
+						print(f'post({facility.ores[k]})')
 						done = True
+						break
 	# extract mupees
 	player.mupees -= resources[3]
 	print("Transaction complete")

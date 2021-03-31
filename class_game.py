@@ -20,9 +20,9 @@ class Game:
 	"""Class to manage the whole game."""
 
 	def __init__(self):
-		self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-		# self.screen = pygame.display.set_mode((
-		# 	cfg.screen_width, cfg.screen_height))
+		# self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+		self.screen = pygame.display.set_mode((
+			cfg.screen_width, cfg.screen_height))
 		self.fps = cfg.fps
 
 		self.universe_primary = cfg.universe_primary
@@ -148,8 +148,8 @@ class Game:
 			if loop_counter > 260:
 				self.populate_asteroids()
 				self.watch_queue()
-				for player in self.players:
-					player.process_auto()
+				# for player in self.players:
+				# 	player.process_auto()
 				loop_counter = 0
 				secondary_loop += 1
 				if secondary_loop > 3:
@@ -213,6 +213,7 @@ class Game:
 						j.loop()
 
 			for i in self.players:
+				i.process_auto()
 				for j in i.entities:
 					j.loop()
 

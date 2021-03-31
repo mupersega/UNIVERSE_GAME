@@ -33,7 +33,7 @@ class Warehouse:
 		# self.hold = []
 		self.hold_lvl = 1
 		self.hold_capacity = 200
-		self.ores = [0, 200, 0]
+		self.ores = cfg.wh_starting_resources.copy()
 		self.bar_w = cfg.facility_w - 2
 		self.hangar_space = cfg.facility_h - cfg.y_pad * 2
 		self.occupant = None

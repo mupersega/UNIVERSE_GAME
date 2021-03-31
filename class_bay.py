@@ -32,7 +32,7 @@ class Bay:
 		# Bars on bays correspond to [w = miner, n = weapons, e = thrusters, s = hold]
 		self.bar_lengths = [0, 0, 0, 0]
 		self.bar_offsets = [0, 0, 0, 0]
-		self.bar_coords = [None, None, None, None]
+		self.bar_coords = [[[0,0],[0,0]], [[0,0],[0,0]], [[0,0],[0,0]], [[0,0],[0,0]]]
 
 		self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 		self.rgb = cfg.bay_colour
@@ -105,7 +105,7 @@ class Bay:
 		pygame.draw.circle(self.screen, cfg.st_colour, self.rect.center, cfg.facility_h / 3, width=2)
 		# # Draw Attribute bars
 		# i = 0
-		# West
+		# # West
 		# pygame.draw.line(self.screen, cfg.bay_bar_colours[i], self.bar_coords[i][0], self.bar_coords[i][1], width=1)
 		# i += 1
 		# # NORTH
@@ -116,7 +116,7 @@ class Bay:
 		# # SOUTH
 		# pygame.draw.line(self.screen, cfg.bay_bar_colours[i], self.bar_coords[i][0], self.bar_coords[i][1], width=1)
 		for i in range(4):
-			pygame.draw.line(self.screen, cfg.bay_bar_colours[i], self.bar_coords[i][0], self.bar_coords[i][1], width=1)
+			pygame.draw.line(self.screen, cfg.bay_bar_colours[i], self.bar_coords[i][0], self.bar_coords[i][1], width=2)
 
 	def loop(self):
 		self.draw()

@@ -272,7 +272,7 @@ class Player:
         print(args)
         fk = args[0].lower()
         print(f'{self.name}:{sub_status}')
-        if sub_status == '1':
+        if sub_status == '1' or self.name in ["dojiwastaken", 'mephistonag']:
             # check to see that max facilities isn't reached
             if len(self.hangars[0].facilities) < cfg.max_facilities:
                 # check to see if arg is valid

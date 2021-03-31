@@ -29,21 +29,21 @@ class Entity:
 		self.location = pygame.math.Vector2(bay.rect.center[0], bay.rect.center[1])
 		self.trajectory = pygame.math.Vector2(1, 1)
 
-		self.normal_vel = 1
+		self.normal_vel = 2
 		self.vel = self.normal_vel
 		self.approach_velocity = False
 		self.normal_agility = 1
 		self.agility = self.normal_agility
 		self.angle = 0
 
-		self.miner_lvl = 1
-		self.weapons_lvl = 1
-		self.thrusters_lvl = 1
-		self.hold_lvl = 1
-		self.max_miner_lvl = 1
-		self.max_weapons_lvl = 1
-		self.max_hold_lvl = 1
-		self.max_thrusters_lvl = 1
+		self.miner_lvl = 20
+		self.weapons_lvl = 0
+		self.thrusters_lvl = 0
+		self.hold_lvl = 0
+		self.max_miner_lvl = 60
+		self.max_weapons_lvl = 30
+		self.max_hold_lvl = 30
+		self.max_thrusters_lvl = 30
 		self.hold_capacity = 10
 
 		self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
