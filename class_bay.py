@@ -3,7 +3,8 @@ import math
 
 import cfg
 from class_entity import Entity
-from class_warehouse import Warehouse
+from class_location import Location
+# from class_warehouse import Warehouse
 
 
 class Bay:
@@ -40,6 +41,9 @@ class Bay:
 		self.interactable_distance = cfg.bay_interactable_distance
 		self.approach_velocity = 1
 
+		self.approach_location = Location((self.rect.right, self.rect.top + 2), 1, False)
+		self.depart_location = Location((self.rect.right, self.rect.bottom - 2), 1, False)
+
 		# class specific
 		self.occupant = None
 
@@ -68,6 +72,10 @@ class Bay:
 
 	def update_vector(self):
 		self.location = (self.x + self.width * 0.5, self.y + self.width * 0.5)
+
+	def update_locations(self):
+		self.approach_location = Location((self.rect.right, self.rect.top + 4), 1, False)
+		self.depart_location = Location((self.rect.right, self.rect.bottom - 4), 1, False)
 
 	def update_bar_lengths(self):
 		h = self.height - 2
@@ -103,18 +111,7 @@ class Bay:
 		# Draw bay outline
 		# pygame.draw.rect(self.screen, self.rgb, self.rect, 2)
 		pygame.draw.circle(self.screen, cfg.st_colour, self.rect.center, cfg.facility_h / 3, width=2)
-		# # Draw Attribute bars
-		# i = 0
-		# # West
-		# pygame.draw.line(self.screen, cfg.bay_bar_colours[i], self.bar_coords[i][0], self.bar_coords[i][1], width=1)
-		# i += 1
-		# # NORTH
-		# i += 1
-		# # EAST
-		# pygame.draw.line(self.screen, cfg.bay_bar_colours[i], self.bar_coords[i][0], self.bar_coords[i][1], width=1)
-		# i += 1
-		# # SOUTH
-		# pygame.draw.line(self.screen, cfg.bay_bar_colours[i], self.bar_coords[i][0], self.bar_coords[i][1], width=1)
+		# Draw Attribute bars
 		for i in range(4):
 			pygame.draw.line(self.screen, cfg.bay_bar_colours[i], self.bar_coords[i][0], self.bar_coords[i][1], width=2)
 

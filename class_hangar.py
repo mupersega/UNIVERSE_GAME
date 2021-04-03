@@ -27,7 +27,9 @@ class Hangar:
 		# warehouses to be inserted and bays appended
 		self.facilities = []
 		self.approach_location = Location(
-			(self.station.dock_location.x, self.y + cfg.facility_h / 2), 1, .9)
+			(self.station.approach_location.x, self.rect.top), 1, False)
+		self.depart_location = Location(
+			(self.station.depart_location.x, self.rect.bottom), 1, False)
 		self.approach_velocity = False
 
 		self.myfont = pygame.font.SysFont("Agency FB", cfg.facility_h, bold=True)
@@ -63,6 +65,10 @@ class Hangar:
 			facility.y = self.rect.top + cfg.y_pad
 			facility.update_vector()
 			cfg.update_rect(facility)
+			facility.update_locations()
+			for facility in self.facilities:
+				if facility.kind == "bay":
+					facility.update_bar_lengths()
 
 			i += 1
 

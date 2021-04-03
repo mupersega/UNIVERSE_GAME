@@ -70,5 +70,8 @@ class Warehouse:
 	def update_vector(self):
 		self.location = (self.x, self.y)
 
+	def update_locations(self):
+		pass
+
 	def loop(self):
 		self.draw()

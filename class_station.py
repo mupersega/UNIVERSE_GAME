@@ -25,8 +25,10 @@ class Station:
 			cfg.y_pad + cfg.facility_h))
 		self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 		self.rgb = cfg.st_colour
-		self.dock_location = Location((self.rect.right + (
-			cfg.facility_w * 7), self.rect.bottom + 20))
+		self.approach_location = Location(
+			(self.rect.right + (cfg.facility_w + cfg.x_pad) * (cfg.max_facilities + 1.5), self.rect.bottom + cfg.facility_h))
+		self.depart_location = Location(
+			((self.rect.right + cfg.x_pad) + cfg.facility_w * (cfg.max_facilities + 1.3), self.rect.bottom + cfg.facility_h * 2), 1)
 		self.approach_velocity = False
 
 		# iterables

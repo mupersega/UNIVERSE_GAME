@@ -280,7 +280,7 @@ def withdraw_resources(player, resources):
 		for i in range(resources.copy()[k]):
 			done = False
 			while not done:
-				for facility in player.hangars[0].facilities:
+				for facility in reversed(player.hangars[0].facilities):
 					if facility.kind == 'warehouse' and facility.ores[k] > 0:
 						print(f'fac#{k}\nwdl #{i}\npre({facility.ores[k]})')
 						facility.ores[k] -= 1

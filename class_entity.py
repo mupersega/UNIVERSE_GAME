@@ -150,14 +150,16 @@ class Entity:
 					t.unload(self)
 
 	def undock(self):
-		self.target_queue.append(self.bay.hangar.approach_location)
-		self.target_queue.append(self.bay.hangar.station.dock_location)
+		self.target_queue.append(self.bay.depart_location)
+		self.target_queue.append(self.bay.hangar.depart_location)
+		self.target_queue.append(self.bay.hangar.station.depart_location)
 
 	def return_to_base(self):
 		self.target_queue.clear()
 		self.returning_to_base = True
-		self.target = self.bay.hangar.station.dock_location
+		self.target = self.bay.hangar.station.approach_location
 		self.target_queue.append(self.bay.hangar.approach_location)
+		self.target_queue.append(self.bay.approach_location)
 		self.target_queue.append(self.bay)
 
 	def shoot(self):
