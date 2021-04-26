@@ -7,6 +7,7 @@ import pygame
 import colours as col
 
 ship_image = pygame.image.load('mining_ship_1.png')
+starsated_image = pygame.image.load('starsated.png')
 
 
 # CLASS SETTINGS #
@@ -97,12 +98,12 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
-wh_starting_resources = [80, 80, 5]
+wh_starting_resources = [0, 0, 0]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 warehouse_colours = {
 	"rubine": {"rgb": [255, 51, 51]},
-	"verdite": {"rgb": [40, 180, 40]},
+	"verdite": {"rgb": [40, 200, 40]},
 	"ceruliun": {"rgb": [40, 40, 255]}
 }
 
@@ -133,11 +134,11 @@ mineral_info = {
 upgrade_values = {
 	"bay": {
 		"miner": [15, 0, 0, 0],
-		"hold": [10, 10, 2, 0],
+		"hold": [5, 10, 15, 0],
 		"thrusters": [0, 10, 0, 0],
 	},
 	"warehouse": {
-		"hold": [20, 20, 2, 0]
+		"hold": [20, 20, 10, 0]
 	}
 }
 upgrade_amounts = {

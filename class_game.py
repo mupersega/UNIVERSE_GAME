@@ -9,10 +9,11 @@ import cfg
 from class_player import Player
 from class_station import Station
 from class_sun import Sun
+from class_spawner import Spawner
 
 
 admins = ['mupersega']
-conn = sqlite3.connect('/C:/Users/cambo/OneDrive/documents/bot_queue/queue.db')
+conn = sqlite3.connect('/C:/db/queue.db')
 c = conn.cursor()
 
 
@@ -33,6 +34,7 @@ class Game:
 		self.stations = []
 		self.entities = []
 		self.projectiles = []
+		self.spawners = []
 		self.players = []
 		self.player_names = []
 
@@ -46,6 +48,8 @@ class Game:
 			self.new_sun()
 		for i in range(cfg.start_entities):
 			self.new_player("mupersega")
+		for i in range(6):
+			self.new_spawner()
 
 	def new_player(self, name):
 		new_player = Player(self, name)
@@ -60,6 +64,10 @@ class Game:
 	def new_sun(self):
 		new_sun = Sun(self, 6)
 		self.suns.append(new_sun)
+	
+	def new_spawner(self):
+		new_spawner = Spawner(self)
+		self.spawners.append(new_spawner)
 
 	def random_crash(self):
 		potentials = []
@@ -211,6 +219,11 @@ class Game:
 					if j:
 						j.draw()
 						j.loop()
+
+			for i in self.spawners:
+				i.loop()
+				for j in i.roamers:
+					j.loop()
 
 			for i in self.players:
 				i.process_auto()
