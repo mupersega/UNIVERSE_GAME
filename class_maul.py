@@ -1,5 +1,7 @@
 import pygame
+import cfg
 import random
+import time
 
 
 class Maul:
@@ -22,10 +24,33 @@ class Maul:
 
 	def kill(self):
 		if self.life < 1:
-			self.game.projectiles.remove(self)
+			if self in self.game.projectiles:
+				self.game.projectiles.remove(self)
 
 	def check_collision(self):
-		pass
+		for i in self.game.spawners:
+			for j in i.roamers:
+				if pygame.Rect.colliderect(self.rect, j.rect):
+					self.poly_explosion()
+					j.life -= 1
+					self.kill()
+
+
+	def poly_explosion(self):
+		pc = random.choice(cfg.poly_coord_array)
+		pygame.draw.polygon(self.game.screen, [255, 0, 0], [
+			self.location + pc[0],
+			self.location + pc[1],
+			self.location + pc[2],
+			self.location + pc[3],
+		])
+		pc = random.choice(cfg.poly_coord_array)
+		pygame.draw.polygon(self.game.screen, [255, 200, 255], [
+			self.location + pc[0],
+			self.location + pc[1],
+			self.location + pc[2],
+			self.location + pc[3],
+		])
 
 	def apply_damage(self, hit_object):
 		pass

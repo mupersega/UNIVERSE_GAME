@@ -13,7 +13,7 @@ class Spawner:
 	def __init__(self, game):
 		self.game = game
 		self.screen = game.screen
-		self.location = pygame.math.Vector2(random.randint(200, 1920), random.randint(1080, 1090))
+		self.location = pygame.math.Vector2(random.randint(1910, 1920), random.randint(0, 1080))
 		self.acceleration = pygame.math.Vector2(0, 0)
 		self.rect = pygame.Rect(self.location[0], self.location[1], 16, 16)
 		self.hold = 0
@@ -28,15 +28,14 @@ class Spawner:
 		self.roamers.append(new_roamer)
 
 	def setup(self):
-		for i in range(4):
+		for i in range(10):
 			self.spawn_roamer()
 
 	def check_spawn(self):
-		pass
-		# if self.hold > 0 and self.hold / 10 > self.spawn_threshold:
-		# 	for i in range(int(self.hold / 10)):
-		# 		self.spawn_roamer()
-		# 	self.hold = 0
+		if self.hold > 0 and self.hold / 10 > self.spawn_threshold:
+			for i in range(int(self.hold / 10)):
+				self.spawn_roamer()
+			self.hold = 0
 
 	def draw(self):
 		pygame.draw.rect(self.screen, [200, 140, 20], self.rect)

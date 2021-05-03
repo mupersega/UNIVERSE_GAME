@@ -12,16 +12,16 @@ starsated_image = pygame.image.load('starsated.png')
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width = 1500
-screen_height = 900
+screen_width = 1920
+screen_height = 1080
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 1
 start_suns = 1
-start_spawners = 2
-start_entities = 20
+start_spawners = 7
+start_entities = 0
 universe_max_asteroids = 300
 
 # --Entity-- #
@@ -181,6 +181,16 @@ build_values = {
 	"bay": [0, 80, 0, 0],
 	"warehouse": [80, 0, 0, 0]
 }
+
+poly_coord_array = []
+for i in range(10):
+	this_poly = []
+	for j in range(4):
+		this_vec = []
+		for k in range(2):
+			this_vec.append(random.uniform(-10, 10))
+		this_poly.append(this_vec)
+	poly_coord_array.append(this_poly)
 
 
 def update_rect(self):

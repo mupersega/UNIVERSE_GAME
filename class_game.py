@@ -52,7 +52,7 @@ class Game:
 		for i in range(cfg.start_suns):
 			self.new_sun()
 
-		for i in range(2):
+		for i in range(cfg.start_spawners):
 			self.new_spawner()
 		for i in range(cfg.start_entities):
 			self.new_player("mupersega")
@@ -167,6 +167,9 @@ class Game:
 			if loop_counter > 260:
 				self.populate_asteroids()
 				self.watch_queue()
+				for i in range(2):
+					sp = random.choice(self.spawners)
+					sp.hold += 1
 				# for player in self.players:
 				# 	player.process_auto()
 				loop_counter = 0
@@ -212,7 +215,9 @@ class Game:
 						self.process("1", "mupersega", msg.split())
 					if event.key == pygame.K_p:
 						self.players[0].bays[0].occupant.shoot()
-						self.players[0].turrets[0].shoot()
+						for p in self.players:
+							for t in p.turrets:
+								t.shoot()
 
 			# Clear screen.
 			self.screen.fill((0, 0, 0))

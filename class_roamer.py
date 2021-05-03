@@ -14,7 +14,7 @@ class Roamer:
 		self.image = cfg.starsated_image
 		self.target_loc = pygame.math.Vector2(0, 0)
 		self.location = pygame.math.Vector2(spawner.rect.center)
-		self.acceleration = pygame.math.Vector2(0, 0)
+		self.acceleration = pygame.math.Vector2(1, 1)
 		self.last_loc = pygame.math.Vector2(spawner.rect.center)
 		self.ang_vec = pygame.math.Vector2(0, 0)
 		self.velocity = 1
@@ -22,6 +22,7 @@ class Roamer:
 		self.hold = 0
 		self.rect = pygame.Rect(0, 0, 10, 10)
 		self.angle = 3
+		self.life = 2
 		self.set_new_roam_location()
 
 	def draw(self):
@@ -30,7 +31,7 @@ class Roamer:
 		self.screen.blit(draw_image, (self.location[0] - 5, self.location[1] - 5))
 
 	def feed(self):
-		self.hold += 0
+		self.hold += 1
 
 	def roam(self):
 		# print(self.location.distance_to(self.target_loc))
@@ -64,6 +65,11 @@ class Roamer:
 		self.target_loc[1] = y + (y_reg * h)
 		self.last_loc = pygame.math.Vector2(self.location)
 
+	def die(self):
+		if self.life <= 0:
+			self.spawner.roamers.remove(self)
+			# draw explosion
+
 	def move(self):
 		mod_range = 50
 		dist_from = self.location.distance_to(self.last_loc)
@@ -74,8 +80,10 @@ class Roamer:
 			self.velocity = dist_to * self.top_speed / mod_range
 		self.acceleration = self.location - self.target_loc
 		self.location -= self.acceleration.normalize() * self.velocity
+		self.rect.topleft = self.location
 
 	def loop(self):
+		self.die()
 		self.roam()
 		self.move()
 		self.rotate()
