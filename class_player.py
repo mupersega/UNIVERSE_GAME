@@ -51,6 +51,7 @@ class Player:
         self.hangars[0].new_warehouse()
         self.hangars[0].new_bay()
         self.hangars[0].new_turret()
+        self.hangars[0].new_turret()
 
     def perform(self, cmd, sub_status, args):
 

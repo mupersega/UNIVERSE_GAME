@@ -27,6 +27,7 @@ class Hangar:
 		self.rect = pygame.Rect(self.x, self.y, cfg.facility_w + cfg.x_pad * 2, cfg.y_pad * 2 + cfg.facility_h)
 		# warehouses to be inserted and bays appended
 		self.facilities = []
+		self.turrets = []
 		self.approach_location = Location(
 			(self.station.approach_location.x, self.rect.top), 1, False)
 		self.depart_location = Location(
@@ -114,6 +115,7 @@ class Hangar:
 		# 'append' so that turrets will be on the end of list, thus right side
 		self.facilities.append(new_turret)
 		self.set_facilities_pos()
+		self.turrets.append(new_turret)
 		print("turret")
 
 	def remove_turret(self):
@@ -132,6 +134,11 @@ class Hangar:
 			pygame.draw.line(screen, cfg.st_arm_colour, [self.station.rect.right, self.rect.center[1] - 1],
 				[self.facilities[-1].rect.center[0], self.rect.center[1] - 1], width=4)
 
+	def draw_turrets(self):
+		for i in self.turrets:
+			i.draw_turret()
+
 	def loop(self):
 		for i in self.facilities:
 			i.loop()
+

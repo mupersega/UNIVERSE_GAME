@@ -22,6 +22,7 @@ class Projectile:
 		self.draw_bools = [False, False, False, False]
 		self.vel = 0.001
 		self.trajectory = None
+		self.life = 1
 
 		self.prepare_projectile_bearing()
 		self.prepare_trajectory()

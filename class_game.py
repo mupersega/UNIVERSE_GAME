@@ -2,6 +2,7 @@ import random
 import sqlite3
 import sys
 import threading
+import os
 
 import pygame
 
@@ -15,6 +16,10 @@ from class_spawner import Spawner
 admins = ['mupersega']
 conn = sqlite3.connect('/C:/db/queue.db')
 c = conn.cursor()
+#
+# x = -1800
+# y = 450
+# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:
@@ -89,6 +94,11 @@ class Game:
 		# I need to connect the spawning of asteroids to the current amount of asteroids in the world.
 		if random.randint(0, 1000) > ((self.count_asteroids() / cfg.universe_max_asteroids) * 1000):
 			self.random_crash()
+
+	def clear_old_projectiles(self):
+		for i in self.projectiles.copy():
+			if i.life < 1:
+				self.projectiles.remove(i)
 
 	def watch_queue(self):
 		# clear any completed rows
@@ -221,6 +231,9 @@ class Game:
 					if j:
 						j.draw()
 						j.loop()
+				for j in i.hangars:
+					if j:
+						j.draw_turrets()
 
 			for i in self.spawners:
 				i.loop()
@@ -232,13 +245,12 @@ class Game:
 				for j in i.entities:
 					j.loop()
 
-			for i in self.projectiles:
+			for i in self.projectiles.copy():
 				i.loop()
 
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
 			loop_counter += 1
-			# Draw screen.
 
 
 if __name__ == "__main__":

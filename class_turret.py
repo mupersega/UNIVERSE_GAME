@@ -1,13 +1,14 @@
 import pygame
+import random
 
 import cfg
-from class_entity import Entity
-# from class_warehouse import Warehouse
-from class_projectile import Projectile
+
+from class_maul import Maul
 
 
 class Turret:
 	"""Bay object wherein players will store vehicles and land current ship."""
+
 	def __init__(self, hangar):
 		self.screen = hangar.station.game.screen
 		self.hangar = hangar
@@ -20,7 +21,7 @@ class Turret:
 		self.x = 1
 		self.y = 1
 		self.location = pygame.math.Vector2(self.x, self.y)
-		self.target = self.game.spawners[0].roamers[0]
+		self.hostile_target = self.choose_a_rand_target()
 		self.width = cfg.facility_w
 		self.height = cfg.facility_h
 		self.diameter = 10
@@ -44,12 +45,19 @@ class Turret:
 		self.approach_velocity = 1
 
 		# Weapons
+		self.active = True
+		self.active = True
 		self.shot_timer = 0
 		self.ammo_type = None
 		self.max_range = None
 		self.ammo_count = 0
 
 		self.owner.turrets.append(self)
+
+	def choose_a_rand_target(self):
+		spawner = random.choice(self.game.spawners)
+		roamer = random.choice(spawner.roamers)
+		return roamer
 
 	def update_vector(self):
 		self.location = (pygame.math.Vector2(self.x, self.y))
@@ -69,39 +77,38 @@ class Turret:
 			return True
 
 	def shoot(self):
-		if self.target:
-			new_projectile = Projectile(self, 1, self.target)
+		if self.hostile_target:
+			new_projectile = Maul(self.rect.center - self.barrel_point * 16, self.barrel_point, self.game)
 			self.game.projectiles.append(new_projectile)
-
-	def combat(self):
-		if self.target:
-			if self.in_range(self.target):
-				if self.ammo_count > 1:
-					self.aim()
-					self.shoot()
 
 	def update_locations(self):
 		pass
 
 	def turn_turret(self):
-		if self.target:
-			self.barrel_point = self.rect.center - self.target.location
-			self.barrel_point = self.barrel_point.normalize() * 15
+		if self.hostile_target:
+			difference = pygame.Vector2(self.rect.center - self.hostile_target.location).normalize()
+			self.barrel_point += difference * .02
+			self.barrel_point = self.barrel_point.normalize()
 
 	def draw(self):
-		x = self.location[0]
-		y = self.location[1]
 		# Draw base
-		pygame.draw.rect(self.screen, cfg.col.pumpkin,
-				(x + cfg.x_pad, y + cfg.y_pad, - cfg.facility_w * .5, - cfg.facility_h))
-		# draw housing
-		pygame.draw.circle(
-			self.screen, cfg.col.cerulean_frost, self.rect.center, 10, draw_top_right=True, draw_bottom_right=True)
-		pygame.draw.circle(self.screen, cfg.col.cerulean_blue, self.rect.center, 5)
-		# draw barrel
-		pygame.draw.line(self.screen, cfg.col.bone, self.rect.center, self.rect.center - self.barrel_point, 3)
-		# draw ammo
+		pygame.draw.circle(self.screen, cfg.col.bone, self.rect.center, 6)
+		pygame.draw.circle(self.screen, cfg.col.charcoal, self.rect.center, 8, 2)
+		# pygame.draw.line(self.screen, [200, 20, 20], (self.rect.center), self.hostile_target.location)
+
+	def draw_turret(self):
+		if self.active:
+			# draw barrel
+			pygame.draw.line(self.screen, [255, 0, 0],
+							 self.rect.center - self.barrel_point * 5, self.rect.center - self.barrel_point * 15, 5)
+			pygame.draw.circle(self.screen, cfg.col.bone, self.rect.center - self.barrel_point * 6, 4)
+			pygame.draw.circle(self.screen, [255, 0, 0], self.rect.center - self.barrel_point * 15, 2)
+		else:
+			pygame.draw.circle(self.screen, [0, 0, 0], self.rect.center, 3)
 
 	def loop(self):
-		self.turn_turret()
+		if random.randint(0, 1000) > 999:
+			self.hostile_target = self.choose_a_rand_target()
+		if self.active:
+			self.turn_turret()
 		self.draw()
