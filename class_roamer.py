@@ -18,8 +18,8 @@ class Roamer:
 		self.last_loc = pygame.math.Vector2(spawner.rect.center)
 		self.ang_vec = pygame.math.Vector2(0, 0)
 		self.velocity = 1
-		self.top_speed = 1
-		self.mass = 2
+		self.top_speed = 1.5
+		self.hold = 0
 		self.rect = pygame.Rect(0, 0, 10, 10)
 		self.angle = 3
 		self.set_new_roam_location()
@@ -29,15 +29,29 @@ class Roamer:
 		draw_image = pygame.transform.rotate(self.image, self.angle)
 		self.screen.blit(draw_image, (self.location[0] - 5, self.location[1] - 5))
 
+	def feed(self):
+		self.hold += 0
+
 	def roam(self):
 		# print(self.location.distance_to(self.target_loc))
-		if self.location.distance_to(self.target_loc) < 3:
+		if self.hold > 1:
+			self.target_loc = pygame.math.Vector2(self.spawner.location)
+			if self.location.distance_to(self.target_loc) < 3:
+				self.spawner.hold += self.hold
+				self.hold = 0
+		if self.location.distance_to(self.target_loc) < 3 and self.hold < 2:
 			self.set_new_roam_location()
-		self.move()
+			self.feed()
+			print(self.hold)
+
+	def rotate(self):
 		self.ang_vec = self.location - self.target_loc
 		rads = math.atan2(self.ang_vec[0], self.ang_vec[1])
 		deg = math.degrees(rads)
 		self.angle = deg
+
+	def assign_new_spawner(self):
+		self.spawner = random.choice(self.game.spawners)
 
 	def set_new_roam_location(self):
 		w, h = cfg.screen_width / 4, cfg.screen_height / 4
@@ -63,4 +77,6 @@ class Roamer:
 
 	def loop(self):
 		self.roam()
+		self.move()
+		self.rotate()
 		self.draw()

@@ -46,10 +46,11 @@ class Game:
 			self.new_station()
 		for i in range(cfg.start_suns):
 			self.new_sun()
+
+		for i in range(2):
+			self.new_spawner()
 		for i in range(cfg.start_entities):
 			self.new_player("mupersega")
-		for i in range(6):
-			self.new_spawner()
 
 	def new_player(self, name):
 		new_player = Player(self, name)
@@ -201,6 +202,7 @@ class Game:
 						self.process("1", "mupersega", msg.split())
 					if event.key == pygame.K_p:
 						self.players[0].bays[0].occupant.shoot()
+						self.players[0].turrets[0].shoot()
 
 			# Clear screen.
 			self.screen.fill((0, 0, 0))

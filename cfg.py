@@ -20,7 +20,8 @@ universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 1
 start_suns = 1
-start_entities = 20
+start_spawners = 2
+start_entities = 1
 universe_max_asteroids = 300
 
 # --Entity-- #
@@ -36,7 +37,9 @@ dropoff_speed = 980  # larger number will make drop off slower out of 1000
 min_hangars_per = 5
 max_hangars_per = 20
 facility_w = 20
+facility_w_third = int(facility_w * .33)
 facility_h = 20
+facility_h_third = int(facility_h * .33)
 max_facilities = 5
 # st_colour = [45, 89, 134] # pastel dark blue
 st_colour = col.bone  #[102, 102, 153]
@@ -112,6 +115,26 @@ bay_colour = [180, 10, 180]
 bay_interactable_distance = 3
 bay_arrived_distance = 1
 bay_bar_colours = [[229, 140, 138], [64, 89, 173], [104, 241, 170], [255, 200, 0]]
+
+# --Turret-- #
+turret_colour = col.cerulean_frost
+turret_interactable_distance = 3
+turret_arrived_distance = 1
+turret_bar_colours = [[229, 140, 138], [64, 89, 173], [104, 241, 170], [255, 200, 0]]
+ammo_info = {
+	"maul": {
+		"min_range": 0,
+		"max_range": 300
+	},
+	"lance": {
+		"min_range": 0,
+		"max_range": 1000
+	},
+	"bolt": {
+		"min_range": 0,
+		"max_range": 2000
+	}
+}
 
 # --Location-- #
 loc_colour = [255, 0, 255]

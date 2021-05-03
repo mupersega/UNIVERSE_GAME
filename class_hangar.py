@@ -5,6 +5,7 @@ import cfg
 from class_bay import Bay
 from class_location import Location
 from class_warehouse import Warehouse
+from class_turret import Turret
 import colours as col
 
 pygame.font.init()
@@ -54,6 +55,7 @@ class Hangar:
 		i = 0
 		bay_count = 1
 		wh_count = 1
+		turr_count = 1
 		for facility in self.facilities:
 			if facility.kind == 'bay':
 				facility.index = bay_count
@@ -61,6 +63,9 @@ class Hangar:
 			elif facility.kind == 'warehouse':
 				facility.index = wh_count
 				wh_count += 1
+			elif facility.kind == 'turret':
+				facility.index = wh_count
+				turr_count += 1
 			facility.x = self.station.rect.right + cfg.x_pad + (cfg.facility_w + cfg.x_pad) * i
 			facility.y = self.rect.top + cfg.y_pad
 			facility.update_vector()
@@ -101,6 +106,22 @@ class Hangar:
 			if isinstance(i, Bay):
 				self.facilities.remove(i)
 				print("bay removed")
+				break
+		self.set_facilities_pos()
+
+	def new_turret(self):
+		new_turret = Turret(self)
+		# 'append' so that turrets will be on the end of list, thus right side
+		self.facilities.append(new_turret)
+		self.set_facilities_pos()
+		print("turret")
+
+	def remove_turret(self):
+		# find an instance of turret and remove it
+		for i in self.facilities:
+			if isinstance(i, Turret):
+				self.facilities.remove(i)
+				print("turret removed")
 				break
 		self.set_facilities_pos()
 

@@ -19,6 +19,7 @@ class Player:
         self.hangars = []
         self.bays = []
         self.warehouses = []
+        self.turrets = []
         self.trades = []
         self.rubine = 0
         self.verdite = 0
@@ -49,6 +50,7 @@ class Player:
         # each new player gets one warehouse and one bay to start. The ship comes in the bay.
         self.hangars[0].new_warehouse()
         self.hangars[0].new_bay()
+        self.hangars[0].new_turret()
 
     def perform(self, cmd, sub_status, args):
 
@@ -255,16 +257,6 @@ class Player:
                 print(f"{args[0]} is not a valid facility.")
         else:
             print("Invalid arg count, check cancel auto syntax.")
-
-    def buy(self, game, trade_id):
-        pass
-
-    def cancel_sell(self):
-        pass
-
-    def hunt(self, args):
-        # example args
-        pass
 
     def build(self, sub_status, args):
         # example args ['warehouse'] ['bay']

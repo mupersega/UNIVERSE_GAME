@@ -42,7 +42,6 @@ class Projectile:
 			bearing += 1
 		self.draw_bools[bearing] = True
 
-
 	def prepare_trajectory(self):
 		self.trajectory = pygame.math.Vector2((self.target.x - self.x, self.target.y - self.y)).normalize()
 
