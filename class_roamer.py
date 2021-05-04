@@ -22,7 +22,7 @@ class Roamer:
 		self.hold = 0
 		self.rect = pygame.Rect(0, 0, 10, 10)
 		self.angle = 3
-		self.life = 2
+		self.life = 20
 		self.set_new_roam_location()
 
 	def draw(self):

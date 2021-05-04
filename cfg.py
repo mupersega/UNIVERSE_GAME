@@ -21,7 +21,7 @@ universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
 start_spawners = 7
-start_entities = 0
+start_entities = 20
 universe_max_asteroids = 300
 
 # --Entity-- #
@@ -135,6 +135,7 @@ ammo_info = {
 		"max_range": 2000
 	}
 }
+turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]
 
 # --Location-- #
 loc_colour = [255, 0, 255]

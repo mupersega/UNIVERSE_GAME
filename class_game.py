@@ -11,6 +11,7 @@ from class_player import Player
 from class_station import Station
 from class_sun import Sun
 from class_spawner import Spawner
+from class_quadtree import Quadtree
 
 
 admins = ['mupersega']
@@ -35,6 +36,8 @@ class Game:
 		self.universe_secondary = cfg.universe_secondary
 
 		# lists of created objects
+		self.screen_rect = pygame.Rect(0, 0, cfg.screen_width, cfg.screen_height)
+		self.main_quadtree = Quadtree(self, self.screen_rect, max_objects=2, depth=0)
 		self.suns = []
 		self.stations = []
 		self.entities = []
@@ -222,6 +225,11 @@ class Game:
 			# Clear screen.
 			self.screen.fill((0, 0, 0))
 
+			# Prep Quadtree
+			self.main_quadtree = Quadtree(self, self.screen_rect, max_objects=2, depth=0)
+			for i in self.spawners:
+				for j in i.roamers:
+					self.main_quadtree.insert(j)
 			# loops.
 			for i in self.suns:
 				i.loop()
@@ -252,6 +260,8 @@ class Game:
 
 			for i in self.projectiles.copy():
 				i.loop()
+
+			# self.main_quadtree.draw()
 
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)

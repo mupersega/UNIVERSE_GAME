@@ -47,8 +47,8 @@ class Turret:
 		# Weapons
 		self.turret_rest_pos = pygame.Vector2(1920, self.hangar.rect.y)
 		self.active = True
-		self.active = True
 		self.shot_timer = 400
+		self.heat = 0
 		self.ammo_type = None
 		self.max_range = None
 		self.ammo_count = 0
@@ -56,9 +56,10 @@ class Turret:
 		self.owner.turrets.append(self)
 
 	def choose_a_rand_target(self):
-		spawner = random.choice(self.game.spawners)
-		if spawner.roamers:
-			roamer = random.choice(spawner.roamers)
+		hostiles_in_range = []
+		self.game.main_quadtree.query_radius(self.location, 500, hostiles_in_range)
+		if hostiles_in_range:
+			roamer = random.choice(hostiles_in_range)
 			return roamer
 
 	def update_vector(self):
@@ -80,16 +81,24 @@ class Turret:
 
 	def shoot(self):
 		if self.hostile_target:
-			if self.shot_timer <=0:
+			if self.heat > 20:
+				self.shot_timer = 50
+				return
+			if self.shot_timer <= 0:
+				self.barrel_point += random.choice(cfg.turret_shake)
 				new_projectile = Maul(self.rect.center - self.barrel_point * 16, self.barrel_point, self.game)
 				self.game.projectiles.append(new_projectile)
-				self.shot_timer = 200
+				# self.barrel_point += random.choice(cfg.turret_shake)
+				# other_projectile = Maul(self.rect.center - self.barrel_point * 16, self.barrel_point, self.game)
+				# self.game.projectiles.append(other_projectile)
+
+				self.shot_timer = 0
+				self.heat += 2
 
 	def update_locations(self):
 		pass
 
 	def check_target_alive(self):
-		self.shot_timer -= 1
 		if self.hostile_target:
 			# if target is dead remove it
 			if self.hostile_target.life <= 0:
@@ -111,8 +120,8 @@ class Turret:
 		# Draw base
 		pygame.draw.circle(self.screen, cfg.col.bone, self.rect.center, 6)
 		pygame.draw.circle(self.screen, cfg.col.charcoal, self.rect.center, 8, 2)
-		if self.hostile_target:
-			pygame.draw.line(self.screen, [50, 5, 5], (self.rect.center), self.hostile_target.location)
+		# if self.hostile_target:
+			# pygame.draw.line(self.screen, [50, 5, 5], (self.rect.center), self.hostile_target.location)
 
 	def draw_turret(self):
 		if self.active:
@@ -125,8 +134,12 @@ class Turret:
 			pygame.draw.circle(self.screen, [0, 0, 0], self.rect.center, 3)
 
 	def loop(self):
+		if self.shot_timer > 0:
+			self.shot_timer -= 1
+		if self.heat > 0:
+			self.heat -= 1
 		self.check_target_alive()
-		if random.randint(0, 1000) > 999:
+		if random.randint(0, 1000) > 990:
 			self.hostile_target = self.choose_a_rand_target()
 		if self.active:
 			self.turn_turret()

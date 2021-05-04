@@ -12,9 +12,10 @@ class Maul:
 		self.location = pygame.Vector2(start_loc)
 		self.trajectory = trajectory
 		self.acceleration = pygame.Vector2(0, 0)
-		self.velocity = 5
-		self.life = 300
+		self.velocity = 7
+		self.life = random.randint(60, 80) * .5
 		self.rect = pygame.Rect(self.location.x, self.location.y, 5, 5)
+		pygame.draw.circle(self.game.screen, [250, 240, 255], self.location, random.randint(1, 4))
 
 	def move(self):
 		self.location -= self.trajectory * self.velocity
@@ -28,12 +29,21 @@ class Maul:
 				self.game.projectiles.remove(self)
 
 	def check_collision(self):
-		for i in self.game.spawners:
-			for j in i.roamers:
-				if pygame.Rect.colliderect(self.rect, j.rect):
-					self.poly_explosion()
-					j.life -= 1
-					self.kill()
+		nearby_hits = []
+		self.game.main_quadtree.query(self.rect, nearby_hits)
+		for i in nearby_hits:
+			if pygame.Rect.colliderect(self.rect, i.rect):
+				self.poly_explosion()
+				i.life -= 1
+				self.life = 0
+				self.kill()
+		# for i in self.game.spawners:
+		# 	for j in i.roamers:
+		# 		if pygame.Rect.colliderect(self.rect, j.rect):
+		# 			self.poly_explosion()
+		# 			j.life -= 1
+		# 			self.life = 0
+		# 			self.kill()
 
 
 	def poly_explosion(self):
@@ -56,7 +66,7 @@ class Maul:
 		pass
 
 	def draw(self):
-		pygame.draw.ellipse(self.game.screen, [0, 255, 0], self.rect)
+		pygame.draw.circle(self.game.screen, [0, 255, 0], self.location, 1)
 
 	def update_rect(self):
 		self.rect.topleft = self.location
