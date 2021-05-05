@@ -172,7 +172,7 @@ class Game:
 				self.watch_queue()
 				for i in range(2):
 					sp = random.choice(self.spawners)
-					sp.hold += 1
+					sp.hold += 10
 				# for player in self.players:
 				# 	player.process_auto()
 				loop_counter = 0
@@ -226,7 +226,7 @@ class Game:
 			self.screen.fill((0, 0, 0))
 
 			# Prep Quadtree
-			self.main_quadtree = Quadtree(self, self.screen_rect, max_objects=2, depth=0)
+			self.main_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
 			for i in self.spawners:
 				for j in i.roamers:
 					self.main_quadtree.insert(j)

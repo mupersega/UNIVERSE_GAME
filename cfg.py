@@ -18,10 +18,10 @@ fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 # st 15 = ent 124
-start_stations = 1
+start_stations = 3
 start_suns = 1
-start_spawners = 7
-start_entities = 20
+start_spawners = 5
+start_entities = 32
 universe_max_asteroids = 300
 
 # --Entity-- #
@@ -124,15 +124,18 @@ turret_bar_colours = [[229, 140, 138], [64, 89, 173], [104, 241, 170], [255, 200
 ammo_info = {
 	"maul": {
 		"min_range": 0,
-		"max_range": 300
+		"max_range": 500,
+		"barrel_rgb": [250, 0, 0]
 	},
 	"lance": {
 		"min_range": 0,
-		"max_range": 1000
+		"max_range": 700,
+		"barrel_rgb": [0, 250, 0]
 	},
 	"bolt": {
 		"min_range": 0,
-		"max_range": 2000
+		"max_range": 2000,
+		"barrel_rgb": [0, 0, 250]
 	}
 }
 turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]

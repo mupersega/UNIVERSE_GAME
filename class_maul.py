@@ -7,13 +7,13 @@ import time
 class Maul:
 	"""The maul ammunition type will move in a direction at a high rate of fire, it has a low range and will not alter
 	its trajectory. It will have a life span and thus does not require removal upon leaving the screen."""
-	def __init__(self, start_loc, trajectory, game):
+	def __init__(self, start_loc, trajectory, target, game):
 		self.game = game
 		self.location = pygame.Vector2(start_loc)
 		self.trajectory = trajectory
 		self.acceleration = pygame.Vector2(0, 0)
 		self.velocity = 7
-		self.life = random.randint(60, 80) * .5
+		self.life = random.randint(60, 80) * 1.5
 		self.rect = pygame.Rect(self.location.x, self.location.y, 5, 5)
 		pygame.draw.circle(self.game.screen, [250, 240, 255], self.location, random.randint(1, 4))
 
@@ -66,7 +66,7 @@ class Maul:
 		pass
 
 	def draw(self):
-		pygame.draw.circle(self.game.screen, [0, 255, 0], self.location, 1)
+		pygame.draw.circle(self.game.screen, [255, 0, 0], self.location, 1)
 
 	def update_rect(self):
 		self.rect.topleft = self.location

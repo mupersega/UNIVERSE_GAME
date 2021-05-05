@@ -4,6 +4,7 @@ import random
 import cfg
 
 from class_maul import Maul
+from class_lance import Lance
 
 
 class Turret:
@@ -21,7 +22,7 @@ class Turret:
 		self.x = 1
 		self.y = 1
 		self.location = pygame.math.Vector2(self.x, self.y)
-		self.hostile_target = self.choose_a_rand_target()
+		self.hostile_target = None
 		self.width = cfg.facility_w
 		self.height = cfg.facility_h
 		self.diameter = 10
@@ -46,18 +47,18 @@ class Turret:
 
 		# Weapons
 		self.turret_rest_pos = pygame.Vector2(1920, self.hangar.rect.y)
-		self.active = True
+		self.ammo_type = random.choice(["lance", "maul"])
+		self.max_range = cfg.ammo_info[self.ammo_type]["max_range"]
+		self.barrel_rgb = cfg.ammo_info[self.ammo_type]["barrel_rgb"]
 		self.shot_timer = 400
 		self.heat = 0
-		self.ammo_type = None
-		self.max_range = None
 		self.ammo_count = 0
 
 		self.owner.turrets.append(self)
 
 	def choose_a_rand_target(self):
 		hostiles_in_range = []
-		self.game.main_quadtree.query_radius(self.location, 500, hostiles_in_range)
+		self.game.main_quadtree.query_radius(self.location, self.max_range, hostiles_in_range)
 		if hostiles_in_range:
 			roamer = random.choice(hostiles_in_range)
 			return roamer
@@ -81,19 +82,24 @@ class Turret:
 
 	def shoot(self):
 		if self.hostile_target:
-			if self.heat > 20:
+			if self.heat > 100:
 				self.shot_timer = 50
 				return
-			if self.shot_timer <= 0:
+			if self.shot_timer <= 0 and self.ammo_type == "maul":
 				self.barrel_point += random.choice(cfg.turret_shake)
-				new_projectile = Maul(self.rect.center - self.barrel_point * 16, self.barrel_point, self.game)
+				new_projectile = Maul(
+					self.rect.center - self.barrel_point * 16, self.barrel_point, None, self.game)
 				self.game.projectiles.append(new_projectile)
 				# self.barrel_point += random.choice(cfg.turret_shake)
 				# other_projectile = Maul(self.rect.center - self.barrel_point * 16, self.barrel_point, self.game)
 				# self.game.projectiles.append(other_projectile)
-
-				self.shot_timer = 0
-				self.heat += 2
+			if self.shot_timer <= 0 and self.ammo_type == "lance":
+				self.barrel_point += random.choice(cfg.turret_shake)
+				new_projectile = Lance(
+					self.rect.center - self.barrel_point * 16, self.barrel_point, self.hostile_target, self.game)
+				self.game.projectiles.append(new_projectile)
+				self.shot_timer = 150
+				self.heat += 50
 
 	def update_locations(self):
 		pass
@@ -124,14 +130,11 @@ class Turret:
 			# pygame.draw.line(self.screen, [50, 5, 5], (self.rect.center), self.hostile_target.location)
 
 	def draw_turret(self):
-		if self.active:
-			# draw barrel
-			pygame.draw.line(self.screen, [255, 0, 0],
-							 self.rect.center - self.barrel_point * 5, self.rect.center - self.barrel_point * 15, 5)
-			pygame.draw.circle(self.screen, cfg.col.bone, self.rect.center - self.barrel_point * 6, 4)
-			pygame.draw.circle(self.screen, [255, 0, 0], self.rect.center - self.barrel_point * 15, 2)
-		else:
-			pygame.draw.circle(self.screen, [0, 0, 0], self.rect.center, 3)
+		# draw barrel
+		pygame.draw.line(self.screen, self.barrel_rgb,
+						 self.rect.center - self.barrel_point * 5, self.rect.center - self.barrel_point * 15, 5)
+		pygame.draw.circle(self.screen, cfg.col.bone, self.rect.center - self.barrel_point * 6, 4)
+		pygame.draw.circle(self.screen, self.barrel_rgb, self.rect.center - self.barrel_point * 15, 2)
 
 	def loop(self):
 		if self.shot_timer > 0:
@@ -141,6 +144,5 @@ class Turret:
 		self.check_target_alive()
 		if random.randint(0, 1000) > 990:
 			self.hostile_target = self.choose_a_rand_target()
-		if self.active:
-			self.turn_turret()
+		self.turn_turret()
 		self.draw()

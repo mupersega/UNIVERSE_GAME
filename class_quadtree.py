@@ -3,7 +3,7 @@ import pygame
 
 class Quadtree:
 	"""A Class implementing a quadtree."""
-	def __init__(self, game, boundary, max_objects=2, depth=0):
+	def __init__(self, game, boundary, max_objects=4, depth=0):
 		# boundary is a pg rect object with the very first rect being set in game class.
 		self.game = game
 		self.boundary = boundary
