@@ -42,6 +42,7 @@ class Game:
 		self.stations = []
 		self.entities = []
 		self.projectiles = []
+		self.explosions = []
 		self.spawners = []
 		self.players = []
 		self.player_names = []
@@ -261,7 +262,10 @@ class Game:
 			for i in self.projectiles.copy():
 				i.loop()
 
-			# self.main_quadtree.draw()
+			for i in self.explosions.copy():
+				i.loop()
+
+			self.main_quadtree.draw()
 
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)

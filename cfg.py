@@ -20,8 +20,8 @@ universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 3
 start_suns = 1
-start_spawners = 1
-start_entities = 6
+start_spawners = 6
+start_entities = 32
 universe_max_asteroids = 300
 
 # --Entity-- #
@@ -124,18 +124,21 @@ turret_bar_colours = [[229, 140, 138], [64, 89, 173], [104, 241, 170], [255, 200
 ammo_info = {
 	"maul": {
 		"min_range": 0,
-		"max_range": 500,
-		"barrel_rgb": [250, 0, 0]
+		"max_range": 400,
+		"barrel_rgb": [250, 0, 0],
+		"mag_size": 200
 	},
 	"lance": {
 		"min_range": 0,
-		"max_range": 700,
-		"barrel_rgb": [0, 250, 0]
+		"max_range": 750,
+		"barrel_rgb": [0, 250, 0],
+		"mag_size": 50
 	},
 	"bolt": {
 		"min_range": 0,
 		"max_range": 2000,
-		"barrel_rgb": [0, 0, 250]
+		"barrel_rgb": [0, 0, 250],
+		"mag_size": 10
 	}
 }
 turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]
@@ -196,6 +199,15 @@ for i in range(10):
 		this_poly.append(this_vec)
 	poly_coord_array.append(this_poly)
 
+bolt_coord_array = []
+for i in range(10):
+	this_poly = []
+	for j in range(4):
+		this_vec = []
+		for k in range(2):
+			this_vec.append(random.uniform(-5, 5))
+		this_poly.append(this_vec)
+	bolt_coord_array.append(this_poly)
 
 def update_rect(self):
 	# self.rect.center = (self.x, self.y)

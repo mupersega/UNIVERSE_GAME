@@ -3,6 +3,8 @@ import cfg
 import random
 import time
 
+from class_explosion import Explosion
+
 
 class Maul:
 	"""The maul ammunition type will move in a direction at a high rate of fire, it has a low range and will not alter
@@ -15,7 +17,8 @@ class Maul:
 		self.velocity = 7
 		self.life = random.randint(60, 80) * 1.5
 		self.rect = pygame.Rect(self.location.x, self.location.y, 5, 5)
-		pygame.draw.circle(self.game.screen, [250, 240, 255], self.location, random.randint(1, 4))
+		# pygame.draw.circle(self.game.screen, [250, 240, 255], self.location, random.randint(1, 4))
+		self.game.explosions.append(Explosion(self.game, start_loc, 3))
 
 	def move(self):
 		self.location -= self.trajectory * self.velocity

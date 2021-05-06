@@ -5,6 +5,8 @@ import pygame
 
 import cfg
 
+from class_explosion import Explosion
+
 class Roamer:
 	"""Class to manage roaming hostiles which move around and attack miners."""
 	def __init__(self, game, spawner):
@@ -69,6 +71,8 @@ class Roamer:
 		if self.life <= 0:
 			self.spawner.roamers.remove(self)
 			# draw explosion
+			new_explosion = Explosion(self.game, self.location, random.randint(5, 10))
+			self.game.explosions.append(new_explosion)
 
 	def move(self):
 		mod_range = 50
