@@ -5,6 +5,7 @@ import cfg
 
 from class_maul import Maul
 from class_lance import Lance
+from class_bolt import Bolt
 
 
 class Turret:
@@ -46,11 +47,12 @@ class Turret:
 		self.approach_velocity = 1
 
 		# Weapons
+		self.active = True
 		self.turret_rest_pos = pygame.Vector2(1920, self.hangar.rect.y)
-		self.ammo_type = random.choice(["lance", "maul"])
+		self.ammo_type = random.choice(["lance", "maul", "bolt"])
 		self.max_range = cfg.ammo_info[self.ammo_type]["max_range"]
 		self.barrel_rgb = cfg.ammo_info[self.ammo_type]["barrel_rgb"]
-		self.shot_timer = 400
+		self.shot_timer = 100
 		self.heat = 0
 		self.ammo_count = 0
 
@@ -85,17 +87,24 @@ class Turret:
 			if self.heat > 100:
 				self.shot_timer = 50
 				return
+			# MAUL
 			if self.shot_timer <= 0 and self.ammo_type == "maul":
 				self.barrel_point += random.choice(cfg.turret_shake)
 				new_projectile = Maul(
 					self.rect.center - self.barrel_point * 16, self.barrel_point, None, self.game)
 				self.game.projectiles.append(new_projectile)
-				# self.barrel_point += random.choice(cfg.turret_shake)
-				# other_projectile = Maul(self.rect.center - self.barrel_point * 16, self.barrel_point, self.game)
-				# self.game.projectiles.append(other_projectile)
+			# LANCE
 			if self.shot_timer <= 0 and self.ammo_type == "lance":
 				self.barrel_point += random.choice(cfg.turret_shake)
 				new_projectile = Lance(
+					self.rect.center - self.barrel_point * 16, self.barrel_point, self.hostile_target, self.game)
+				self.game.projectiles.append(new_projectile)
+				self.shot_timer = 150
+				self.heat += 50
+			# BOLT
+			if self.shot_timer <= 0 and self.ammo_type == "bolt":
+				self.barrel_point += random.choice(cfg.turret_shake)
+				new_projectile = Bolt(
 					self.rect.center - self.barrel_point * 16, self.barrel_point, self.hostile_target, self.game)
 				self.game.projectiles.append(new_projectile)
 				self.shot_timer = 150
@@ -104,19 +113,29 @@ class Turret:
 	def update_locations(self):
 		pass
 
-	def check_target_alive(self):
+	def target_checks(self):
+		# check if target is in range and still alive, if not, remove target. If no target, search for new target.
 		if self.hostile_target:
-			# if target is dead remove it
-			if self.hostile_target.life <= 0:
+			# if target in range
+			if self.location.distance_to(self.hostile_target.location) < self.max_range:
+				# if target is dead remove it
+				if self.hostile_target.life <= 0:
+					self.hostile_target = None
+					return
+				# if target is alive shoot it
+				self.shoot()
+			else:
 				self.hostile_target = None
-			# if target is alive shoot it
-			self.shoot()
+		else:
+			self.hostile_target = self.choose_a_rand_target()
 
 	def turn_turret(self):
+		# if turret has a target, turn towards the target.
 		if self.hostile_target:
 			difference = pygame.Vector2(self.rect.center - self.hostile_target.location).normalize()
 			self.barrel_point += difference * .05
 			self.barrel_point = self.barrel_point.normalize()
+		# if no target, turn turret towards resting position.
 		else:
 			difference = pygame.Vector2(self.rect.center - self.turret_rest_pos).normalize()
 			self.barrel_point += difference * .05
@@ -126,8 +145,8 @@ class Turret:
 		# Draw base
 		pygame.draw.circle(self.screen, cfg.col.bone, self.rect.center, 6)
 		pygame.draw.circle(self.screen, cfg.col.charcoal, self.rect.center, 8, 2)
-		# if self.hostile_target:
-			# pygame.draw.line(self.screen, [50, 5, 5], (self.rect.center), self.hostile_target.location)
+	# if self.hostile_target:
+	# pygame.draw.line(self.screen, [50, 5, 5], (self.rect.center), self.hostile_target.location)
 
 	def draw_turret(self):
 		# draw barrel
@@ -137,12 +156,11 @@ class Turret:
 		pygame.draw.circle(self.screen, self.barrel_rgb, self.rect.center - self.barrel_point * 15, 2)
 
 	def loop(self):
-		if self.shot_timer > 0:
-			self.shot_timer -= 1
-		if self.heat > 0:
-			self.heat -= 1
-		self.check_target_alive()
-		if random.randint(0, 1000) > 990:
-			self.hostile_target = self.choose_a_rand_target()
-		self.turn_turret()
+		if self.active:
+			if self.shot_timer > 0:
+				self.shot_timer -= 1
+			if self.heat > 0:
+				self.heat -= 1
+			self.target_checks()
+			self.turn_turret()
 		self.draw()

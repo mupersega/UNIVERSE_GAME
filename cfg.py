@@ -20,8 +20,8 @@ universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 3
 start_suns = 1
-start_spawners = 5
-start_entities = 32
+start_spawners = 1
+start_entities = 6
 universe_max_asteroids = 300
 
 # --Entity-- #

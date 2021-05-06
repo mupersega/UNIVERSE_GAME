@@ -28,7 +28,7 @@ class Spawner:
 		self.roamers.append(new_roamer)
 
 	def setup(self):
-		for i in range(100):
+		for i in range(20):
 			self.spawn_roamer()
 
 	def check_spawn(self):

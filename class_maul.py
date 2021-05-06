@@ -37,14 +37,6 @@ class Maul:
 				i.life -= 1
 				self.life = 0
 				self.kill()
-		# for i in self.game.spawners:
-		# 	for j in i.roamers:
-		# 		if pygame.Rect.colliderect(self.rect, j.rect):
-		# 			self.poly_explosion()
-		# 			j.life -= 1
-		# 			self.life = 0
-		# 			self.kill()
-
 
 	def poly_explosion(self):
 		pc = random.choice(cfg.poly_coord_array)
