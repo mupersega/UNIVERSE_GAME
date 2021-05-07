@@ -79,6 +79,7 @@ class Bolt:
 				pygame.draw.lines(self.game.screen, [130, 0, 140], closed=False, points=self.trail_2, width=2)
 				pygame.draw.lines(self.game.screen, [130, 130, 240], closed=False, points=self.trail_3, width=3)
 				# pygame.draw.line(self.game.screen, [220, 220, 220], self.trail[0], self.location, width=3)
+				i.location -= self.velocity.normalize() * 1
 				i.life -= 20
 				self.life -= 20
 		# for i in self.game.spawners:

@@ -36,6 +36,7 @@ class Maul:
 		self.game.main_quadtree.query(self.rect, nearby_hits)
 		for i in nearby_hits:
 			if pygame.Rect.colliderect(self.rect, i.rect):
+				i.location -= self.trajectory * 2
 				self.poly_explosion()
 				i.life -= 1
 				self.life = 0

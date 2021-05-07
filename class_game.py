@@ -265,7 +265,7 @@ class Game:
 			for i in self.explosions.copy():
 				i.loop()
 
-			self.main_quadtree.draw()
+			# self.main_quadtree.draw()
 
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)

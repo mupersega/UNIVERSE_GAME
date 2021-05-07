@@ -13,6 +13,7 @@ class Roamer:
 		self.game = game
 		self.screen = game.screen
 		self.spawner = spawner
+		# self.image = random.choice([cfg.big_ship_red, cfg.big_ship_teal, cfg.big_ship_red, cfg.big_ship_purple])
 		self.image = cfg.starsated_image
 		self.target_loc = pygame.math.Vector2(0, 0)
 		self.location = pygame.math.Vector2(spawner.rect.center)
@@ -24,7 +25,7 @@ class Roamer:
 		self.hold = 0
 		self.rect = pygame.Rect(0, 0, 10, 10)
 		self.angle = 3
-		self.life = 10
+		self.life = 100
 		self.set_new_roam_location()
 
 	def draw(self):
@@ -71,7 +72,7 @@ class Roamer:
 		if self.life <= 0:
 			self.spawner.roamers.remove(self)
 			# draw explosion
-			new_explosion = Explosion(self.game, self.location, random.randint(5, 10))
+			new_explosion = Explosion(self.game, self.location, random.randint(5, 15))
 			self.game.explosions.append(new_explosion)
 
 	def move(self):

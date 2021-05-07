@@ -8,6 +8,10 @@ import colours as col
 
 ship_image = pygame.image.load('mining_ship_1.png')
 starsated_image = pygame.image.load('starsated.png')
+big_ship_teal = pygame.image.load('bigger_ship.png')
+big_ship_purple = pygame.image.load('bigger_ship_purple.png')
+big_ship_green = pygame.image.load('bigger_ship_green.png')
+big_ship_red = pygame.image.load('bigger_ship_red.png')
 
 
 # CLASS SETTINGS #
