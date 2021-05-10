@@ -1,7 +1,6 @@
 import pygame
 import cfg
 import random
-import numpy as np
 
 from class_explosion import Explosion
 

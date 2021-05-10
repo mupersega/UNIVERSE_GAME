@@ -17,7 +17,7 @@ class Entity:
 		self.game = bay.hangar.station.game
 		self.owner = bay.owner
 		self.bay = bay
-		self.behaviour = None
+		self.behaviour = 'mine'
 		self.image = cfg.ship_image
 
 		self.x, self.y = bay.rect.center[0], bay.rect.center[1]
@@ -29,7 +29,7 @@ class Entity:
 		self.location = pygame.math.Vector2(bay.rect.center[0], bay.rect.center[1])
 		self.trajectory = pygame.math.Vector2(1, 1)
 
-		self.normal_vel = 1.5  # default 0.7
+		self.normal_vel = 1  # default 0.7
 		self.vel = self.normal_vel
 		self.approach_velocity = False
 		self.normal_agility = 1
@@ -46,7 +46,7 @@ class Entity:
 		self.max_thrusters_lvl = 30
 		self.hold_capacity = 10
 
-		self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
+		self.rect = pygame.Rect(self.location.x, self.location.y, self.size, self.size)
 		self.rgb = cfg.ent_rgb
 		self.interactable_distance = cfg.ent_interactable_distance
 		self.arrived_distance = cfg.ent_arrived_distance
@@ -67,9 +67,11 @@ class Entity:
 	def update_current_target(self):
 		# if no target make current target the next target in queue.
 		if not self.target:
+			# no current target? make next in queue the current target
 			if self.target_queue:
 				self.target = self.target_queue.pop(0)
 				return
+			# no queue targets? Return to base (append return targets to queue)
 			else:
 				self.return_to_base()
 
@@ -114,7 +116,7 @@ class Entity:
 
 	def set_behaviour(self, behaviour):
 		self.behaviour = behaviour
-		if self.behaviour == "mine" and not self.target:
+		if self.behaviour == "mine":
 			self.find_asteroid()
 		if self.behaviour == "stay":
 			self.return_to_base()
@@ -150,6 +152,8 @@ class Entity:
 							if new_target is not None:
 								self.undock()
 								self.target_queue.append(new_target)
+						elif self.behaviour == 'stay':
+							return
 				else:
 					t.unload(self)
 
@@ -159,12 +163,13 @@ class Entity:
 		self.target_queue.append(self.bay.hangar.station.depart_location)
 
 	def return_to_base(self):
-		self.target_queue.clear()
-		self.returning_to_base = True
-		self.target = self.bay.hangar.station.approach_location
-		self.target_queue.append(self.bay.hangar.approach_location)
-		self.target_queue.append(self.bay.approach_location)
-		self.target_queue.append(self.bay)
+		if self.target != self.bay:
+			self.target_queue.clear()
+			self.returning_to_base = True
+			self.target = self.bay.hangar.station.approach_location
+			self.target_queue.append(self.bay.hangar.approach_location)
+			self.target_queue.append(self.bay.approach_location)
+			self.target_queue.append(self.bay)
 
 	def shoot(self):
 		if self.target:

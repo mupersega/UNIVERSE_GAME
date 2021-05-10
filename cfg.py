@@ -25,8 +25,13 @@ universe_secondary = "verdite"
 start_stations = 3
 start_suns = 1
 start_spawners = 6
-start_entities = 32
+start_entities = 5
 universe_max_asteroids = 300
+asteroid_pop_phase_time = 10
+watch_queue_phase_time = 5
+force_feed_phase_time = 8
+gather_phase_time = 30
+combat_phase_time = 10
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -130,19 +135,22 @@ ammo_info = {
 		"min_range": 0,
 		"max_range": 400,
 		"barrel_rgb": [250, 0, 0],
-		"mag_size": 200
+		"mag_size": 200,
+		"reload_time": 100
 	},
 	"lance": {
 		"min_range": 0,
 		"max_range": 750,
 		"barrel_rgb": [0, 250, 0],
-		"mag_size": 50
+		"mag_size": 15,
+		"reload_time": 500
 	},
 	"bolt": {
 		"min_range": 0,
 		"max_range": 2000,
 		"barrel_rgb": [0, 0, 250],
-		"mag_size": 10
+		"mag_size": 5,
+		"reload_time": 1000
 	}
 }
 turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]

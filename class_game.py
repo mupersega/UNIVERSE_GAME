@@ -2,6 +2,7 @@ import random
 import sqlite3
 import sys
 import threading
+import time
 import os
 
 import pygame
@@ -18,9 +19,9 @@ admins = ['mupersega']
 conn = sqlite3.connect('/C:/db/queue.db')
 c = conn.cursor()
 #
-# x = -1800
-# y = 450
-# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+x = -1800
+y = 450
+os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:
@@ -46,6 +47,14 @@ class Game:
 		self.spawners = []
 		self.players = []
 		self.player_names = []
+
+		self.next_populate_asteroids = time.time()
+		self.next_watch_queue = time.time()
+		self.next_force_feed_spawners = time.time() + cfg.force_feed_phase_time
+		self.next_phase = time.time() + cfg.gather_phase_time
+
+		self.gather_phase = True
+		self.combat_phase = False
 
 		self.game_setup()
 
@@ -158,23 +167,75 @@ class Game:
 				i.perform(cmd, sub_status, args)
 				print('beginning perform')
 
+	def force_feed_spawners(self):
+		for _ in range(2):
+			sp = random.choice(self.spawners)
+			sp.hold += 10
+
+	def initiate_combat_phase(self, phase_duration):
+		# set environment for combat phase
+		self.next_phase += phase_duration
+		self.combat_phase = True
+		self.gather_phase = False
+		# set all player entities to "stay" behaviour:
+		for i in self.players:
+			for j in i.entities:
+				j.set_behaviour("stay")
+		for i in self.stations:
+			for j in i.hangars:
+				for k in j.turrets:
+					k.activate()
+
+	def initiate_gather_phase(self, phase_duration):
+		# set environment for gather phase
+		self.next_phase += phase_duration
+		self.gather_phase = True
+		self.combat_phase = False
+		# set all player entities to "mine" behaviour:
+		for i in self.players:
+			for j in i.entities:
+				j.set_behaviour("mine")
+		for i in self.stations:
+			for j in i.hangars:
+				for k in j.turrets:
+					k.deactivate()
+
+	def phase_change_check(self):
+		if time.time() > self.next_phase:
+			if not self.combat_phase:
+				self.initiate_combat_phase(cfg.combat_phase_time)
+			else:
+				self.initiate_gather_phase(cfg.gather_phase_time)
+
+		if self.combat_phase:
+			pygame.draw.circle(self.screen, [255, 0, 0], (300, 40), 20)
+		elif self.gather_phase:
+			pygame.draw.circle(self.screen, [0, 255, 0], (300, 40), 20)
+
 	def mainloop(self):  # sourcery no-metrics
 		loop_counter = 0
-		secondary_loop = 0
 		while True:
-			# Watch for quit event.
+			curr_time = time.time()
+			# Scheduled checks
+			# if curr_time > self.next_populate_asteroids:
+			# 	self.next_populate_asteroids += cfg.asteroid_pop_phase_time
+			# 	self.populate_asteroids()
+			# if curr_time > self.next_force_feed_spawners:
+			# 	self.next_force_feed_spawners += cfg.force_feed_phase_time
+			# 	self.force_feed_spawners()
+			# if curr_time > self.next_watch_queue:
+			# 	self.next_watch_queue += cfg.watch_queue_phase_time
+			# 	self.watch_queue()
+			#
 			if loop_counter > 260:
 				self.populate_asteroids()
 				self.watch_queue()
-				for _ in range(2):
-					sp = random.choice(self.spawners)
-					sp.hold += 10
-				# for player in self.players:
-				# 	player.process_auto()
+				self.force_feed_spawners()
 				loop_counter = 0
-				secondary_loop += 1
-				if secondary_loop > 3:
-					secondary_loop = 0
+				# secondary_loop += 1
+				# if secondary_loop > 3:
+				# 	secondary_loop = 0
+			# Watch for quit event.
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					pygame.quit()
@@ -263,12 +324,11 @@ class Game:
 			for i in self.explosions.copy():
 				i.loop()
 
-			self.main_quadtree.draw()
-
+			# self.main_quadtree.draw()
+			# self.phase_change_check()
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
 			loop_counter += 1
-
 
 if __name__ == "__main__":
 	game = Game()
