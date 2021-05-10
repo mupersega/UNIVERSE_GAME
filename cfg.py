@@ -46,8 +46,8 @@ facility_h = 20
 facility_h_third = int(facility_h * .33)
 max_facilities = 5
 # st_colour = [45, 89, 134] # pastel dark blue
-st_colour = col.bone  #[102, 102, 153]
-st_arm_colour = col.charcoal  #[75, 75, 100]
+st_colour = col.bone   # [102, 102, 153]
+st_arm_colour = col.charcoal   # [75, 75, 100]
 
 st_arrived_distance = 5
 st_interactable_distance = 10
@@ -56,7 +56,7 @@ default_hangars = 30
 lane_width = 9
 x_pad = 3
 y_pad = 1
-st_x_offset = 390 #390 for stream
+st_x_offset = 390  # 390 for stream
 st_y_offset = 55
 station_spacing = station_width + (
 	x_pad * 2 + facility_w * max_facilities) + lane_width
@@ -213,12 +213,10 @@ for i in range(10):
 		this_poly.append(this_vec)
 	bolt_coord_array.append(this_poly)
 
+
 def update_rect(self):
-	# self.rect.center = (self.x, self.y)
 	self.rect.x = self.x
 	self.rect.y = self.y
-	# self.rect.width = self.width
-	# self.rect.height = self.height
 
 
 def distance_to_target(self):
@@ -235,9 +233,7 @@ def angle_to_target(self):
 	x = self.rect.center[0] - dx
 	y = self.rect.center[1] - dy
 	rads = math.atan2(x, y)
-	degs = math.degrees(rads)
-	return degs
-	# return math.atan2(x, y)
+	return math.degrees(rads)
 
 
 def turn(self):
@@ -271,7 +267,7 @@ def draw_explosion(explode_object):
 	tx = int(explode_object.x)
 	ty = int(explode_object.y)
 	variance = [-4, -2, 2, 4]
-	for i in range(random.randint(20, 50)):
+	for _ in range(random.randint(20, 50)):
 		pygame.draw.circle(explode_object.screen, [255, 255, 255], (tx + random.choice(
 			variance), ty + random.choice(variance)), random.randint(1, 5))
 		pygame.draw.circle(explode_object.screen, [0, 0, 0], (tx + random.choice(
@@ -285,19 +281,16 @@ def set_composition(primary, secondary):
 	rolls = composition_rolls
 	prep_rgb = [0, 0, 0]
 	choices = ["rubine", "verdite", "ceruliun"]
-	for i in range(2):
+	for _ in range(2):
 		choices.append(primary)
-	for i in range(1):
+	for _ in range(1):
 		choices.append(secondary)
-	for i in range(rolls):
+	for _ in range(rolls):
 		choice = random.choice(choices)
 		choice_rgb = mineral_info[choice]["rgb"]
 		for j in range(3):
 			prep_rgb[j] += choice_rgb[j]
-	final_rgb = []
-	for i in prep_rgb:
-		final_rgb.append(i / rolls)
-	return final_rgb
+	return [i / rolls for i in prep_rgb]
 
 
 def tally_resources(player):
@@ -363,13 +356,5 @@ def on_screen_check(self):
 		return False
 	if self.y < 0:
 		return False
-	if self.y > screen_height:
-		return False
-	return True
+	return self.y <= screen_height
 
-
-def transaction(buyer, target, particulars:list):
-	count = 0
-	# if the target has no room for the resources the transaction is cancelled.
-	for i in particulars:
-		pass

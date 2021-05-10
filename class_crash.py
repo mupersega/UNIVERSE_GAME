@@ -63,7 +63,7 @@ class Crash:
 	def explode(self):
 		mass = self.width * self.height
 		expended = 0
-		for i in range(mass):
+		for _ in range(mass):
 			size = random.randint(1, self.width)
 			new_asteroid = Asteroid(self.planet, self, size)
 			self.planet.asteroids.append(new_asteroid)

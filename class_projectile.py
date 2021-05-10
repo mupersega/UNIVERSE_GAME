@@ -1,6 +1,3 @@
-import math
-import random
-
 import pygame
 
 import cfg
@@ -56,7 +53,8 @@ class Projectile:
 				self.game.projectiles.remove(self)
 
 	def draw(self):
-		pygame.draw.circle(self.screen, [200, 200, 255], (self.x, self.y), 5, draw_top_left=self.draw_bools[0],
+		pygame.draw.circle(self.screen, [200, 200, 255], (self.x, self.y), 5,
+						   draw_top_left=self.draw_bools[0],
 						   draw_top_right=self.draw_bools[1],
 						   draw_bottom_left=self.draw_bools[2],
 						   draw_bottom_right=self.draw_bools[3]

@@ -28,12 +28,12 @@ class Spawner:
 		self.roamers.append(new_roamer)
 
 	def setup(self):
-		for i in range(10):
+		for _ in range(10):
 			self.spawn_roamer()
 
 	def check_spawn(self):
 		if self.hold > 0 and self.hold / 10 > self.spawn_threshold:
-			for i in range(int(self.hold / 10)):
+			for _ in range(int(self.hold / 10)):
 				self.spawn_roamer()
 			self.hold = 0
 

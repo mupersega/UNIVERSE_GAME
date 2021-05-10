@@ -18,7 +18,7 @@ class Explosion:
 
 	def create_particles(self):
 		# set particle sizes
-		for i in range(self.size):
+		for _ in range(self.size):
 			self.particles.append(random.randint(1, self.size))
 		# set their magnitudes
 		for i in range(self.size):
@@ -32,9 +32,8 @@ class Explosion:
 			pygame.draw.circle(self.game.screen, [255, 255, 255], self.location + (self.vecs[i] * self.cycle), self.particles[1])
 
 	def loop(self):
-		if self.cycle > self.size * 5:
-			if self in self.game.explosions.copy():
-				self.game.explosions.remove(self)
+		if self.cycle > self.size * 5 and self in self.game.explosions.copy():
+			self.game.explosions.remove(self)
 		self.cycle += 1
 		if self.cycle % 4 == 0:
 			for i in range(self.size):

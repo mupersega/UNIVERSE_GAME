@@ -37,7 +37,7 @@ class Game:
 
 		# lists of created objects
 		self.screen_rect = pygame.Rect(0, 0, cfg.screen_width, cfg.screen_height)
-		self.main_quadtree = Quadtree(self, self.screen_rect, max_objects=2, depth=0)
+		self.main_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
 		self.suns = []
 		self.stations = []
 		self.entities = []
@@ -51,14 +51,14 @@ class Game:
 
 	def game_setup(self):
 		# setup starting stations and players
-		for i in range(cfg.start_stations):
+		for _ in range(cfg.start_stations):
 			self.new_station()
-		for i in range(cfg.start_suns):
+		for _ in range(cfg.start_suns):
 			self.new_sun()
 
-		for i in range(cfg.start_spawners):
+		for _ in range(cfg.start_spawners):
 			self.new_spawner()
-		for i in range(cfg.start_entities):
+		for _ in range(cfg.start_entities):
 			self.new_player("mupersega")
 
 	def new_player(self, name):
@@ -136,34 +136,29 @@ class Game:
 		cmd = msg[0]
 		print(f'{user} time to {cmd}')
 		# game commands are those that are not player specific or are initiated by the creator. ME!!!
-		if cmd == "!asteroids":
-			if user in admins:
-				try:
-					for i in range(int(msg[1])):
-						self.random_crash()
-				except:
-					# this is to catch incorrect number of args.
-					print("set num asteroids")
-					return
+		if cmd == "!asteroids" and user in admins:
+			try:
+				for _ in range(int(msg[1])):
+					self.random_crash()
+			except:
+				# this is to catch incorrect number of args.
+				print("set num asteroids")
+				return
 		# this play command will be processed at the game level to init a new player.
 		if cmd == "!play":
 			if user not in self.player_names:
 				self.new_player(user)
-				return
 			else:
 				print(f'{user} is already in the game.')
-				return
-		if len(message) > 1:
-			args = message[1:]
-		else:
-			args = None
+			return
+		args = message[1:] if len(message) > 1 else None
 		for i in self.players:
 			print(i.name)
 			if i.name == user:
 				i.perform(cmd, sub_status, args)
 				print('beginning perform')
 
-	def mainloop(self):
+	def mainloop(self):  # sourcery no-metrics
 		loop_counter = 0
 		secondary_loop = 0
 		while True:
@@ -171,7 +166,7 @@ class Game:
 			if loop_counter > 260:
 				self.populate_asteroids()
 				self.watch_queue()
-				for i in range(2):
+				for _ in range(2):
 					sp = random.choice(self.spawners)
 					sp.hold += 10
 				# for player in self.players:
@@ -218,7 +213,10 @@ class Game:
 						msg = "!build warehouse"
 						self.process("1", "mupersega", msg.split())
 					if event.key == pygame.K_p:
-						self.players[0].bays[0].occupant.shoot()
+						if self.players[0].bays[0].occupant.behaviour == "mine":
+							self.players[0].bays[0].occupant.set_behaviour("stay")
+						elif self.players[0].bays[0].occupant.behaviour == "stay":
+							self.players[0].bays[0].occupant.set_behaviour("mine")
 						for p in self.players:
 							for t in p.turrets:
 								t.shoot()
@@ -265,7 +263,7 @@ class Game:
 			for i in self.explosions.copy():
 				i.loop()
 
-			# self.main_quadtree.draw()
+			self.main_quadtree.draw()
 
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)

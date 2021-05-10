@@ -27,9 +27,8 @@ class Maul:
 		self.velocity -= self.velocity * .0005
 
 	def kill(self):
-		if self.life < 1:
-			if self in self.game.projectiles:
-				self.game.projectiles.remove(self)
+		if self.life < 1 and self in self.game.projectiles:
+			self.game.projectiles.remove(self)
 
 	def check_collision(self):
 		nearby_hits = []

@@ -17,7 +17,7 @@ class Entity:
 		self.game = bay.hangar.station.game
 		self.owner = bay.owner
 		self.bay = bay
-		self.behaviour = 'mine'
+		self.behaviour = None
 		self.image = cfg.ship_image
 
 		self.x, self.y = bay.rect.center[0], bay.rect.center[1]
@@ -29,7 +29,7 @@ class Entity:
 		self.location = pygame.math.Vector2(bay.rect.center[0], bay.rect.center[1])
 		self.trajectory = pygame.math.Vector2(1, 1)
 
-		self.normal_vel = 0.7
+		self.normal_vel = 1.5  # default 0.7
 		self.vel = self.normal_vel
 		self.approach_velocity = False
 		self.normal_agility = 1
@@ -57,7 +57,7 @@ class Entity:
 		self.target = self.bay
 		self.target_queue = []
 		self.ores = [0, 0, 0]
-		print(self.ores)
+		# print(self.ores)
 
 		self.owner.entities.append(self)
 
@@ -65,7 +65,7 @@ class Entity:
 		cfg.update_rect(self)
 
 	def update_current_target(self):
-		# if no target make target the next target in queue.
+		# if no target make current target the next target in queue.
 		if not self.target:
 			if self.target_queue:
 				self.target = self.target_queue.pop(0)
@@ -85,17 +85,11 @@ class Entity:
 						self.vel = self.target.approach_velocity
 					else:
 						self.vel = self.normal_vel
-		elif not self.target.on_screen:
+		else:
 			if self.behaviour == "mine":
 				new_asteroid = self.find_asteroid()
-				if new_asteroid is not None:
-					if new_asteroid.on_screen:
-						self.target = new_asteroid
-			# elif self.behaviour = "hunt":
-			# 	new_enemy = self.find_enemy()
-			# 	if new_enemy is not None:
-			# 		if new_enemy.on_screen:
-			# 			self.target = new_enemy
+				if new_asteroid is not None and new_asteroid.on_screen:
+					self.target = new_asteroid
 			else:
 				self.return_to_base()
 
@@ -107,22 +101,34 @@ class Entity:
 		if dist < 30:
 			mod = dist / 40
 		if dist > self.target.arrived_distance:
-			proposed_trajectory = pygame.math.Vector2(self.location - self.target.location)
-			self.trajectory = proposed_trajectory.normalize()
-			self.location -= self.trajectory * self.vel * mod
-			self.rect.center = self.location
-			self.x = self.location[0]
-			self.y = self.location[1]
-
+			self.update_location(mod)
 		self.angle = cfg.angle_to_target(self)
+
+	def update_location(self, mod):
+		proposed_trajectory = pygame.math.Vector2(self.location - self.target.location)
+		self.trajectory = proposed_trajectory.normalize()
+		self.location -= self.trajectory * self.vel * mod
+		self.rect.center = self.location
+		self.x = self.location[0]
+		self.y = self.location[1]
+
+	def set_behaviour(self, behaviour):
+		self.behaviour = behaviour
+		if self.behaviour == "mine" and not self.target:
+			self.find_asteroid()
+		if self.behaviour == "stay":
+			self.return_to_base()
 
 	def interact(self):
 		if not self.target:
 			return
 		t = self.target
 		dist = cfg.distance_to_target(self)
-		if isinstance(t, Asteroid) and t.size <= 0:
+		# if the target is a dead asteroid
+		if isinstance(t, Asteroid) and t.size <= 0:\
+			# find another asteroid
 			self.target = self.find_asteroid()
+			# if can not find a new asteroid: return to base
 			if not self.target:
 				self.return_to_base()
 			return
@@ -141,11 +147,9 @@ class Entity:
 						self.returning_to_base = False
 						if self.behaviour == 'mine':
 							new_target = self.find_asteroid()
-						elif self.behaviour == 'hunt':
-							new_target = self.find_enemy()
-						if new_target is not None:
-							self.undock()
-							self.target_queue.append(new_target)
+							if new_target is not None:
+								self.undock()
+								self.target_queue.append(new_target)
 				else:
 					t.unload(self)
 
@@ -184,11 +188,13 @@ class Entity:
 			return random.choice(choices)
 
 	def draw(self):
-		draw_image = pygame.transform.rotate(self.image, (self.angle))
+		draw_image = pygame.transform.rotate(self.image, self.angle)
 		self.screen.blit(draw_image, self.rect)
 		# pygame.draw.rect(self.screen, self.rgb, self.rect)
 
-	def draw_beam(self, origin, target, colour=[250, 250, 250]):
+	def draw_beam(self, origin, target, colour=None):
+		if colour is None:
+			colour = [250, 250, 250]
 		ox, oy = origin.x, origin.y
 		tx, ty = target.x, target.y
 		pygame.draw.line(self.screen, colour, (ox, oy), (tx, ty), 1)
@@ -196,7 +202,7 @@ class Entity:
 	def draw_explosion(self, target):
 		tx, ty = int(target.x), int(target.y)
 		variance = [-4, -2, 2, 4]
-		for i in range(random.randint(20, 50)):
+		for _ in range(random.randint(20, 50)):
 			pygame.draw.circle(self.screen, [255, 255, 255], (tx + random.choice(
 				variance), ty + random.choice(variance)), random.randint(1, 5))
 			pygame.draw.circle(self.screen, [0, 0, 0], (tx + random.choice(

@@ -5,6 +5,7 @@ import numpy as np
 
 from class_explosion import Explosion
 
+
 class Bolt:
 	"""The bolt ammunition type is the 'missile' class, it is assigned a target on init and will move towards it. It is
 	the ammo type that has the most physics applied to it. It will adopt an initial velocity vector derived from the
@@ -19,12 +20,16 @@ class Bolt:
 		self.acceleration = pygame.Vector2(0, 0)
 		self.wobble = pygame.Vector2(0, 0)
 		self.rect = pygame.Rect(self.location.x, self.location.y, 10, 10)
-		pygame.draw.circle(self.game.screen, [250, 240, 255], self.location, random.randint(1, 4))
-		self.trail = [pygame.Vector2(self.location), pygame.Vector2(self.location)]
-		self.trail_2 = [pygame.Vector2(self.location), pygame.Vector2(self.location)]
-		self.trail_3 = [pygame.Vector2(self.location), pygame.Vector2(self.location)]
+
+		# Trail preparation
+		self.num_bolt_trails = 3
+		self.bolt_trails = []
+		for _ in range(self.num_bolt_trails):
+			self.bolt_trails.append([pygame.Vector2(self.location), pygame.Vector2(self.location)])
 
 		self.life = random.randint(60, 80) * 5
+
+		# Muzzle flash
 		self.game.explosions.append(Explosion(self.game, start_loc, 4))
 
 	def apply_force(self, force):
@@ -34,8 +39,6 @@ class Bolt:
 		d = self.location.distance_to(self.target.location)
 		self.wobble = (random.uniform(-1, 1), random.uniform(-1, 1))
 		self.thrust = (self.location - self.target.location).normalize()
-		# self.push = (self.target.location - self.location).normalize() / d
-		# self.push = (self.target.location - self.location).normalize()
 
 	def move(self):
 		self.update()
@@ -47,48 +50,48 @@ class Bolt:
 		self.location -= self.velocity * .6
 		self.acceleration *= 0
 		self.life -= 1
+
 		if self.life % 6 == 0:
-			self.trail.append(
-				[self.location.x + random.randrange(-10, 10), self.location.y + random.randrange(-10, 10)])
+			self.add_rand_trail_vec(self.bolt_trails[0], 10)
 			if self.life % 12 == 0:
-				self.trail_2.append(
-					[self.location.x + random.randrange(-30, 30), self.location.y + random.randrange(-30, 30)])
+				self.add_rand_trail_vec(self.bolt_trails[1], 30)
 				if self.life % 18 == 0:
-					self.trail_3.append(
-						[self.location.x + random.randrange(-40, 40), self.location.y + random.randrange(-40, 40)])
+					self.add_rand_trail_vec(self.bolt_trails[2], 50)
 
 	def kill(self):
 		if self.target.life <= 0:
 			self.life *= .95
-		if self.life < 1:
-			if self in self.game.projectiles:
-				self.game.projectiles.remove(self)
+		if self.life < 1 and self in self.game.projectiles:
+			self.game.projectiles.remove(self)
 
 	def check_collision(self):
 		nearby_hits = []
 		self.game.main_quadtree.query(self.rect, nearby_hits)
-		for i in nearby_hits:
-			if pygame.Rect.colliderect(self.rect, i.rect):
-				self.trail.append(
-					[self.location.x + random.randrange(-10, 10), self.location.y + random.randrange(-10, 10)])
-				self.trail_2.append(
-					[self.location.x + random.randrange(-10, 10), self.location.y + random.randrange(-10, 10)])
-				self.trail_3.append(
-					[self.location.x + random.randrange(-10, 10), self.location.y + random.randrange(-10, 10)])
-				pygame.draw.lines(self.game.screen, [0, 0, 200], closed=False, points=self.trail)
-				pygame.draw.lines(self.game.screen, [130, 0, 140], closed=False, points=self.trail_2, width=2)
-				pygame.draw.lines(self.game.screen, [130, 130, 240], closed=False, points=self.trail_3, width=3)
-				# pygame.draw.line(self.game.screen, [220, 220, 220], self.trail[0], self.location, width=3)
-				i.location -= self.velocity.normalize() * 1
-				i.life -= 20
-				self.life -= 20
-		# for i in self.game.spawners:
-		# 	for j in i.roamers:
-		# 		if pygame.Rect.colliderect(self.rect, j.rect):
-		# 			self.poly_explosion()
-		# 			j.life -= 1
-		# 			self.life = 0
-		# 			self.kill()
+		for t in nearby_hits:
+			if pygame.Rect.colliderect(self.rect, t.rect):
+				self.draw_bolts(t)
+
+	def draw_bolts(self, target):
+		# add final vectors to trail so that all bolts meet on location
+		for i in range(3):
+			self.add_rand_trail_vec(self.bolt_trails[i], 2)
+
+		pygame.draw.lines(self.game.screen, [0, 0, 200], closed=False, points=self.bolt_trails[0])
+		pygame.draw.lines(self.game.screen, [180, 0, 200], closed=False, points=self.bolt_trails[1], width=2)
+		pygame.draw.lines(self.game.screen, [225, 200, 255], closed=False, points=self.bolt_trails[2], width=3)
+
+		# Hit effects/changes
+		# push target
+		target.location -= self.velocity.normalize() * 2
+		# damage target
+		target.life -= 20
+		# self decay
+		self.life -= 20
+
+	def add_rand_trail_vec(self, trail, variance):
+		trail.append(
+			[self.location.x + random.randrange(-variance, variance), self.location.y + random.randrange(-variance, variance)]
+		)
 
 	def poly_explosion(self):
 		pc = random.choice(cfg.bolt_coord_array)
@@ -106,9 +109,6 @@ class Bolt:
 			self.location + pc[3],
 		])
 
-	def apply_damage(self, hit_object):
-		pass
-
 	def draw(self):
 		pc = random.choice(cfg.bolt_coord_array)
 		pygame.draw.lines(self.game.screen, [0, 0, 255], closed=False, points=(
@@ -117,6 +117,7 @@ class Bolt:
 			self.location + pc[2],
 			self.location + pc[3],
 		), width=2)
+
 		pc = random.choice(cfg.bolt_coord_array)
 		pygame.draw.lines(self.game.screen, [200, 0, 255], closed=False, points=(
 			self.location + pc[0],

@@ -7,6 +7,7 @@ import cfg
 
 from class_explosion import Explosion
 
+
 class Roamer:
 	"""Class to manage roaming hostiles which move around and attack miners."""
 	def __init__(self, game, spawner):
@@ -25,7 +26,7 @@ class Roamer:
 		self.hold = 0
 		self.rect = pygame.Rect(0, 0, 10, 10)
 		self.angle = 3
-		self.life = 100
+		self.life = 10
 		self.set_new_roam_location()
 
 	def draw(self):

@@ -57,18 +57,15 @@ class Bay:
 			self.occupant = ship
 
 	def unload(self, actor):
-		i = 0
-		for t in actor.ores.copy():
+		for i, t in enumerate(actor.ores.copy()):
 			qty = t
-			for j in range(qty):
+			for _ in range(qty):
 				for h in actor.owner.hangars:
 					for f in h.facilities:
-						if f.kind == 'warehouse':
-							if sum(f.ores) < f.hold_capacity:
-								actor.ores[i] -= 1
-								f.ores[i] += 1
-								break
-			i += 1
+						if f.kind == 'warehouse' and sum(f.ores) < f.hold_capacity:
+							actor.ores[i] -= 1
+							f.ores[i] += 1
+							break
 
 	def update_vector(self):
 		self.location = (self.x + self.width * 0.5, self.y + self.width * 0.5)
