@@ -81,11 +81,14 @@ class Bolt:
 
 		# Hit effects/changes
 		# push target
-		target.location -= self.velocity.normalize() * 2
+		try:
+			target.location -= self.velocity.normalize() * 2
+		except ValueError:
+			return
 		# damage target
 		target.life -= 20
 		# self decay
-		self.life -= 20
+		self.life -= 10
 
 	def add_rand_trail_vec(self, trail, variance):
 		trail.append(

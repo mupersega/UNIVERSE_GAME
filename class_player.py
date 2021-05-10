@@ -21,6 +21,7 @@ class Player:
         self.warehouses = []
         self.turrets = []
         self.trades = []
+        self.autos = []
         self.rubine = 0
         self.verdite = 0
         self.ceruliun = 0
@@ -55,11 +56,9 @@ class Player:
 
     def perform(self, cmd, sub_status, args):
 
-        # upgrades can cost 'mupees'
         if cmd == '!upgrade':
             self.upgrade(args)
             return
-        # builds can cost resources
         if cmd == '!build':
             self.build(sub_status, args)
             return
@@ -69,20 +68,14 @@ class Player:
         if cmd == '!cxauto':
             self.cancel_auto(args)
             return
-        if cmd == '!set':
+        if cmd == '!activate':
             self.set_behaviour(args)
             return
-        if cmd == '!hunt':
-            self.hunt(args)
+        if cmd == '!deactivate':
+            self.set_behaviour(args)
             return
-        if cmd == '!buy':
-            self.buy(args)
-            return
-        if cmd == '!sell':
-            self.list(args)
-            return
-        if cmd == '!cancel':
-            self.cancel_sell(args)
+        if cmd == '!load':
+            self.set_behaviour(args)
             return
 
     def upgrade(self, args):
@@ -161,66 +154,6 @@ class Player:
         else:
             print(f"{fk} is not a valid facility kind.")
 
-    def set_behaviour(self, args):
-        # upgrade syntax: ['facility kind', 'facility_index', 'behaviour']
-        # facility_kind
-        if len(args) != 3:
-            print('check !set syntax (args)')
-        fk = args[0]
-        # facility_index
-        fi = args[1]
-        # behaviour
-        b = args[2]
-        print('setting behaviour')
-        if fk in cfg.set_behaviours.keys():
-            print(f"{fk} found!")
-            if b in cfg.set_behaviours[fk].keys():
-                print(f"{b} found!")
-                for h in self.hangars:
-                    for f in h.facilities:
-                        # if fac kind matches kind and fac index matches index
-                        print(f"facility index = {f.index}\n facility kind = {f.kind}")
-                        if f.kind == fk and f.index == int(fi):
-                            print("found match")
-                            if f.occupant is not None:
-                                # occupant commands will pertain to bay facilities.
-                                if b == 'mine':
-                                    # check for required resources if enough:
-                                    # extract resources
-                                    f.occupant.behaviour = 'mine'
-                                    print(f'Ship in {fk} {fi} now set to mine.')
-                                    # else return not enough resources
-                                    return
-                            else:
-                                print("No ship in this facility.")
-                        else:
-                            print("can not find a kind or index match.")
-            else:
-                print(f"{b} is not a valid upgrade request.")
-        else:
-            print(f"{fk} is not a valid facility.")
-
-    def list(self, args):
-        # example trade syntax = !list 100 rubine @ 2
-        if len(args) != 4:
-            print('check !list syntax')
-        list_material = args[1].lower()
-        try:
-            list_qty = int(round(args[0]))
-            list_price = int(round(args[3]))
-        except:
-            print(f'{self.name.title()} price/qty must be a number.')
-        if list_material in cfg.tradables:
-            # get players current amount of this material
-            material_attribute = getattr(self, list_material)
-            if material_attribute >= list_qty:
-                material_attribute -= list_qty
-                self.game.new_trade(self, list_qty, list_material, list_price)
-            else:
-                print(f'Not enough {list_material} to list that amount.')
-        else:
-            print(f'{list_material} not a trade commodity.')
-
     def set_auto(self, args):
         print(args)
         if len(args) != 3:
@@ -232,6 +165,9 @@ class Player:
                     if f.kind == args[0] and str(f.index) == args[1]:
                         f.auto = True
                         f.auto_upgrade = args[2]
+                        if f not in self.autos:
+                            self.autos.append(f)
+
                         return
                 print(f"There is no {args[0]} with an index position of {args[1]}")
             else:
@@ -240,10 +176,9 @@ class Player:
             print(f"{args[0]} not a valid facility.")
 
     def process_auto(self):
-        for f in self.hangars[0].facilities:
-            if f.auto:
-                args = [f.kind, f.index, f.auto_upgrade]
-                self.upgrade(args)
+        for f in self.autos:
+            args = [f.kind, f.index, f.auto_upgrade]
+            self.upgrade(args)
 
     def cancel_auto(self, args):
         if len(args) == 2:
@@ -252,6 +187,8 @@ class Player:
                     if f.kind == args[0] and f.index == int(args[1]):
                         f.auto = False
                         f.auto_upgrade = None
+                        if f in self.autos:
+                            self.autos.remove(self)
                         return
                     print(f"There is no {args[0]} with an index position of {args[1]}")
             else:
@@ -272,21 +209,24 @@ class Player:
                 if fk in cfg.build_values.keys():
                     if fk == "warehouse":
                         # check for resources
-                        required = cfg.build_values[fk]
-                        available = cfg.tally_resources(self)
-                        if cfg.resource_check(required, available):
+                        if cfg.resource_check(cfg.build_values[fk], cfg.tally_resources(self)):
                             # withdraw resources
-                            cfg.withdraw_resources(self, required)
+                            cfg.withdraw_resources(self, cfg.build_values[fk])
                             self.hangars[0].new_warehouse()
                         else:
                             print(f'{self.name.title()}: not enough resources to build a {fk}')
                     if fk == "bay":
-                        required = cfg.build_values[fk]
-                        available = cfg.tally_resources(self)
-                        if cfg.resource_check(required, available):
+                        if cfg.resource_check(cfg.build_values[fk], cfg.tally_resources(self)):
                             # withdraw resources
-                            cfg.withdraw_resources(self, required)
+                            cfg.withdraw_resources(self, cfg.build_values[fk])
                             self.hangars[0].new_bay()
+                        else:
+                            print(f'{self.name.title()}: not enough resources to build a {fk}')
+                    if fk == "turret":
+                        if cfg.resource_check(cfg.build_values[fk], cfg.tally_resources(self)):
+                            # withdraw resources
+                            cfg.withdraw_resources(self, cfg.build_values[fk])
+                            self.hangars[0].new_turret()
                         else:
                             print(f'{self.name.title()}: not enough resources to build a {fk}')
                 else:

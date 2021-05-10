@@ -22,7 +22,7 @@ fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 # st 15 = ent 124
-start_stations = 3
+start_stations = 1
 start_suns = 1
 start_spawners = 6
 start_entities = 5
@@ -110,7 +110,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
-wh_starting_resources = [0, 0, 0]
+wh_starting_resources = [0, 0, 100]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 warehouse_colours = {
@@ -136,21 +136,24 @@ ammo_info = {
 		"max_range": 400,
 		"barrel_rgb": [250, 0, 0],
 		"mag_size": 200,
-		"reload_time": 100
+		"reload_time": 100,
+		"reload_resources": [10, 0, 0]
 	},
 	"lance": {
 		"min_range": 0,
 		"max_range": 750,
 		"barrel_rgb": [0, 250, 0],
 		"mag_size": 15,
-		"reload_time": 500
+		"reload_time": 500,
+		"reload_resources": [0, 5, 0]
 	},
 	"bolt": {
 		"min_range": 0,
 		"max_range": 2000,
 		"barrel_rgb": [0, 0, 250],
-		"mag_size": 5,
-		"reload_time": 1000
+		"mag_size": 10,
+		"reload_time": 1000,
+		"reload_resources": [0, 0, 5]
 	}
 }
 turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]
@@ -253,8 +256,6 @@ def move(self):
 	if distance_to_target(self) > self.target.arrived_distance:
 		self.trajectory = (math.cos(self.angle), -math.sin(self.angle))
 		self.location += self.trajectory + self.location
-		# self.x += math.cos(self.angle)
-		# self.y -= math.sin(self.angle)
 
 
 def find_bar_length(current_lvl, max_lvl, total_px):
@@ -318,10 +319,6 @@ def resource_check(required, available):
 		if required[i] > available[i]:
 			print(f"Not enough {mineral_list[i]}")
 			return False
-	# check mupees available[-, -, -, *]
-	if required[3] > available[3]:
-		print(f"Not enough Mupees")
-		return False
 	else:
 		print('resources available for withdrawal')
 		return True
@@ -342,8 +339,6 @@ def withdraw_resources(player, resources):
 						print(f'post({facility.ores[k]})')
 						done = True
 						break
-	# extract mupees
-	player.mupees -= resources[3]
 	print("Transaction complete")
 
 

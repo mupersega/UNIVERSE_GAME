@@ -36,11 +36,20 @@ class Roamer:
 
 	def feed(self):
 		self.hold += 1
+	
+	def find_closest_spawner(self):
+		s = self.spawner
+		d = self.location.distance_to(s.location)
+		for i in self.game.spawners:
+			if self.location.distance_to(i.location) < d:
+				d = self.location.distance_to(i.location)
+				s = i
+		return s
 
 	def roam(self):
 		# print(self.location.distance_to(self.target_loc))
 		if self.hold > 1:
-			self.target_loc = pygame.math.Vector2(self.spawner.location)
+			self.target_loc = pygame.math.Vector2(self.find_closest_spawner().location)
 			if self.location.distance_to(self.target_loc) < 3:
 				self.spawner.hold += self.hold
 				self.hold = 0
@@ -54,9 +63,6 @@ class Roamer:
 		rads = math.atan2(self.ang_vec[0], self.ang_vec[1])
 		deg = math.degrees(rads)
 		self.angle = deg
-
-	def assign_new_spawner(self):
-		self.spawner = random.choice(self.game.spawners)
 
 	def set_new_roam_location(self):
 		w, h = cfg.screen_width / 4, cfg.screen_height / 4

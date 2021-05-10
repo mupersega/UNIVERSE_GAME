@@ -19,9 +19,9 @@ admins = ['mupersega']
 conn = sqlite3.connect('/C:/db/queue.db')
 c = conn.cursor()
 #
-x = -1800
-y = 450
-os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+# x = -1800
+# y = 450
+# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:
@@ -168,7 +168,7 @@ class Game:
 				print('beginning perform')
 
 	def force_feed_spawners(self):
-		for _ in range(2):
+		for _ in range(5):
 			sp = random.choice(self.spawners)
 			sp.hold += 10
 
@@ -329,6 +329,7 @@ class Game:
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
 			loop_counter += 1
+
 
 if __name__ == "__main__":
 	game = Game()
