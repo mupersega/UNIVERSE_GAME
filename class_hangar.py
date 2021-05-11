@@ -8,7 +8,7 @@ from class_warehouse import Warehouse
 from class_turret import Turret
 import colours as col
 
-pygame.font.init()
+
 HANGAR_FONT = pygame.font.SysFont('Comic Sans MS', 30)
 
 
@@ -132,7 +132,7 @@ class Hangar:
 			screen = self.station.game.screen
 			screen.blit(self.label, (self.station.rect.left + cfg.x_pad * 2, self.rect.top))
 			pygame.draw.line(screen, cfg.st_arm_colour, [self.station.rect.right, self.rect.center[1] - 1],
-				[self.facilities[-1].rect.center[0], self.rect.center[1] - 1], width=4)
+							 [self.facilities[-1].rect.center[0], self.rect.center[1] - 1], width=4)
 
 	def draw_turrets(self):
 		for i in self.turrets:

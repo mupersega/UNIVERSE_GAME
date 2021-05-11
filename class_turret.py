@@ -42,10 +42,11 @@ class Turret:
 		# Weapons
 		self.active = True
 		self.turret_rest_pos = pygame.Vector2(1920, self.hangar.rect.y)
-		# self.ammo_type = random.choice(["lance", "maul", "bolt"])
-		self.ammo_type = "lance"
+		self.ammo_type = random.choice(["lance", "maul", "bolt"])
+		# self.ammo_type = "lance"
 		self.max_range = cfg.ammo_info[self.ammo_type]["max_range"]
 		self.barrel_rgb = cfg.ammo_info[self.ammo_type]["barrel_rgb"]
+		self.ammo_hold_rgb = cfg.ammo_info[self.ammo_type]["ammo_hold_rgb"]
 		self.max_mag = cfg.ammo_info[self.ammo_type]["mag_size"]
 		self.shot_timer = 100
 		self.heat = 0
@@ -77,6 +78,7 @@ class Turret:
 			self.barrel_rgb = cfg.ammo_info[self.ammo_type]["barrel_rgb"]
 			self.ammo_count = cfg.ammo_info[self.ammo_type]["mag_size"]
 			self.max_mag = cfg.ammo_info[self.ammo_type]["mag_size"]
+			self.ammo_hold_rgb = cfg.ammo_info[self.ammo_type]["ammo_hold_rgb"]
 		else:
 			self.deactivate()
 
@@ -148,7 +150,7 @@ class Turret:
 	def draw(self):
 		# Draw base
 		# Draw ammo hold
-		pygame.draw.rect(self.screen, cfg.col.charcoal, (
+		pygame.draw.rect(self.screen, self.ammo_hold_rgb, (
 			self.rect.midtop[0] - 3, self.rect.midtop[1] + 2, cfg.facility_w_third, 15))
 		# Draw ammo bar
 		bar_length = math.ceil(self.ammo_count / self.max_mag * 14)

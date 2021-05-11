@@ -6,6 +6,8 @@ import pygame
 
 import colours as col
 
+pygame.font.init()
+
 ship_image = pygame.image.load('mining_ship_1.png')
 starsated_image = pygame.image.load('starsated.png')
 big_ship_teal = pygame.image.load('bigger_ship.png')
@@ -110,13 +112,18 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
-wh_starting_resources = [0, 0, 100]
+wh_starting_resources = [70, 70, 60]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
+# warehouse_colours = {
+# 	"rubine": {"rgb": [255, 51, 51]},
+# 	"verdite": {"rgb": [40, 200, 40]},
+# 	"ceruliun": {"rgb": [40, 40, 255]}
+# }
 warehouse_colours = {
-	"rubine": {"rgb": [255, 51, 51]},
-	"verdite": {"rgb": [40, 200, 40]},
-	"ceruliun": {"rgb": [40, 40, 255]}
+	"rubine": {"rgb": [255, 0, 0]},
+	"verdite": {"rgb": [0, 255, 0]},
+	"ceruliun": {"rgb": [0, 0, 255]}
 }
 
 # --Bay-- #
@@ -129,6 +136,7 @@ bay_bar_colours = [[229, 140, 138], [64, 89, 173], [104, 241, 170], [255, 200, 0
 turret_colour = col.cerulean_frost
 turret_interactable_distance = 3
 turret_arrived_distance = 1
+# bars correspond to w, n, e, s
 turret_bar_colours = [[229, 140, 138], [64, 89, 173], [104, 241, 170], [255, 200, 0]]
 ammo_info = {
 	"maul": {
@@ -137,7 +145,8 @@ ammo_info = {
 		"barrel_rgb": [250, 0, 0],
 		"mag_size": 200,
 		"reload_time": 100,
-		"reload_resources": [10, 0, 0]
+		"reload_resources": [10, 0, 0],
+		"ammo_hold_rgb": [100, 0, 0]
 	},
 	"lance": {
 		"min_range": 0,
@@ -145,7 +154,8 @@ ammo_info = {
 		"barrel_rgb": [0, 250, 0],
 		"mag_size": 15,
 		"reload_time": 500,
-		"reload_resources": [0, 5, 0]
+		"reload_resources": [0, 5, 0],
+		"ammo_hold_rgb": [0, 100, 0]
 	},
 	"bolt": {
 		"min_range": 0,
@@ -153,7 +163,8 @@ ammo_info = {
 		"barrel_rgb": [0, 0, 250],
 		"mag_size": 10,
 		"reload_time": 1000,
-		"reload_resources": [0, 0, 5]
+		"reload_resources": [0, 0, 5],
+		"ammo_hold_rgb": [0, 0, 100]
 	}
 }
 turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]
@@ -269,7 +280,7 @@ def draw_beam(self, actor, colour=None):
 		colour = [250, 250, 250]
 	pygame.draw.line(self.screen, colour, (
 		self.rect.center[0], self.rect.center[1]), (
-		actor.rect.center[0], actor.rect.center[1]), 1)
+						 actor.rect.center[0], actor.rect.center[1]), 1)
 
 
 def draw_explosion(explode_object):
