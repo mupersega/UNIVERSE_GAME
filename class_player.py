@@ -68,14 +68,14 @@ class Player:
         if cmd == '!cxauto':
             self.cancel_auto(args)
             return
-        if cmd == '!activate':
-            self.set_behaviour(args)
-            return
-        if cmd == '!deactivate':
-            self.set_behaviour(args)
-            return
+        # if cmd == '!activate':
+        #     self.set_behaviour(args)
+        #     return
+        # if cmd == '!deactivate':
+        #     self.set_behaviour(args)
+        #     return
         if cmd == '!load':
-            self.set_behaviour(args)
+            self.load(args)
             return
 
     def upgrade(self, args):
@@ -235,3 +235,17 @@ class Player:
                 print(f'{self.name.title()}: max facilities reached.')
         else:
             print(f'{self.name.title()}: building is for subs only.')
+
+    def load(self, args):
+        # example args ['turret', '1', 'maul']
+        if len(args) == 3:
+            if args[0] == "turret":
+                for f in self.hangars[0].facilities:
+                    print(f.index)
+                    if f.kind == args[0] and f.index == int(args[1]):
+                        f.load(args[2])
+                    print(f"There is no {args[0]} with an index position of {args[1]}")
+            else:
+                print(f"{args[0]} is not a valid facility.")
+        else:
+            print("Invalid arg count, check turret load syntax.")

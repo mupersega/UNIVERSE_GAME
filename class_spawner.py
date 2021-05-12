@@ -17,7 +17,7 @@ class Spawner:
 		self.acceleration = pygame.math.Vector2(0, 0)
 		self.rect = pygame.Rect(self.location[0], self.location[1], 16, 16)
 		self.hold = 0
-		self.spawn_threshold = 4
+		self.spawn_threshold = 5
 		self.level = 1
 
 		self.roamers = []
@@ -29,7 +29,7 @@ class Spawner:
 		self.roamers.append(new_roamer)
 
 	def setup(self):
-		for _ in range(10):
+		for _ in range(0):
 			self.spawn_roamer()
 
 	def check_spawn(self):

@@ -57,6 +57,7 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
+		self.round = 1
 		self.display_text = "Defense in"
 
 		self.phase_cd = PhaseCountDownDisplay(self)
@@ -173,9 +174,10 @@ class Game:
 				print('beginning perform')
 
 	def force_feed_spawners(self):
-		for _ in range(5):
-			sp = random.choice(self.spawners)
-			sp.hold += 10
+		if self.combat_phase:
+			for _ in range(5):
+				sp = random.choice(self.spawners)
+				sp.hold += self.round
 
 	def initiate_combat_phase(self, phase_duration):
 		# set environment for combat phase
@@ -195,6 +197,7 @@ class Game:
 	def initiate_gather_phase(self, phase_duration):
 		# set environment for gather phase
 		self.next_phase += phase_duration
+		self.round += 1
 		self.gather_phase = True
 		self.combat_phase = False
 		# set all player entities to "mine" behaviour:

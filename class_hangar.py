@@ -65,7 +65,7 @@ class Hangar:
 				facility.index = wh_count
 				wh_count += 1
 			elif facility.kind == 'turret':
-				facility.index = wh_count
+				facility.index = turr_count
 				turr_count += 1
 			facility.x = self.station.rect.right + cfg.x_pad + (cfg.facility_w + cfg.x_pad) * i
 			facility.y = self.rect.top + cfg.y_pad

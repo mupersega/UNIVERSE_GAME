@@ -27,13 +27,13 @@ universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
 start_spawners = 6
-start_entities = 5
+start_entities = 0
 universe_max_asteroids = 300
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 5
-force_feed_phase_time = 8
-gather_phase_time = 30
-combat_phase_time = 10
+force_feed_phase_time = 2
+gather_phase_time = 300
+combat_phase_time = 60
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -112,7 +112,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
-wh_starting_resources = [100, 100, 0]
+wh_starting_resources = [25, 50, 100]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 # warehouse_colours = {

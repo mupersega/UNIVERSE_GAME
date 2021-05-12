@@ -43,7 +43,7 @@ class Turret:
 		self.active = True
 		self.turret_rest_pos = pygame.Vector2(1920, self.hangar.rect.y)
 		self.ammo_type = random.choice(["lance", "maul", "bolt"])
-		# self.ammo_type = "lance"
+		# self.ammo_type = "bolt"
 		self.max_range = cfg.ammo_info[self.ammo_type]["max_range"]
 		self.barrel_rgb = cfg.ammo_info[self.ammo_type]["barrel_rgb"]
 		self.ammo_hold_rgb = cfg.ammo_info[self.ammo_type]["ammo_hold_rgb"]
@@ -71,16 +71,16 @@ class Turret:
 
 	def load(self, ammo_type):
 		if cfg.resource_check(
-				cfg.ammo_info[self.ammo_type]["reload_resources"], cfg.tally_resources(self.owner)):
-			cfg.withdraw_resources(self.owner, cfg.ammo_info[self.ammo_type]["reload_resources"])
+				cfg.ammo_info[ammo_type]["reload_resources"], cfg.tally_resources(self.owner)):
+			cfg.withdraw_resources(self.owner, cfg.ammo_info[ammo_type]["reload_resources"])
 			self.ammo_type = ammo_type
 			self.max_range = cfg.ammo_info[self.ammo_type]["max_range"]
 			self.barrel_rgb = cfg.ammo_info[self.ammo_type]["barrel_rgb"]
 			self.ammo_count = cfg.ammo_info[self.ammo_type]["mag_size"]
 			self.max_mag = cfg.ammo_info[self.ammo_type]["mag_size"]
 			self.ammo_hold_rgb = cfg.ammo_info[self.ammo_type]["ammo_hold_rgb"]
-		else:
-			self.deactivate()
+		# else:
+		# 	self.deactivate()
 
 	def shoot(self):
 		if not self.hostile_target:

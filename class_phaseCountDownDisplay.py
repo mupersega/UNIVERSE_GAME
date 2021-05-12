@@ -9,8 +9,8 @@ class PhaseCountDownDisplay:
 	def __init__(self, game):
 		self.game = game
 		self.screen = game.screen
-		self.rect = pygame.Rect(cfg.screen_width - 310, 10, 300, 40)
-		self.text_rect = pygame.Rect(cfg.screen_width - 250, 15, 90, 40)
+		self.rect = pygame.Rect(cfg.screen_width - 310, 50, 300, 40)
+		self.text_rect = pygame.Rect(cfg.screen_width - 250, 55, 90, 40)
 		self.surface = pygame.Surface((200, 50))
 		self.progress_bar = Bar(self.screen, [0, 0, 255], [255, 0, 0], self.rect, outline=cfg.col.bone)
 		self.font = pygame.font.SysFont("Bauhaus 93", 25)
