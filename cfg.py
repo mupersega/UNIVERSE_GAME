@@ -20,7 +20,7 @@ big_ship_red = pygame.image.load('bigger_ship_red.png')
 # --Game-- #
 screen_width = 1920
 screen_height = 1080
-fps = 120
+fps = 60
 universe_primary = "rubine"
 universe_secondary = "verdite"
 # st 15 = ent 124
@@ -112,7 +112,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
-wh_starting_resources = [70, 70, 60]
+wh_starting_resources = [100, 100, 0]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 # warehouse_colours = {
@@ -212,7 +212,8 @@ set_behaviours = {
 }
 build_values = {
 	"bay": [0, 80, 0, 0],
-	"warehouse": [80, 0, 0, 0]
+	"warehouse": [80, 0, 0, 0],
+	"turret": [0, 0, 80, 0]
 }
 
 poly_coord_array = []
