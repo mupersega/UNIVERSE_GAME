@@ -12,6 +12,7 @@ from class_player import Player
 from class_station import Station
 from class_sun import Sun
 from class_spawner import Spawner
+from class_freighter import Engine
 from class_quadtree import Quadtree
 from class_phaseCountDownDisplay import PhaseCountDownDisplay
 
@@ -44,6 +45,7 @@ class Game:
 		self.suns = []
 		self.stations = []
 		self.entities = []
+		self.freighters = []
 		self.projectiles = []
 		self.explosions = []
 		self.spawners = []
@@ -75,6 +77,8 @@ class Game:
 			self.new_spawner()
 		for _ in range(cfg.start_entities):
 			self.new_player("mupersega")
+		for _ in range(5):
+			self.spawn_freight_train(random.randint(2, 6))
 
 	def new_player(self, name):
 		new_player = Player(self, name)
@@ -93,6 +97,12 @@ class Game:
 	def new_spawner(self):
 		new_spawner = Spawner(self)
 		self.spawners.append(new_spawner)
+
+	def spawn_freight_train(self, carriages):
+		path = [pygame.Vector2(1920, random.randint(10, 2000)),
+				(self.stations[0].rect.centerx, self.stations[0].rect.bottom),
+				(self.stations[0].rect.centerx, -100)]
+		self.freighters.append(Engine(self, path, carriages))
 
 	def random_crash(self):
 		potentials = []
@@ -193,6 +203,8 @@ class Game:
 			for j in i.hangars:
 				for k in j.turrets:
 					k.activate()
+		for i in range(random.randint(2, 4)):
+			self.spawn_freight_train(random.randint(2, 4))
 
 	def initiate_gather_phase(self, phase_duration):
 		# set environment for gather phase
@@ -208,10 +220,11 @@ class Game:
 		for i in self.stations:
 			for j in i.hangars:
 				for k in j.turrets:
-					k.deactivate()
+					return
+					# k.deactivate()
 
-	def phase_change_check(self):
-		if time.time() > self.next_phase:
+	def phase_change_check(self, current_time):
+		if current_time > self.next_phase:
 			if not self.combat_phase:
 				self.initiate_combat_phase(cfg.combat_phase_time)
 			else:
@@ -227,24 +240,24 @@ class Game:
 		while True:
 			curr_time = time.time()
 			# Scheduled checks
-			# if curr_time > self.next_populate_asteroids:
-			# 	self.next_populate_asteroids += cfg.asteroid_pop_phase_time
-			# 	self.populate_asteroids()
-			# if curr_time > self.next_force_feed_spawners:
-			# 	self.next_force_feed_spawners += cfg.force_feed_phase_time
-			# 	self.force_feed_spawners()
-			# if curr_time > self.next_watch_queue:
-			# 	self.next_watch_queue += cfg.watch_queue_phase_time
-			# 	self.watch_queue()
-			#
-			if loop_counter > 260:
+			if curr_time > self.next_populate_asteroids:
+				self.next_populate_asteroids += cfg.asteroid_pop_phase_time
 				self.populate_asteroids()
-				self.watch_queue()
+			if curr_time > self.next_force_feed_spawners:
+				self.next_force_feed_spawners += cfg.force_feed_phase_time
 				self.force_feed_spawners()
-				loop_counter = 0
-				# secondary_loop += 1
-				# if secondary_loop > 3:
-				# 	secondary_loop = 0
+			if curr_time > self.next_watch_queue:
+				self.next_watch_queue += cfg.watch_queue_phase_time
+				self.watch_queue()
+			#
+			# if loop_counter > 260:
+			# 	self.populate_asteroids()
+			# 	self.watch_queue()
+			# 	self.force_feed_spawners()
+			# 	loop_counter = 0
+			# 	# secondary_loop += 1
+			# 	# if secondary_loop > 3:
+			# 	# 	secondary_loop = 0
 			# Watch for quit event.
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
@@ -318,6 +331,9 @@ class Game:
 					if j:
 						j.draw_turrets()
 
+			for i in self.freighters:
+				i.loop()
+
 			for i in self.spawners:
 				i.loop()
 				for j in i.roamers:
@@ -335,7 +351,7 @@ class Game:
 				i.loop()
 
 			# self.main_quadtree.draw()
-			self.phase_change_check()
+			self.phase_change_check(curr_time)
 			self.phase_cd.loop()
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)

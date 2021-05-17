@@ -10,8 +10,6 @@ from class_bolt import Bolt
 
 
 class Turret:
-	"""Bay object wherein players will store vehicles and land current ship."""
-
 	def __init__(self, hangar):
 		self.screen = hangar.station.game.screen
 		self.hangar = hangar
@@ -79,8 +77,8 @@ class Turret:
 			self.ammo_count = cfg.ammo_info[self.ammo_type]["mag_size"]
 			self.max_mag = cfg.ammo_info[self.ammo_type]["mag_size"]
 			self.ammo_hold_rgb = cfg.ammo_info[self.ammo_type]["ammo_hold_rgb"]
-		# else:
-		# 	self.deactivate()
+		else:
+			self.deactivate()
 
 	def shoot(self):
 		if not self.hostile_target:

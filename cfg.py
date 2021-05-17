@@ -20,6 +20,8 @@ big_ship_red = pygame.image.load('bigger_ship_red.png')
 # --Game-- #
 screen_width = 1920
 screen_height = 1080
+# screen_width = 800
+# screen_height = 600
 fps = 60
 universe_primary = "rubine"
 universe_secondary = "verdite"
@@ -112,7 +114,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
-wh_starting_resources = [25, 50, 100]
+wh_starting_resources = [50, 50, 100]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 # warehouse_colours = {
