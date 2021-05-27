@@ -3,6 +3,8 @@ import random
 import cfg
 import math
 
+from class_explosion import Explosion
+
 
 class Engine:
 	"""Implement an engine object to pull a number of carriages containing resources.
@@ -25,6 +27,9 @@ class Engine:
 
 		self.rect = pygame.Rect(self.location.x, self.location.y, 18, 18)
 
+		self.life = cfg.engine_life
+		self.active = True
+
 		self.build_carriages()
 
 	def load_next_location(self):
@@ -34,9 +39,18 @@ class Engine:
 			else:
 				self.kill()
 
+	def take_damage(self, amt):
+		self.life -= amt
+		if self.life < 1:
+			self.kill()
+
 	def kill(self):
-		if self in self.game.freighters:
+		self.game.explosions.append(Explosion(self.game, self.rect.center, 14, [255, 255, 255]))
+		self.active = False
+		if self in self.game.freighters.copy():
 			self.game.freighters.remove(self)
+			for i in self.full_train.copy():
+				i.kill()
 
 	def build_carriages(self):
 		for _ in range(self.number_carriages):
@@ -46,7 +60,7 @@ class Engine:
 
 	def update(self):
 		self.direction = (self.location - self.target_location).normalize()
-		self.location -= self.direction * 2
+		self.location -= self.direction * 1
 		self.rect.topleft = self.location
 
 	def update_carriages(self):
@@ -74,6 +88,7 @@ class Engine:
 
 class Carriage:
 	def __init__(self, puller) -> object:
+		self.game = puller.game
 		self.screen = puller.screen
 		self.puller = puller
 		self.target_location = pygame.Vector2(puller.location)
@@ -82,7 +97,9 @@ class Carriage:
 		self.tow_location = pygame.Vector2(self.location + self.direction * 10)
 
 		self.rect = pygame.Rect(self.location.x, self.location.y, 18, 18)
-		self.velocity = 1
+		self.velocity = random.uniform(.5, 3)
+		self.life = cfg.carriage_life
+		self.active = True
 
 		self.carrying = random.choice(cfg.planet_probability)
 
@@ -96,8 +113,20 @@ class Carriage:
 		self.location -= (self.location - self.target_location).normalize() * self.velocity
 		self.rect.topleft = self.location
 
+	def take_damage(self, amt):
+		self.life -= amt
+		if self.life < 1:
+			self.kill()
+
+	def kill(self):
+		if self.active:
+			self.active = False
+			self.game.explosions.append(
+				Explosion(self.game, self.rect.center, 10, cfg.warehouse_colours[self.carrying]["rgb"]))
+
 	def draw(self):
-		pygame.draw.circle(self.screen, cfg.warehouse_colours[self.carrying]["rgb"], self.rect.center, 10)
+		if self.active:
+			pygame.draw.circle(self.screen, cfg.warehouse_colours[self.carrying]["rgb"], self.rect.center, 10)
 		pygame.draw.circle(self.screen, [200, 200, 200], self.rect.center, 10, width=3)
 
 	def loop(self):

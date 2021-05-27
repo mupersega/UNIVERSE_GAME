@@ -6,13 +6,14 @@ import random
 class Explosion:
 	"""A class to manage explosion objects consisting of n particles. Particles are managed in arrays in this class, NOT
 	as their own instantiated objects."""
-	def __init__(self, game, position, size):
+	def __init__(self, game, position, size, rgb):
 		self.game = game
 		self.location = position
 		self.size = size
 		self.particles = []
 		self.vecs = []
 		self.cycle = 0
+		self.rgb = rgb
 
 		self.create_particles()
 
@@ -29,7 +30,7 @@ class Explosion:
 
 	def draw(self):
 		for i in range(self.size):
-			pygame.draw.circle(self.game.screen, [255, 255, 255], self.location + (self.vecs[i] * self.cycle), self.particles[1])
+			pygame.draw.circle(self.game.screen, self.rgb, self.location + (self.vecs[i] * self.cycle), self.particles[1])
 
 	def loop(self):
 		if self.cycle > self.size * 5 and self in self.game.explosions.copy():

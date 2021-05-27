@@ -29,7 +29,7 @@ class Bolt:
 		self.life = random.randint(60, 80) * 5
 
 		# Muzzle flash
-		self.game.explosions.append(Explosion(self.game, start_loc, 4))
+		self.game.explosions.append(Explosion(self.game, start_loc, 4, [255, 255, 255]))
 
 	def apply_force(self, force):
 		self.acceleration += force
@@ -65,7 +65,7 @@ class Bolt:
 
 	def check_collision(self):
 		nearby_hits = []
-		self.game.main_quadtree.query(self.rect, nearby_hits)
+		self.game.hostile_quadtree.query(self.rect, nearby_hits)
 		for t in nearby_hits:
 			if pygame.Rect.colliderect(self.rect, t.rect):
 				self.draw_bolts(t)

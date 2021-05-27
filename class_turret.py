@@ -54,7 +54,7 @@ class Turret:
 
 	def choose_a_rand_target(self):
 		hostiles_in_range = []
-		self.game.main_quadtree.query_radius(self.location, self.max_range, hostiles_in_range)
+		self.game.hostile_quadtree.query_radius(self.location, self.max_range, hostiles_in_range)
 		if hostiles_in_range:
 			return random.choice(hostiles_in_range)
 

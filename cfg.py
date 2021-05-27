@@ -33,8 +33,8 @@ start_entities = 0
 universe_max_asteroids = 300
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 5
-force_feed_phase_time = 2
-gather_phase_time = 300
+force_feed_phase_time = 10
+gather_phase_time = 240
 combat_phase_time = 60
 
 # --Entity-- #
@@ -114,7 +114,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
-wh_starting_resources = [50, 50, 100]
+wh_starting_resources = [0, 0, 0]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 # warehouse_colours = {
@@ -176,7 +176,9 @@ loc_colour = [255, 0, 255]
 loc_interactable_distance = 2
 loc_arrived_distance = 3
 
-# --Projectile-- #
+# --Freighter-- #
+engine_life = 300
+carriage_life = 30
 
 # --Miscellaneous-- #
 composition_rolls = 10

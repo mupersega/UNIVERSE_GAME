@@ -15,13 +15,13 @@ class PhaseCountDownDisplay:
 		self.progress_bar = Bar(self.screen, [0, 0, 255], [255, 0, 0], self.rect, outline=cfg.col.bone)
 		self.font = pygame.font.SysFont("Bauhaus 93", 25)
 		self.time_label = self.font.render(
-			f"{self.game.display_text} phase, time remaining" + "{}:{:02d}".format(*divmod(0, 60)), True, cfg.col.bone)
+			f"{self.game.phase_display_text} phase, time remaining" + "{}:{:02d}".format(*divmod(0, 60)), True, cfg.col.bone)
 		# self.phase_label = self.font.render(f"{self.game.current_phase}", True, cfg.col.bone)
 
 	def update(self):
 		secs = self.game.next_phase - time.time()
 		self.time_label = self.font.render(
-			f"{self.game.display_text} " + "{}:{:02d}".format(*divmod(int(secs), 60)), True, cfg.col.bone)
+			f"{self.game.phase_display_text} " + "{}:{:02d}".format(*divmod(int(secs), 60)), True, cfg.col.bone)
 		if self.game.gather_phase:
 			self.progress_bar.progress = 1 - secs / cfg.gather_phase_time
 		else:

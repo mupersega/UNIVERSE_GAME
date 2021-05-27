@@ -18,7 +18,7 @@ class Maul:
 		self.life = random.randint(60, 80) * 1.5
 		self.rect = pygame.Rect(self.location.x, self.location.y, 5, 5)
 		# pygame.draw.circle(self.game.screen, [250, 240, 255], self.location, random.randint(1, 4))
-		self.game.explosions.append(Explosion(self.game, start_loc, 3))
+		self.game.explosions.append(Explosion(self.game, start_loc, 3, [255, 255, 255]))
 
 	def move(self):
 		self.location -= self.trajectory * self.velocity
@@ -32,7 +32,7 @@ class Maul:
 
 	def check_collision(self):
 		nearby_hits = []
-		self.game.main_quadtree.query(self.rect, nearby_hits)
+		self.game.hostile_quadtree.query(self.rect, nearby_hits)
 		for i in nearby_hits:
 			if pygame.Rect.colliderect(self.rect, i.rect):
 				i.location -= self.trajectory * 2

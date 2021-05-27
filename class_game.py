@@ -40,7 +40,8 @@ class Game:
 
 		# lists of created objects
 		self.screen_rect = pygame.Rect(0, 0, cfg.screen_width, cfg.screen_height)
-		self.main_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
+		self.hostile_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
+		self.friendly_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
 
 		self.suns = []
 		self.stations = []
@@ -49,6 +50,7 @@ class Game:
 		self.projectiles = []
 		self.explosions = []
 		self.spawners = []
+		self.hostiles = []
 		self.players = []
 		self.player_names = []
 
@@ -60,7 +62,7 @@ class Game:
 		self.gather_phase = True
 		self.combat_phase = False
 		self.round = 1
-		self.display_text = "Defense in"
+		self.phase_display_text = "Defense in"
 
 		self.phase_cd = PhaseCountDownDisplay(self)
 
@@ -72,7 +74,6 @@ class Game:
 			self.new_station()
 		for _ in range(cfg.start_suns):
 			self.new_sun()
-
 		for _ in range(cfg.start_spawners):
 			self.new_spawner()
 		for _ in range(cfg.start_entities):
@@ -185,7 +186,7 @@ class Game:
 
 	def force_feed_spawners(self):
 		if self.combat_phase:
-			for _ in range(5):
+			for _ in range(3):
 				sp = random.choice(self.spawners)
 				sp.hold += self.round
 
@@ -195,7 +196,7 @@ class Game:
 		self.combat_phase = True
 		self.gather_phase = False
 		# set all player entities to "stay" behaviour:
-		self.display_text = "Gather in"
+		self.phase_display_text = "Gather in"
 		for i in self.players:
 			for j in i.entities:
 				j.set_behaviour("stay")
@@ -203,6 +204,8 @@ class Game:
 			for j in i.hangars:
 				for k in j.turrets:
 					k.activate()
+		for i in self.hostiles:
+			i.hostile = True
 		for i in range(random.randint(2, 4)):
 			self.spawn_freight_train(random.randint(2, 4))
 
@@ -213,7 +216,7 @@ class Game:
 		self.gather_phase = True
 		self.combat_phase = False
 		# set all player entities to "mine" behaviour:
-		self.display_text = "Defense in"
+		self.phase_display_text = "Defense in"
 		for i in self.players:
 			for j in i.entities:
 				j.set_behaviour("mine")
@@ -236,7 +239,6 @@ class Game:
 			pygame.draw.circle(self.screen, [0, 255, 0], (300, 40), 20)
 
 	def mainloop(self):  # sourcery no-metrics
-		loop_counter = 0
 		while True:
 			curr_time = time.time()
 			# Scheduled checks
@@ -249,22 +251,13 @@ class Game:
 			if curr_time > self.next_watch_queue:
 				self.next_watch_queue += cfg.watch_queue_phase_time
 				self.watch_queue()
-			#
-			# if loop_counter > 260:
-			# 	self.populate_asteroids()
-			# 	self.watch_queue()
-			# 	self.force_feed_spawners()
-			# 	loop_counter = 0
-			# 	# secondary_loop += 1
-			# 	# if secondary_loop > 3:
-			# 	# 	secondary_loop = 0
-			# Watch for quit event.
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					pygame.quit()
 					sys.exit()
 
 				if event.type == pygame.KEYDOWN:
+					# --DEBUG CONTROLS-- #
 					# EXIT = Esc
 					# SPAWN asteroid = space
 					# SPAWN station = s
@@ -273,7 +266,6 @@ class Game:
 					# BUILD warehouse = w
 					# UPGRADE miner = m
 					# UPGRADE thrusters = t
-					# SHOOT projectile = p
 
 					if event.key == pygame.K_SPACE:
 						self.random_crash()
@@ -308,12 +300,15 @@ class Game:
 			# Clear screen.
 			self.screen.fill((0, 0, 0))
 
-			# Prep Quadtree
-			self.main_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
-			for i in self.spawners:
-				for j in i.roamers:
-					self.main_quadtree.insert(j)
-			# loops.
+			# Prep Quadtrees
+			self.hostile_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
+			for i in self.hostiles:
+				self.hostile_quadtree.insert(i)
+			self.friendly_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
+			for i in self.freighters:
+				for j in i.full_train:
+					self.friendly_quadtree.insert(j)
+			# Loops.
 			for i in self.suns:
 				i.loop()
 				for j in i.planets:
@@ -336,8 +331,9 @@ class Game:
 
 			for i in self.spawners:
 				i.loop()
-				for j in i.roamers:
-					j.loop()
+
+			for i in self.hostiles:
+				i.loop()
 
 			for i in self.players:
 				i.process_auto()
@@ -350,12 +346,12 @@ class Game:
 			for i in self.explosions.copy():
 				i.loop()
 
-			# self.main_quadtree.draw()
+			# self.hostile_quadtree.draw([100, 0, 0])
+			# self.friendly_quadtree.draw([0, 0, 100])
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
-			loop_counter += 1
 
 
 if __name__ == "__main__":

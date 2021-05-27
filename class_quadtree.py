@@ -74,16 +74,16 @@ class Quadtree:
 			n_points += len(self.nw) + len(self.ne) + len(self.se) + len(self.sw)
 		return n_points
 
-	def draw(self):
+	def draw(self, rgb):
 		"""Draw a representation of boundary to game screen."""
 
-		pygame.draw.rect(self.game.screen, [100, 0, 0], self.boundary, 1)
+		pygame.draw.rect(self.game.screen, rgb, self.boundary, 1)
 
 		if self.divided:
-			self.nw.draw()
-			self.ne.draw()
-			self.se.draw()
-			self.sw.draw()
+			self.nw.draw(rgb)
+			self.ne.draw(rgb)
+			self.se.draw(rgb)
+			self.sw.draw(rgb)
 
 	# this is for querying in a radius but I have not made it compatible with pygame. #
 	def query_circle(self, boundary, centre, radius, found_points):

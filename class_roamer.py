@@ -18,15 +18,19 @@ class Roamer:
 		self.image = cfg.starsated_image
 		self.target_loc = pygame.math.Vector2(0, 0)
 		self.location = pygame.math.Vector2(spawner.rect.center)
+		self.hostile_target = None
 		self.acceleration = pygame.math.Vector2(1, 1)
+		self.bounce_force = pygame.Vector2(1, 1)
 		self.last_loc = pygame.math.Vector2(spawner.rect.center)
 		self.ang_vec = pygame.math.Vector2(0, 0)
 		self.velocity = 1
+		self.hunt_velocity = 2
 		self.top_speed = 1.5
 		self.hold = 0
 		self.rect = pygame.Rect(0, 0, 10, 10)
 		self.angle = 3
 		self.life = 10
+		self.hostile = True
 		self.set_new_roam_location()
 
 	def draw(self):
@@ -58,11 +62,36 @@ class Roamer:
 			self.feed()
 			print(self.hold)
 
+	def hunt(self):
+		if self.hostile_target:
+			if self.rect.colliderect(self.hostile_target.rect):
+				self.hostile_target.take_damage(.5)
+				self.bounce_force = pygame.Vector2(random.uniform(-4, 4), random.uniform(-4, 4))
+				self.poly_explosion()
+				return
+			self.bounce_force *= 0.95
+			self.acceleration = self.location - self.hostile_target.rect.center
+			self.location -= self.acceleration.normalize() * self.hunt_velocity + self.bounce_force
+			self.rect.topleft = self.location
+
 	def rotate(self):
-		self.ang_vec = self.location - self.target_loc
+		t = self.hostile_target.rect.center if self.hostile else self.target_loc
+		self.ang_vec = self.location - t
 		rads = math.atan2(self.ang_vec[0], self.ang_vec[1])
 		deg = math.degrees(rads)
 		self.angle = deg
+
+	def choose_hostile_target(self):
+		if self.hostile_target:
+			if self.hostile_target.life > 0:
+				return
+			else:
+				self.hostile_target = None
+		elif len(self.game.freighters) > 0:
+			freighter = random.choice(self.game.freighters.copy())
+			self.hostile_target = random.choice([i for i in freighter.full_train if i.life > 0])
+		else:
+			self.hostile = False
 
 	def set_new_roam_location(self):
 		w, h = cfg.screen_width / 4, cfg.screen_height / 4
@@ -77,9 +106,9 @@ class Roamer:
 
 	def die(self):
 		if self.life <= 0:
-			self.spawner.roamers.remove(self)
+			self.game.hostiles.remove(self)
 			# draw explosion
-			new_explosion = Explosion(self.game, self.location, random.randint(5, 15))
+			new_explosion = Explosion(self.game, self.location, random.randint(5, 15), [255, 255, 255])
 			self.game.explosions.append(new_explosion)
 
 	def move(self):
@@ -94,9 +123,32 @@ class Roamer:
 		self.location -= self.acceleration.normalize() * self.velocity
 		self.rect.topleft = self.location
 
+	def poly_explosion(self):
+		pc = random.choice(cfg.bolt_coord_array)
+		ctr = pygame.Vector2(self.hostile_target.rect.center)
+		pygame.draw.lines(self.game.screen, [255, 0, 0], closed=False, points=[
+			ctr + pc[0],
+			ctr + pc[1],
+			ctr + pc[2],
+			ctr + pc[3],
+		])
+		pc = random.choice(cfg.bolt_coord_array)
+		pygame.draw.polygon(self.game.screen, [255, 200, 230], [
+			ctr + pc[0],
+			ctr + pc[1],
+			ctr + pc[2],
+			ctr + pc[3],
+		])
+
 	def loop(self):
 		self.die()
-		self.roam()
-		self.move()
-		self.rotate()
+		if self.hostile:
+			self.choose_hostile_target()
+			if self.hostile_target:
+				self.hunt()
+				self.rotate()
+		else:
+			self.roam()
+			self.move()
+			self.rotate()
 		self.draw()
