@@ -7,10 +7,11 @@ import time
 class Lance:
 	"""The lance ammunition type will be a laser that targets, locks on, charges and then hits for high damage. Its rate
 	of fire is low"""
-	def __init__(self, start_loc, trajectory, target_object, game):
+	def __init__(self, start_loc, trajectory, target_object, game, shooter):
 		self.game = game
 		self.location = pygame.Vector2(start_loc)
 		self.target = target_object
+		self.shooter = shooter
 		self.life = 0.01
 		self.rect = pygame.Rect(self.location.x, self.location.y, 5, 5)
 		self.rgb = [30, 0, 30]
@@ -27,6 +28,7 @@ class Lance:
 		pygame.draw.line(self.game.screen, [255, 255, 255], self.location, self.target.rect.center, 5)
 		self.poly_explosion()
 		self.target.life -= 10
+		self.target.last_hit = self.shooter
 		self.kill()
 
 	def kill(self):

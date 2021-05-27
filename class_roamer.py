@@ -31,6 +31,7 @@ class Roamer:
 		self.angle = 3
 		self.life = 10
 		self.hostile = True
+		self.last_hit = None
 		self.set_new_roam_location()
 
 	def draw(self):
@@ -110,6 +111,8 @@ class Roamer:
 			# draw explosion
 			new_explosion = Explosion(self.game, self.location, random.randint(5, 15), [255, 255, 255])
 			self.game.explosions.append(new_explosion)
+			self.last_hit.kills += 1
+			self.game.leader_board.update()
 
 	def move(self):
 		mod_range = 50

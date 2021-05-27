@@ -37,10 +37,6 @@ class Hangar:
 		self.myfont = pygame.font.SysFont("Agency FB", cfg.facility_h, bold=True)
 		self.label = None
 
-		# for i in range(random.randint(1, 1)):
-		# for i in range(random.randint(0, 2)):
-		# 	self.new_warehouse()
-
 		# for i in range(random.randint(1, 2)):
 		for i in range(0):
 			self.new_bay()

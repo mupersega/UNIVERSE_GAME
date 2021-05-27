@@ -14,6 +14,7 @@ big_ship_teal = pygame.image.load('bigger_ship.png')
 big_ship_purple = pygame.image.load('bigger_ship_purple.png')
 big_ship_green = pygame.image.load('bigger_ship_green.png')
 big_ship_red = pygame.image.load('bigger_ship_red.png')
+leaderboard_font = pygame.font.SysFont("Agency FB", 22)
 
 
 # CLASS SETTINGS #
@@ -22,14 +23,14 @@ screen_width = 1920
 screen_height = 1080
 # screen_width = 800
 # screen_height = 600
-fps = 60
+fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 1
 start_suns = 1
 start_spawners = 6
-start_entities = 0
+start_entities = 5
 universe_max_asteroids = 300
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 5

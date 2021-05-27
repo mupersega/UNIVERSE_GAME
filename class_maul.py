@@ -9,11 +9,12 @@ from class_explosion import Explosion
 class Maul:
 	"""The maul ammunition type will move in a direction at a high rate of fire, it has a low range and will not alter
 	its trajectory. It will have a life span and thus does not require removal upon leaving the screen."""
-	def __init__(self, start_loc, trajectory, target, game):
+	def __init__(self, start_loc, trajectory, target, game, shooter):
 		self.game = game
 		self.location = pygame.Vector2(start_loc)
 		self.trajectory = trajectory
 		self.acceleration = pygame.Vector2(0, 0)
+		self.shooter = shooter
 		self.velocity = 7
 		self.life = random.randint(60, 80) * 1.5
 		self.rect = pygame.Rect(self.location.x, self.location.y, 5, 5)
@@ -38,6 +39,7 @@ class Maul:
 				i.location -= self.trajectory * 2
 				self.poly_explosion()
 				i.life -= 1
+				i.last_hit = self.shooter
 				self.life = 0
 				self.kill()
 

@@ -22,10 +22,18 @@ class Player:
         self.turrets = []
         self.trades = []
         self.autos = []
+        self.pause_autos = True
         self.rubine = 0
         self.verdite = 0
         self.ceruliun = 0
         self.mupees = cfg.player_starting_mupees
+
+        self.kills = 0
+        self.leaderboard_position = 0
+
+        # Leaderboard element
+        self.name_plate = cfg.leaderboard_font.render(self.name, True, cfg.col.bone)
+        self.kills_plate = cfg.leaderboard_font.render(str(self.kills), True, cfg.col.bone)
 
         self.player_setup()
 
@@ -111,6 +119,7 @@ class Player:
                                         return
                                     else:
                                         print("miner upgrade failed")
+                                        self.pause_autos = True
                                 else:
                                     print("Upgrade at max level.")
                                 return
@@ -129,6 +138,7 @@ class Player:
                                     print('hold upgraded')
                                 else:
                                     print("hold upgrade failed")
+                                    self.pause_autos = True
                                 # else return not enough resources
                                 return
                             elif ur == 'thrusters':
@@ -144,6 +154,7 @@ class Player:
                                         print("Upgrade max lvl")
                                 else:
                                     print("thrusters upgrade failed")
+                                    self.pause_autos = True
                                 return
                         else:
                             print("No ship in this facility.")
@@ -165,10 +176,9 @@ class Player:
                     if f.kind == args[0] and str(f.index) == args[1]:
                         f.auto = True
                         f.auto_upgrade = args[2]
+                        self.pause_autos = False
                         if f not in self.autos:
                             self.autos.append(f)
-
-                        return
                 print(f"There is no {args[0]} with an index position of {args[1]}")
             else:
                 print(f"{args[2]} is not a valid upgrade type for {args[0]}")
@@ -176,6 +186,8 @@ class Player:
             print(f"{args[0]} not a valid facility.")
 
     def process_auto(self):
+        if self.pause_autos:
+            return
         for f in self.autos:
             args = [f.kind, f.index, f.auto_upgrade]
             self.upgrade(args)
@@ -202,7 +214,8 @@ class Player:
         print(args)
         fk = args[0].lower()
         print(f'{self.name}:{sub_status}')
-        if sub_status == '1' or self.name in ["dojiwastaken", 'mephistonag']:
+        # check for subscriber or VIP status
+        if sub_status == '1' or self.name in ["dojiwastaken", "mephistonag"]:
             # check to see that max facilities isn't reached
             if len(self.hangars[0].facilities) < cfg.max_facilities:
                 # check to see if arg is valid

@@ -15,6 +15,7 @@ from class_spawner import Spawner
 from class_freighter import Engine
 from class_quadtree import Quadtree
 from class_phaseCountDownDisplay import PhaseCountDownDisplay
+from class_leaderboard import Leaderboard
 
 
 admins = ['mupersega']
@@ -65,6 +66,7 @@ class Game:
 		self.phase_display_text = "Defense in"
 
 		self.phase_cd = PhaseCountDownDisplay(self)
+		self.leader_board = Leaderboard(self)
 
 		self.game_setup()
 
@@ -77,7 +79,8 @@ class Game:
 		for _ in range(cfg.start_spawners):
 			self.new_spawner()
 		for _ in range(cfg.start_entities):
-			self.new_player("mupersega")
+			# self.new_player("mupersega")
+			self.new_player(random.choice(["mupersega", "dojiwastaken", "mote"]))
 		for _ in range(5):
 			self.spawn_freight_train(random.randint(2, 6))
 
@@ -251,6 +254,8 @@ class Game:
 			if curr_time > self.next_watch_queue:
 				self.next_watch_queue += cfg.watch_queue_phase_time
 				self.watch_queue()
+				self.leader_board.order_players("kills")
+				self.leader_board.blit_to_board()
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					pygame.quit()
@@ -299,6 +304,7 @@ class Game:
 
 			# Clear screen.
 			self.screen.fill((0, 0, 0))
+			self.leader_board.draw()
 
 			# Prep Quadtrees
 			self.hostile_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)

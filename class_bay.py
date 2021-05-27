@@ -66,6 +66,7 @@ class Bay:
 							actor.ores[i] -= 1
 							f.ores[i] += 1
 							break
+		self.owner.pause_autos = False
 
 	def update_vector(self):
 		self.location = (self.x + self.width * 0.5, self.y + self.width * 0.5)
@@ -82,7 +83,7 @@ class Bay:
 		w_bl = cfg.find_bar_length(occ.miner_lvl, occ.max_miner_lvl, h)
 		w_offset = (h - w_bl) / 2
 		west_coords = [[self.rect.left + 1, self.rect.top + w_offset + 1],
-					   [self.rect.left + 1, self.rect.bottom - w_offset - 1]]
+						[self.rect.left + 1, self.rect.bottom - w_offset - 1]]
 
 		# NORTH BAR
 		n_bl = cfg.find_bar_length(occ.weapons_lvl, occ.max_weapons_lvl, h)
@@ -94,7 +95,7 @@ class Bay:
 		e_bl = cfg.find_bar_length(occ.thrusters_lvl, occ.max_thrusters_lvl, h)
 		e_offset = (h - e_bl) / 2
 		east_coords = [[self.rect.right - 1, self.rect.top + e_offset + 1],
-					   [self.rect.right - 1, self.rect.bottom - e_offset - 1]]
+						[self.rect.right - 1, self.rect.bottom - e_offset - 1]]
 
 		# SOUTH BAR
 		s_bl = cfg.find_bar_length(occ.hold_lvl, occ.max_hold_lvl, h)
@@ -106,7 +107,6 @@ class Bay:
 
 	def draw(self):
 		# Draw bay outline
-		# pygame.draw.rect(self.screen, self.rgb, self.rect, 2)
 		pygame.draw.circle(self.screen, cfg.st_colour, self.rect.center, cfg.facility_h / 3, width=2)
 		# Draw Attribute bars
 		for i in range(4):
