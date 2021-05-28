@@ -30,12 +30,12 @@ universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
 start_spawners = 6
-start_entities = 5
+start_entities = 2
 universe_max_asteroids = 300
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 5
 force_feed_phase_time = 10
-gather_phase_time = 240
+gather_phase_time = 50
 combat_phase_time = 60
 
 # --Entity-- #
@@ -178,8 +178,8 @@ loc_interactable_distance = 2
 loc_arrived_distance = 3
 
 # --Freighter-- #
-engine_life = 300
-carriage_life = 30
+engine_life = 200
+carriage_life = 100
 
 # --Miscellaneous-- #
 composition_rolls = 10

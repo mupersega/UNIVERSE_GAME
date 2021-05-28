@@ -156,6 +156,8 @@ class Turret:
 			self.rect.centerx - 1, self.rect.centery + 7], [
 			self.rect.centerx - 1, self.rect.centery + 7 - bar_length], 4)
 		pygame.draw.circle(self.screen, cfg.col.charcoal, self.rect.center, 9, 2)
+		# Draw weapon range
+		pygame.draw.circle(self.screen, self.barrel_rgb, self.rect.center, self.max_range, 1)
 
 	# if self.hostile_target:
 	# pygame.draw.line(self.screen, [50, 5, 5], (self.rect.center), self.hostile_target.location)

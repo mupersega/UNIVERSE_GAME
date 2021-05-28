@@ -30,6 +30,7 @@ class Roamer:
 		self.rect = pygame.Rect(0, 0, 10, 10)
 		self.angle = 3
 		self.life = 10
+		self.perception_range = 250
 		self.hostile = True
 		self.last_hit = None
 		self.set_new_roam_location()
@@ -39,9 +40,13 @@ class Roamer:
 		draw_image = pygame.transform.rotate(self.image, self.angle)
 		self.screen.blit(draw_image, (self.location[0] - 5, self.location[1] - 5))
 
+		# pygame.draw.circle(self.screen, [50, 50, 50], self.location, self.perception_range, width=1)
+		# if self.hostile_target:
+		# 	pygame.draw.line(self.screen, [255, 255, 255], self.location, self.hostile_target.location, 1)
+
 	def feed(self):
 		self.hold += 1
-	
+
 	def find_closest_spawner(self):
 		s = self.spawner
 		d = self.location.distance_to(s.location)
@@ -88,15 +93,18 @@ class Roamer:
 				return
 			else:
 				self.hostile_target = None
+				self.velocity = 1
 		elif len(self.game.freighters) > 0:
-			self.hostile = True
-			freighter = random.choice(self.game.freighters.copy())
+			freighter = random.choice([i for i in self.game.freighters.copy() if cfg.on_screen_check_vec(i.full_train[0].location)])
 			try:
-				self.hostile_target = random.choice([i for i in freighter.full_train if i.life > 0 if cfg.on_screen_check_vec(i.location)])
+				self.hostile_target = random.choice([i for i in freighter.full_train if i.life > 0])
 			except:
+				self.last_loc = pygame.math.Vector2(self.location)
 				return
 		else:
 			self.hostile = False
+			self.hostile_target = None
+			self.velocity = 1
 
 	def set_new_roam_location(self):
 		w, h = cfg.screen_width / 4, cfg.screen_height / 4
@@ -149,10 +157,20 @@ class Roamer:
 
 	def loop(self):
 		self.die()
-		if len([i for i in self.game.freighters if cfg.on_screen_check_vec(i.location)]) > 0:
+
+		# ###################
+		# hostiles_in_range = []
+		# self.game.friendly_quadtree.query_radius(self.location, self.perception_range, hostiles_in_range)
+		# if len(hostiles_in_range) > 0:
+		# 	self.hostile = True
+		# ###################
+
+		if len([i for i in self.game.freighters if cfg.on_screen_check_vec(i.full_train[0].location)]) > 0:
 			self.hostile = True
 		else:
 			self.hostile = False
+			self.hostile_target = False
+
 		if self.hostile:
 			self.choose_hostile_target()
 			if self.hostile_target:

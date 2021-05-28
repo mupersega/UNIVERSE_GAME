@@ -75,7 +75,7 @@ class Entity:
 			else:
 				self.return_to_base()
 
-		if self.target.on_screen:
+		if cfg.on_screen_check(self.target):
 			# update to next target if in stop_distance of current, if none then return
 			# print(self.target_queue)
 			if len(self.target_queue) > 0:

@@ -41,11 +41,17 @@ class Engine:
 		else:
 			# if all carriages are off screen and no more locations, then arrive and distribute all resources
 			for i in self.full_train:
-				i.safe = True
+				if not cfg.on_screen_check(i.location) and i.active:
+					i.distribute_hold_resources()
+				if len([j for j in self.full_train if j.active]) == 0:
+					if self in self.game.freighters.copy():
+						self.game.freighters.remove(self)
+					self.full_train.clear()
 
 	def take_damage(self, amt):
 		self.life -= amt
-		if self.life < 1:
+		print(self.life)
+		if self.life <= 0:
 			self.kill()
 
 	def kill(self):
@@ -53,8 +59,9 @@ class Engine:
 		self.active = False
 		if self in self.game.freighters.copy():
 			self.game.freighters.remove(self)
-			for i in self.full_train.copy():
+			for i in self.full_train[1:]:
 				i.kill()
+		self.full_train.clear()
 
 	def build_carriages(self):
 		for _ in range(self.number_carriages):
@@ -66,10 +73,6 @@ class Engine:
 		self.direction = (self.location - self.target_location).normalize()
 		self.location -= self.direction * 1.2
 		self.rect.topleft = self.location
-
-	def update_carriages(self):
-		for i in self.carriages:
-			i.loop()
 
 	def rotate(self):
 		rads = math.atan2(self.direction[0], self.direction[1])
@@ -89,6 +92,14 @@ class Engine:
 		self.rotate()
 		self.load_next_location()
 
+	def distribute_hold_resources(self):
+		if self.active:
+			split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
+			print(split_distribution)
+			for j in self.game.players:
+				j.distribute_resources(split_distribution)
+			self.active = False
+
 
 class Carriage:
 	def __init__(self, puller) -> object:
@@ -98,13 +109,11 @@ class Carriage:
 		self.target_location = pygame.Vector2(puller.location)
 		self.location = pygame.Vector2(puller.location.x + 50, puller.location.y + 20)
 		self.direction = pygame.Vector2(self.location - self.target_location).normalize()
-		self.tow_location = pygame.Vector2(self.location + self.direction * 10)
 
 		self.rect = pygame.Rect(self.location.x, self.location.y, 18, 18)
 		self.velocity = random.uniform(.5, 3)
 		self.life = cfg.carriage_life
 		self.active = True
-		self.safe = False
 
 		self.carrying = random.choice(cfg.planet_probability)
 		self.hold = cfg.mineral_info[self.carrying]["carriage_carry"]
@@ -115,25 +124,25 @@ class Carriage:
 		self.velocity = self.location.distance_to(self.puller.location) / 15
 		self.target_location = self.puller.location
 		self.direction = pygame.Vector2(self.location - self.target_location).normalize()
-		self.tow_location = pygame.Vector2(self.location + self.direction * -10)
 		self.location -= (self.location - self.target_location).normalize() * self.velocity
 		self.rect.topleft = self.location
-		self.distribute_hold_resources()
 
 	def take_damage(self, amt):
 		self.life -= amt
-		if self.life < 1:
+		if self.life <= 0:
 			self.kill()
 
 	def distribute_hold_resources(self):
-		if self.safe and not cfg.on_screen_check_vec(self.location) and self.active:
+		if self.active:
 			split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
 			print(split_distribution)
 			for j in self.game.players:
 				j.distribute_resources(split_distribution)
+			self.active = False
 
 	def kill(self):
 		if self.active:
+			self.life = 0
 			self.active = False
 			self.game.explosions.append(
 				Explosion(self.game, self.rect.center, 10, cfg.warehouse_colours[self.carrying]["rgb"]))

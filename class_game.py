@@ -78,9 +78,10 @@ class Game:
 			self.new_sun()
 		for _ in range(cfg.start_spawners):
 			self.new_spawner()
-		for _ in range(cfg.start_entities):
-			# self.new_player("mupersega")
-			self.new_player(random.choice(["mupersega", "dojiwastaken", "mote"]))
+
+		self.new_player("mupersega")
+		for i in range(cfg.start_entities):
+			self.new_player(f"P.{i}")
 		for _ in range(5):
 			self.spawn_freight_train(random.randint(2, 6))
 
@@ -307,13 +308,15 @@ class Game:
 			self.leader_board.draw()
 
 			# Prep Quadtrees
+			# HOSTILE QUAD
 			self.hostile_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
 			for i in self.hostiles:
 				self.hostile_quadtree.insert(i)
-			self.friendly_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
-			for i in self.freighters:
-				for j in i.full_train:
-					self.friendly_quadtree.insert(j)
+			# FRIENDLY QUAD
+			# self.friendly_quadtree = Quadtree(self, self.screen_rect, max_objects=2, depth=0)
+			# for i in self.freighters:
+			# 	for j in i.full_train:
+			# 		self.friendly_quadtree.insert(j)
 			# Loops.
 			for i in self.suns:
 				i.loop()
@@ -353,11 +356,12 @@ class Game:
 				i.loop()
 
 			# self.hostile_quadtree.draw([100, 0, 0])
-			# self.friendly_quadtree.draw([0, 0, 100])
+			self.friendly_quadtree.draw([0, 0, 100])
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
+			print(f'|{len(self.freighters)}|')
 
 
 if __name__ == "__main__":
