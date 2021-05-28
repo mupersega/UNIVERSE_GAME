@@ -186,9 +186,9 @@ composition_rolls = 10
 tradables = ["rubine", "verdite", "ceruliun", "mupees"]
 mineral_list = ["rubine", "verdite", "ceruliun"]
 mineral_info = {
-	"rubine": {"rgb": [255, 0, 0]},
-	"verdite": {"rgb": [0, 255, 0]},
-	"ceruliun": {"rgb": [0, 0, 255]}
+	"rubine": {"rgb": [255, 0, 0], "carriage_carry": [20, 0, 0]},
+	"verdite": {"rgb": [0, 255, 0], "carriage_carry": [0, 20, 0]},
+	"ceruliun": {"rgb": [0, 0, 255], "carriage_carry": [0, 0, 20]}
 }
 
 # the values in these lists correspond to [rubine, verdite, ceruliun, mupees]
@@ -377,4 +377,14 @@ def on_screen_check(self):
 	if self.y < 0:
 		return False
 	return self.y <= screen_height
+
+
+def on_screen_check_vec(vec):
+	if vec.x < 0:
+		return False
+	if vec.x > screen_width:
+		return False
+	if vec.y < 0:
+		return False
+	return vec.y <= screen_height
 

@@ -41,7 +41,7 @@ class Turret:
 		self.active = True
 		self.turret_rest_pos = pygame.Vector2(1920, self.hangar.rect.y)
 		# self.ammo_type = random.choice(["lance", "maul", "bolt"])
-		self.ammo_type = "bolt"
+		self.ammo_type = "maul"
 		self.max_range = cfg.ammo_info[self.ammo_type]["max_range"]
 		self.barrel_rgb = cfg.ammo_info[self.ammo_type]["barrel_rgb"]
 		self.ammo_hold_rgb = cfg.ammo_info[self.ammo_type]["ammo_hold_rgb"]

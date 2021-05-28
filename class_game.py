@@ -105,7 +105,7 @@ class Game:
 	def spawn_freight_train(self, carriages):
 		path = [pygame.Vector2(1920, random.randint(10, 2000)),
 				(self.stations[0].rect.centerx, self.stations[0].rect.bottom),
-				(self.stations[0].rect.centerx, -100)]
+				(self.stations[0].rect.centerx, -200)]
 		self.freighters.append(Engine(self, path, carriages))
 
 	def random_crash(self):

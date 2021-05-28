@@ -32,7 +32,7 @@ class Player:
         self.leaderboard_position = 0
 
         # Leaderboard element
-        self.name_plate = cfg.leaderboard_font.render(self.name, True, cfg.col.bone)
+        self.name_plate = cfg.leaderboard_font.render(self.name.title(), True, cfg.col.bone)
         self.kills_plate = cfg.leaderboard_font.render(str(self.kills), True, cfg.col.bone)
 
         self.player_setup()
@@ -274,6 +274,21 @@ class Player:
                 print(f"{args[0]} is not a valid facility.")
         else:
             print("Invalid arg count, check cancel auto syntax.")
+
+    def distribute_resources(self, amt):
+        distribute_amt = amt.copy()
+        for i, t in enumerate(distribute_amt.copy()):
+            qty = t
+            for _ in range(qty):
+                for h in self.hangars:
+                    for f in h.facilities:
+                        if f.kind == 'warehouse' and sum(f.ores) < f.hold_capacity:
+                            distribute_amt[i] -= 1
+                            f.ores[i] += 1
+                            break
+        print("after")
+        print(distribute_amt)
+        self.pause_autos = False
 
     def load(self, args):
         # example args ['turret', '1', 'maul']

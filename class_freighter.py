@@ -28,16 +28,20 @@ class Engine:
 		self.rect = pygame.Rect(self.location.x, self.location.y, 18, 18)
 
 		self.life = cfg.engine_life
+		self.hold = [0, 0, 0]
 		self.active = True
 
 		self.build_carriages()
 
 	def load_next_location(self):
-		if self.location.distance_to(self.target_location) < 2:
-			if self.path:
-				self.target_location = self.path.pop(0)
-			else:
-				self.kill()
+		if self.location.distance_to(self.target_location) >= 2:
+			return
+		if self.path:
+			self.target_location = self.path.pop(0)
+		else:
+			# if all carriages are off screen and no more locations, then arrive and distribute all resources
+			for i in self.full_train:
+				i.safe = True
 
 	def take_damage(self, amt):
 		self.life -= amt
@@ -60,7 +64,7 @@ class Engine:
 
 	def update(self):
 		self.direction = (self.location - self.target_location).normalize()
-		self.location -= self.direction * 1
+		self.location -= self.direction * 1.2
 		self.rect.topleft = self.location
 
 	def update_carriages(self):
@@ -100,8 +104,10 @@ class Carriage:
 		self.velocity = random.uniform(.5, 3)
 		self.life = cfg.carriage_life
 		self.active = True
+		self.safe = False
 
 		self.carrying = random.choice(cfg.planet_probability)
+		self.hold = cfg.mineral_info[self.carrying]["carriage_carry"]
 
 	def update(self):
 		if self.rect.colliderect(self.puller.rect):
@@ -112,11 +118,19 @@ class Carriage:
 		self.tow_location = pygame.Vector2(self.location + self.direction * -10)
 		self.location -= (self.location - self.target_location).normalize() * self.velocity
 		self.rect.topleft = self.location
+		self.distribute_hold_resources()
 
 	def take_damage(self, amt):
 		self.life -= amt
 		if self.life < 1:
 			self.kill()
+
+	def distribute_hold_resources(self):
+		if self.safe and not cfg.on_screen_check_vec(self.location) and self.active:
+			split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
+			print(split_distribution)
+			for j in self.game.players:
+				j.distribute_resources(split_distribution)
 
 	def kill(self):
 		if self.active:

@@ -11,7 +11,7 @@ class Leaderboard:
 		self.surface = pygame.Surface((self.rect.width, self.rect.height))
 
 	def order_players(self, attr):
-		# Set leader position of player classes by passed class attribute
+		# Set leader position of player classes by a particular passed class attribute
 		for i, j in enumerate(sorted(self.game.players, key=operator.attrgetter(attr), reverse=True)):
 			j.leaderboard_position = i
 			print(f"{j.name} is in position {j.leaderboard_position}")
@@ -33,6 +33,6 @@ class Leaderboard:
 		self.blit_to_board()
 
 	def draw(self):
-		self.screen.blit(self.surface, (0, 0))
+		self.screen.blit(self.surface, (10, 10))
 		pygame.draw.rect(self.screen, [30, 30, 30], self.rect, width=1)
 

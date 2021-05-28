@@ -89,8 +89,12 @@ class Roamer:
 			else:
 				self.hostile_target = None
 		elif len(self.game.freighters) > 0:
+			self.hostile = True
 			freighter = random.choice(self.game.freighters.copy())
-			self.hostile_target = random.choice([i for i in freighter.full_train if i.life > 0])
+			try:
+				self.hostile_target = random.choice([i for i in freighter.full_train if i.life > 0 if cfg.on_screen_check_vec(i.location)])
+			except:
+				return
 		else:
 			self.hostile = False
 
@@ -145,6 +149,10 @@ class Roamer:
 
 	def loop(self):
 		self.die()
+		if len([i for i in self.game.freighters if cfg.on_screen_check_vec(i.location)]) > 0:
+			self.hostile = True
+		else:
+			self.hostile = False
 		if self.hostile:
 			self.choose_hostile_target()
 			if self.hostile_target:
