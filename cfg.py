@@ -27,16 +27,16 @@ fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 # st 15 = ent 124
-start_stations = 1
+start_stations = 4
 start_suns = 1
 start_spawners = 6
-start_entities = 2
+start_entities = 38
 universe_max_asteroids = 300
 asteroid_pop_phase_time = 10
-watch_queue_phase_time = 5
-force_feed_phase_time = 10
+watch_queue_phase_time = 2
+force_feed_phase_time = 5
 gather_phase_time = 50
-combat_phase_time = 60
+combat_phase_time = 30
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -54,7 +54,7 @@ facility_w = 20
 facility_w_third = int(facility_w * .33)
 facility_h = 20
 facility_h_third = int(facility_h * .33)
-max_facilities = 5
+max_facilities = 6
 # st_colour = [45, 89, 134] # pastel dark blue
 st_colour = col.bone   # [102, 102, 153]
 st_arm_colour = col.charcoal   # [75, 75, 100]
@@ -63,10 +63,10 @@ st_arrived_distance = 5
 st_interactable_distance = 10
 station_width = facility_w * 2
 default_hangars = 30
-lane_width = 9
+lane_width = 15
 x_pad = 3
 y_pad = 1
-st_x_offset = 390  # 390 for stream
+st_x_offset = 390 # 390 for stream
 st_y_offset = 55
 station_spacing = station_width + (
 	x_pad * 2 + facility_w * max_facilities) + lane_width
@@ -178,8 +178,8 @@ loc_interactable_distance = 2
 loc_arrived_distance = 3
 
 # --Freighter-- #
-engine_life = 200
-carriage_life = 100
+engine_life = 1000
+carriage_life = 50
 
 # --Miscellaneous-- #
 composition_rolls = 10

@@ -65,8 +65,8 @@ class Bay:
 						if f.kind == 'warehouse' and sum(f.ores) < f.hold_capacity:
 							actor.ores[i] -= 1
 							f.ores[i] += 1
+							self.owner.pause_autos = False
 							break
-		self.owner.pause_autos = False
 
 	def update_vector(self):
 		self.location = (self.x + self.width * 0.5, self.y + self.width * 0.5)

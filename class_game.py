@@ -3,7 +3,7 @@ import sqlite3
 import sys
 import threading
 import time
-import os
+import queue
 
 import pygame
 
@@ -62,7 +62,7 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.round = 1
+		self.round = 48
 		self.phase_display_text = "Defense in"
 
 		self.phase_cd = PhaseCountDownDisplay(self)
@@ -79,11 +79,12 @@ class Game:
 		for _ in range(cfg.start_spawners):
 			self.new_spawner()
 
-		self.new_player("mupersega")
+		# self.new_player("mupersega")
 		for i in range(cfg.start_entities):
-			self.new_player(f"P.{i}")
-		for _ in range(5):
-			self.spawn_freight_train(random.randint(2, 6))
+			self.new_player(f"P{i}")
+		for _ in range(0):
+			self.new_freight_train(
+				random.randint(2, 6), random.choice(self.stations))
 
 	def new_player(self, name):
 		new_player = Player(self, name)
@@ -103,10 +104,17 @@ class Game:
 		new_spawner = Spawner(self)
 		self.spawners.append(new_spawner)
 
-	def spawn_freight_train(self, carriages):
-		path = [pygame.Vector2(1920, random.randint(10, 2000)),
-				(self.stations[0].rect.centerx, self.stations[0].rect.bottom),
-				(self.stations[0].rect.centerx, -200)]
+	def new_freight_train(self, carriages, destination_station):
+		spawn_lines = [
+			[400, 2000, 1100, 1200],
+			[2000, 2100, 400, 1100]
+		]
+		ch = random.choice(spawn_lines)
+		path = [
+			pygame.Vector2(random.randint(ch[0], ch[1]), random.randint(ch[2], ch[3])),
+			(destination_station.rect.centerx, destination_station.rect.bottom),
+			(destination_station.rect.centerx, - 40 - (30 * carriages))
+		]
 		self.freighters.append(Engine(self, path, carriages))
 
 	def random_crash(self):
@@ -139,23 +147,30 @@ class Game:
 		c.execute("DELETE FROM queue WHERE completed=1")
 		conn.commit()
 		print("CLEAN")
-		# try to
-		try:
-			c.execute("SELECT * FROM queue WHERE completed=0")
-			full = c.fetchone()
-			print(full)
-			sub_status = full[0]
-			name = full[1]
-			msg = full[2]
-			c.execute("""
-					UPDATE queue
-					SET completed = 1
-					WHERE user = ? AND message = ?;""", (name, msg))
-			conn.commit()
-			new_thread = threading.Thread(target=self.process, args=(sub_status, name, msg.split()))
-			new_thread.start()
-		except:
-			print('error in try watch queue try block')
+		c.execute("SELECT * FROM queue WHERE completed=0")
+		alles = c.fetchall()
+		print(alles)
+		if alles:
+			threads = []
+			for i in alles:
+				sub_status = i[0]
+				name = i[1]
+				msg = i[2]
+				c.execute("""
+						UPDATE queue
+						SET completed = 1
+						WHERE user = ? AND message = ?;""", (name, msg))
+				conn.commit()
+				new_thread = threading.Thread(target=self.process, args=(sub_status, name, msg.split()))
+				threads.append(new_thread)
+				# new_thread.start()
+			for i in threads:
+				i.start()
+			for i in threads:
+				i.join()
+		else:
+			print("Nothing to process.")
+			# print('error in try watch queue try block')
 			return
 
 	def process(self, sub_status, name, msg):
@@ -190,7 +205,7 @@ class Game:
 
 	def force_feed_spawners(self):
 		if self.combat_phase:
-			for _ in range(3):
+			for _ in range(len(self.players)):
 				sp = random.choice(self.spawners)
 				sp.hold += self.round
 
@@ -210,8 +225,8 @@ class Game:
 					k.activate()
 		for i in self.hostiles:
 			i.hostile = True
-		for i in range(random.randint(2, 4)):
-			self.spawn_freight_train(random.randint(2, 4))
+		for i in self.players:
+			self.new_freight_train(int(self.round / 10) + 1, i.hangars[0].station)
 
 	def initiate_gather_phase(self, phase_duration):
 		# set environment for gather phase
@@ -313,10 +328,10 @@ class Game:
 			for i in self.hostiles:
 				self.hostile_quadtree.insert(i)
 			# FRIENDLY QUAD
-			# self.friendly_quadtree = Quadtree(self, self.screen_rect, max_objects=2, depth=0)
-			# for i in self.freighters:
-			# 	for j in i.full_train:
-			# 		self.friendly_quadtree.insert(j)
+			self.friendly_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
+			for i in self.freighters:
+				for j in i.full_train:
+					self.friendly_quadtree.insert(j)
 			# Loops.
 			for i in self.suns:
 				i.loop()
@@ -356,12 +371,12 @@ class Game:
 				i.loop()
 
 			# self.hostile_quadtree.draw([100, 0, 0])
-			self.friendly_quadtree.draw([0, 0, 100])
+			# self.friendly_quadtree.draw([0, 0, 100])
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
-			print(f'|{len(self.freighters)}|')
+			# print(f'|{len(self.freighters)}|')
 
 
 if __name__ == "__main__":

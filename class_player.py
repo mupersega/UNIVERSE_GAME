@@ -32,7 +32,7 @@ class Player:
         self.leaderboard_position = 0
 
         # Leaderboard element
-        self.name_plate = cfg.leaderboard_font.render(self.name.title(), True, cfg.col.bone)
+        self.name_plate = cfg.leaderboard_font.render(self.name[0:15].title(), True, cfg.col.bone)
         self.kills_plate = cfg.leaderboard_font.render(str(self.kills), True, cfg.col.bone)
 
         self.player_setup()
@@ -122,6 +122,7 @@ class Player:
                                         self.pause_autos = True
                                 else:
                                     print("Upgrade at max level.")
+                                    self.pause_autos = True
                                 return
                             elif ur == 'hold':
                                 required = cfg.upgrade_values[fk][ur]
@@ -131,10 +132,18 @@ class Player:
                                     if f.kind == "warehouse" and f.hold_lvl < f.max_hold_lvl:
                                         f.hold_lvl += 1
                                         f.hold_capacity += cfg.upgrade_amounts[fk]
-                                    elif f.kind == "bay" and f.occupant.hold_lvl < f.occupant.max_hold_lvl:
+                                    else:
+                                        print("Upgrade at max level.")
+                                        self.pause_autos = True
+                                        return
+                                    if f.kind == "bay" and f.occupant.hold_lvl < f.occupant.max_hold_lvl:
                                         f.occupant.hold_lvl += 1
                                         f.occupant.hold_capacity += cfg.upgrade_amounts[fk]
                                         f.update_bar_lengths()
+                                    else:
+                                        print("Upgrade at max level.")
+                                        self.pause_autos = True
+                                        return
                                     print('hold upgraded')
                                 else:
                                     print("hold upgrade failed")
@@ -152,6 +161,7 @@ class Player:
                                         f.update_bar_lengths()
                                     else:
                                         print("Upgrade max lvl")
+                                        self.pause_autos = True
                                 else:
                                     print("thrusters upgrade failed")
                                     self.pause_autos = True

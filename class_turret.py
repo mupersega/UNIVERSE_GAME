@@ -40,8 +40,8 @@ class Turret:
 		# Weapons
 		self.active = True
 		self.turret_rest_pos = pygame.Vector2(1920, self.hangar.rect.y)
-		# self.ammo_type = random.choice(["lance", "maul", "bolt"])
-		self.ammo_type = "maul"
+		self.ammo_type = random.choice(["lance", "maul", "bolt"])
+		self.ammo_type = "lance"
 		self.max_range = cfg.ammo_info[self.ammo_type]["max_range"]
 		self.barrel_rgb = cfg.ammo_info[self.ammo_type]["barrel_rgb"]
 		self.ammo_hold_rgb = cfg.ammo_info[self.ammo_type]["ammo_hold_rgb"]
@@ -94,19 +94,19 @@ class Turret:
 			self.barrel_point += (random.uniform(-0.1, 0.1), random.uniform(-0.1, 0.1))
 			new_projectile = Maul(
 				self.rect.center - self.barrel_point * 16, self.barrel_point, None, self.game, self.owner)
-			self.add_projectile_and_update(new_projectile, 1, 2)
+			self.add_projectile_and_update(new_projectile, 0.5, 2)
 		# LANCE
 		if self.shot_timer <= 0 and self.ammo_type == "lance":
 			self.barrel_point += random.choice(cfg.turret_shake)
 			new_projectile = Lance(
 				self.rect.center - self.barrel_point * 16, self.barrel_point, self.hostile_target, self.game, self.owner)
-			self.add_projectile_and_update(new_projectile, 150, 50)
+			self.add_projectile_and_update(new_projectile, 25, 50)
 		# BOLT
 		if self.shot_timer <= 0 and self.ammo_type == "bolt":
 			self.barrel_point += random.choice(cfg.turret_shake)
 			new_projectile = Bolt(
 				self.rect.center - self.barrel_point * 16, self.barrel_point, self.hostile_target, self.game, self.owner)
-			self.add_projectile_and_update(new_projectile, 500, 1)
+			self.add_projectile_and_update(new_projectile, 100, 1)
 
 	def add_projectile_and_update(self, new_projectile, shot_time, heat_change):
 		self.game.projectiles.append(new_projectile)
@@ -157,7 +157,7 @@ class Turret:
 			self.rect.centerx - 1, self.rect.centery + 7 - bar_length], 4)
 		pygame.draw.circle(self.screen, cfg.col.charcoal, self.rect.center, 9, 2)
 		# Draw weapon range
-		pygame.draw.circle(self.screen, self.barrel_rgb, self.rect.center, self.max_range, 1)
+		# pygame.draw.circle(self.screen, self.barrel_rgb, self.rect.center, self.max_range, 1)
 
 	# if self.hostile_target:
 	# pygame.draw.line(self.screen, [50, 5, 5], (self.rect.center), self.hostile_target.location)

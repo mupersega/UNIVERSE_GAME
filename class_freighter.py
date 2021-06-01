@@ -15,6 +15,7 @@ class Engine:
 		self.path = path
 		self.screen = game.screen
 		self.number_carriages = number_carriages
+		self.collision_priority = len(game.freighters)
 		self.engine_image = cfg.big_ship_green
 		self.full_train = [self]
 		self.carriage_lines = []
@@ -23,9 +24,11 @@ class Engine:
 		self.target_location = self.path.pop(0)
 		self.direction = pygame.Vector2((self.location - self.target_location)).normalize()
 		self.ang_vec = pygame.Vector2(0, 0)
+		self.top_speed = 1
+		self.velocity = 1
 		self.angle = 1
 
-		self.rect = pygame.Rect(self.location.x, self.location.y, 18, 18)
+		self.rect = pygame.Rect(self.location.x, self.location.y, 20, 20)
 
 		self.life = cfg.engine_life
 		self.hold = [0, 0, 0]
@@ -69,9 +72,65 @@ class Engine:
 		for i in self.full_train:
 			self.carriage_lines.append(i.rect.center)
 
+	def check_collision(self):
+		nearby = []
+		self.game.friendly_quadtree.query(self.rect, nearby)
+		for i in [j for j in nearby if j.collision_priority != self.collision_priority]:
+			if self.rect.colliderect(i.rect):
+				# self.collision_correction(i.rect)
+				if isinstance(i, Engine):
+					if i.collision_priority < self.collision_priority:
+						# self.collision_correction(i.rect)
+						# self.velocity *= .2
+						return
+					if i.collision_priority > self.collision_priority:
+						self.velocity *= 1.11
+				elif isinstance(i, Carriage):
+					# self.collision_correction(i.rect)
+					self.velocity *= .5
+
+	def collision_correction(self, rect):
+		# if top edge collided take other's bottom y
+		if self.check_top_edge_coll(rect):
+			self.location.y = rect.bottom + 1
+			return
+		# if bottom edge collided take other's top y
+		if self.check_bottom_edge_coll(rect):
+			self.location.y = rect.top - self.rect.height - 1
+			return
+		# if left edge collide take other's right
+		if self.check_left_edge_coll(rect):
+			self.location.x = rect.right + 1
+			return
+		else:
+			self.location.x = rect.left - self.rect.width - 1
+			return
+
+	def check_left_edge_coll(self, rect):
+		if self.rect.left <= rect.right:
+			return True
+
+	def check_right_edge_coll(self, rect):
+		if self.rect.right >= rect.left:
+			return True
+
+	def check_top_edge_coll(self, rect):
+		if self.rect.top <= rect.bottom:
+			return True
+
+	def check_bottom_edge_coll(self, rect):
+		if self.rect.bottom >= rect.top:
+			return True
+
 	def update(self):
+		if self.check_collision():
+			return
 		self.direction = (self.location - self.target_location).normalize()
-		self.location -= self.direction * 1.2
+		if self.velocity < self.top_speed:
+			self.velocity += 0.01
+		elif self.velocity > self.top_speed:
+			self.velocity *= 0.90
+		self.location -= self.direction * self.velocity
 		self.rect.topleft = self.location
 
 	def rotate(self):
@@ -82,6 +141,7 @@ class Engine:
 	def draw(self):
 		pygame.draw.lines(
 			self.screen, cfg.col.charcoal, closed=False, points=[i.rect.center for i in self.full_train], width=5)
+		# pygame.draw.rect(self.screen, [200, 20, 200], self.rect, 1)
 
 	def loop(self):
 		for i in self.full_train:
@@ -94,10 +154,11 @@ class Engine:
 
 	def distribute_hold_resources(self):
 		if self.active:
-			split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
-			print(split_distribution)
-			for j in self.game.players:
-				j.distribute_resources(split_distribution)
+			if len(self.game.players) > 0:
+				split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
+				print(split_distribution)
+				for j in self.game.players:
+					j.distribute_resources(split_distribution)
 			self.active = False
 
 
@@ -106,11 +167,12 @@ class Carriage:
 		self.game = puller.game
 		self.screen = puller.screen
 		self.puller = puller
+		self.collision_priority = self.puller.collision_priority
 		self.target_location = pygame.Vector2(puller.location)
 		self.location = pygame.Vector2(puller.location.x + 50, puller.location.y + 20)
 		self.direction = pygame.Vector2(self.location - self.target_location).normalize()
 
-		self.rect = pygame.Rect(self.location.x, self.location.y, 18, 18)
+		self.rect = pygame.Rect(self.location.x, self.location.y, 20, 20)
 		self.velocity = random.uniform(.5, 3)
 		self.life = cfg.carriage_life
 		self.active = True
@@ -121,7 +183,7 @@ class Carriage:
 	def update(self):
 		if self.rect.colliderect(self.puller.rect):
 			return
-		self.velocity = self.location.distance_to(self.puller.location) / 15
+		self.velocity = self.location.distance_to(self.puller.location) / 20
 		self.target_location = self.puller.location
 		self.direction = pygame.Vector2(self.location - self.target_location).normalize()
 		self.location -= (self.location - self.target_location).normalize() * self.velocity
@@ -134,10 +196,11 @@ class Carriage:
 
 	def distribute_hold_resources(self):
 		if self.active:
-			split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
-			print(split_distribution)
-			for j in self.game.players:
-				j.distribute_resources(split_distribution)
+			if len(self.game.players) > 0:
+				split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
+				print(split_distribution)
+				for j in self.game.players:
+					j.distribute_resources(split_distribution)
 			self.active = False
 
 	def kill(self):
@@ -151,6 +214,7 @@ class Carriage:
 		if self.active:
 			pygame.draw.circle(self.screen, cfg.warehouse_colours[self.carrying]["rgb"], self.rect.center, 10)
 		pygame.draw.circle(self.screen, [200, 200, 200], self.rect.center, 10, width=3)
+		# pygame.draw.rect(self.screen, [200, 20, 200], self.rect, 1)
 
 	def loop(self):
 		self.update()

@@ -27,13 +27,13 @@ class Spawner:
 		self.game.hostiles.append(new_roamer)
 
 	def setup(self):
-		for _ in range(5):
+		for _ in range(0):
 			self.spawn_roamer()
 
 	def check_spawn(self):
 		# where 10 is dust required for new "sated".
-		if self.hold > 0 and self.hold / 10 > self.spawn_threshold:
-			for _ in range(int(self.hold / 10)):
+		if self.hold > 0 and self.hold / 20 > self.spawn_threshold:
+			for _ in range(int(self.hold / 20)):
 				self.spawn_roamer()
 			self.hold = 0
 
