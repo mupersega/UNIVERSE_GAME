@@ -36,9 +36,9 @@ class Entity:
 		self.agility = self.normal_agility
 		self.angle = 0
 
-		self.miner_lvl = 40
+		self.miner_lvl = 45
 		self.weapons_lvl = 0
-		self.thrusters_lvl = 20
+		self.thrusters_lvl = 0
 		self.hold_lvl = 0
 		self.max_miner_lvl = 50
 		self.max_weapons_lvl = 30

@@ -65,7 +65,7 @@ class Bay:
 						if f.kind == 'warehouse' and sum(f.ores) < f.hold_capacity:
 							actor.ores[i] -= 1
 							f.ores[i] += 1
-							self.owner.pause_autos = False
+							self.owner.unpause_autos()
 							break
 
 	def update_vector(self):

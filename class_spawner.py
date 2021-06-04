@@ -27,7 +27,7 @@ class Spawner:
 		self.game.hostiles.append(new_roamer)
 
 	def setup(self):
-		for _ in range(0):
+		for _ in range(10):
 			self.spawn_roamer()
 
 	def check_spawn(self):

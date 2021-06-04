@@ -22,7 +22,7 @@ class Player:
         self.turrets = []
         self.trades = []
         self.autos = []
-        self.pause_autos = True
+        # self.pause_autos = True
         self.rubine = 0
         self.verdite = 0
         self.ceruliun = 0
@@ -119,10 +119,10 @@ class Player:
                                         return
                                     else:
                                         print("miner upgrade failed")
-                                        self.pause_autos = True
+                                        f.auto = False
                                 else:
                                     print("Upgrade at max level.")
-                                    self.pause_autos = True
+                                    f.auto = False
                                 return
                             elif ur == 'hold':
                                 required = cfg.upgrade_values[fk][ur]
@@ -134,7 +134,7 @@ class Player:
                                         f.hold_capacity += cfg.upgrade_amounts[fk]
                                     else:
                                         print("Upgrade at max level.")
-                                        self.pause_autos = True
+                                        f.auto = False
                                         return
                                     if f.kind == "bay" and f.occupant.hold_lvl < f.occupant.max_hold_lvl:
                                         f.occupant.hold_lvl += 1
@@ -142,12 +142,12 @@ class Player:
                                         f.update_bar_lengths()
                                     else:
                                         print("Upgrade at max level.")
-                                        self.pause_autos = True
+                                        f.auto = False
                                         return
                                     print('hold upgraded')
                                 else:
                                     print("hold upgrade failed")
-                                    self.pause_autos = True
+                                    f.auto = False
                                 # else return not enough resources
                                 return
                             elif ur == 'thrusters':
@@ -161,10 +161,10 @@ class Player:
                                         f.update_bar_lengths()
                                     else:
                                         print("Upgrade max lvl")
-                                        self.pause_autos = True
+                                        f.auto = False
                                 else:
                                     print("thrusters upgrade failed")
-                                    self.pause_autos = True
+                                    f.auto = False
                                 return
                         else:
                             print("No ship in this facility.")
@@ -186,7 +186,7 @@ class Player:
                     if f.kind == args[0] and str(f.index) == args[1]:
                         f.auto = True
                         f.auto_upgrade = args[2]
-                        self.pause_autos = False
+                        # self.pause_autos = False
                         if f not in self.autos:
                             self.autos.append(f)
                 print(f"There is no {args[0]} with an index position of {args[1]}")
@@ -196,11 +196,14 @@ class Player:
             print(f"{args[0]} not a valid facility.")
 
     def process_auto(self):
-        if self.pause_autos:
-            return
         for f in self.autos:
-            args = [f.kind, f.index, f.auto_upgrade]
-            self.upgrade(args)
+            if f.auto:
+                args = [f.kind, f.index, f.auto_upgrade]
+                self.upgrade(args)
+
+    def unpause_autos(self):
+        for i in self.autos:
+            i.auto = True
 
     def cancel_auto(self, args):
         if len(args) == 2:
@@ -298,7 +301,7 @@ class Player:
                             break
         print("after")
         print(distribute_amt)
-        self.pause_autos = False
+        self.unpause_autos()
 
     def load(self, args):
         # example args ['turret', '1', 'maul']

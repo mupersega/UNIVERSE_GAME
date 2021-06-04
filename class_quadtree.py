@@ -85,7 +85,6 @@ class Quadtree:
 			self.se.draw(rgb)
 			self.sw.draw(rgb)
 
-	# this is for querying in a radius but I have not made it compatible with pygame. #
 	def query_circle(self, boundary, centre, radius, found_points):
 		"""Find the points in the quadtree that lie within radius of centre.
 
@@ -100,6 +99,7 @@ class Quadtree:
 		# Search this node's points to see if they lie within boundary
 		# and also lie within a circle of given radius around the centre point.
 		for i in self.objects:
+			# pygame.draw.rect(self.game.screen, [25, 25, 25], boundary)
 			if (boundary.collidepoint(i.location) and
 					i.location.distance_to(centre) <= radius):
 				found_points.append(i)
@@ -116,6 +116,6 @@ class Quadtree:
 		"""Find the points in the quadtree that lie within radius of centre."""
 
 		# First find the square that bounds the search circle as a Rect object.
-		boundary = pygame.Rect(*centre, 2 * radius, 2 * radius)
+		boundary = pygame.Rect(centre[0]-radius, centre[1] - radius, 2 * radius, 2 * radius)
 		return self.query_circle(boundary, centre, radius, found_points)
 

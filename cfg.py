@@ -15,6 +15,7 @@ big_ship_purple = pygame.image.load('bigger_ship_purple.png')
 big_ship_green = pygame.image.load('bigger_ship_green.png')
 big_ship_red = pygame.image.load('bigger_ship_red.png')
 leaderboard_font = pygame.font.SysFont("Agency FB", 22)
+bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 
 # CLASS SETTINGS #
@@ -27,16 +28,16 @@ fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 # st 15 = ent 124
-start_stations = 4
+start_stations = 1
 start_suns = 1
-start_spawners = 6
-start_entities = 38
+start_spawners = 2
+start_entities = 19
 universe_max_asteroids = 300
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 50
-combat_phase_time = 30
+gather_phase_time = 15
+combat_phase_time = 60
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -115,7 +116,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
-wh_starting_resources = [0, 0, 0]
+wh_starting_resources = [100, 0, 0]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 # warehouse_colours = {
@@ -216,9 +217,9 @@ set_behaviours = {
 	}
 }
 build_values = {
-	"bay": [0, 80, 0, 0],
-	"warehouse": [80, 0, 0, 0],
-	"turret": [0, 0, 80, 0]
+	"bay": [0, 100, 0, 0],
+	"warehouse": [100, 0, 0, 0],
+	"turret": [0, 0, 100, 0]
 }
 
 poly_coord_array = []

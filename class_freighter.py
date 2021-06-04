@@ -74,7 +74,7 @@ class Engine:
 
 	def check_collision(self):
 		nearby = []
-		self.game.friendly_quadtree.query(self.rect, nearby)
+		self.game.friendly_quadtree.query_radius(self.rect.center, 100, nearby)
 		for i in [j for j in nearby if j.collision_priority != self.collision_priority]:
 			if self.rect.colliderect(i.rect):
 				# self.collision_correction(i.rect)

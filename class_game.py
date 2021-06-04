@@ -62,9 +62,11 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.round = 48
+		self.round = 10
+		self.round_label = cfg.bauhaus.render(
+			f"Rd. {self.round}", True, cfg.col.bone)
+		self.round_label_rect = self.round_label.get_rect()
 		self.phase_display_text = "Defense in"
-
 		self.phase_cd = PhaseCountDownDisplay(self)
 		self.leader_board = Leaderboard(self)
 
@@ -227,11 +229,14 @@ class Game:
 			i.hostile = True
 		for i in self.players:
 			self.new_freight_train(int(self.round / 10) + 1, i.hangars[0].station)
+		self.force_feed_spawners()
 
 	def initiate_gather_phase(self, phase_duration):
 		# set environment for gather phase
 		self.next_phase += phase_duration
 		self.round += 1
+		self.round_label = cfg.bauhaus.render(
+			f"Rd. {self.round}", True, cfg.col.bone)
 		self.gather_phase = True
 		self.combat_phase = False
 		# set all player entities to "mine" behaviour:
@@ -370,7 +375,7 @@ class Game:
 			for i in self.explosions.copy():
 				i.loop()
 
-			# self.hostile_quadtree.draw([100, 0, 0])
+			self.hostile_quadtree.draw([100, 0, 0])
 			# self.friendly_quadtree.draw([0, 0, 100])
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()

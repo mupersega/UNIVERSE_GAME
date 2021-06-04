@@ -32,6 +32,7 @@ class Warehouse:
 
 		# self.hold = []
 		self.hold_lvl = 1
+		self.max_hold_lvl = 200
 		self.hold_capacity = 200
 		self.ores = cfg.wh_starting_resources.copy()
 		self.bar_w = cfg.facility_w - 2
