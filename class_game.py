@@ -3,7 +3,6 @@ import sqlite3
 import sys
 import threading
 import time
-import queue
 
 import pygame
 
@@ -62,7 +61,7 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.round = 10
+		self.round = 40
 		self.round_label = cfg.bauhaus.render(
 			f"Rd. {self.round}", True, cfg.col.bone)
 		self.round_label_rect = self.round_label.get_rect()
@@ -227,6 +226,8 @@ class Game:
 					k.activate()
 		for i in self.hostiles:
 			i.hostile = True
+		for i in self.spawners:
+			i.desired_rotation_speed = self.round / 100 * len(self.players)
 		for i in self.players:
 			self.new_freight_train(int(self.round / 10) + 1, i.hangars[0].station)
 		self.force_feed_spawners()
@@ -244,6 +245,8 @@ class Game:
 		for i in self.players:
 			for j in i.entities:
 				j.set_behaviour("mine")
+		for i in self.spawners:
+			i.desired_rotation_speed = 0
 		for i in self.stations:
 			for j in i.hangars:
 				for k in j.turrets:
@@ -325,11 +328,13 @@ class Game:
 
 			# Clear screen.
 			self.screen.fill((0, 0, 0))
+			hostile_count = cfg.bauhaus.render(f"{len(self.hostiles)} enemies", True, cfg.col.pumpkin)
+			self.screen.blit(hostile_count, (20, 20))
 			self.leader_board.draw()
 
 			# Prep Quadtrees
 			# HOSTILE QUAD
-			self.hostile_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
+			self.hostile_quadtree = Quadtree(self, self.screen_rect, max_objects=2, depth=0)
 			for i in self.hostiles:
 				self.hostile_quadtree.insert(i)
 			# FRIENDLY QUAD

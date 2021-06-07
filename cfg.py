@@ -30,9 +30,10 @@ universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 1
 start_suns = 1
-start_spawners = 2
-start_entities = 19
+start_spawners = 3
+start_entities = 5
 universe_max_asteroids = 300
+max_hostiles = 200
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
@@ -116,7 +117,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = [89, 89, 89]
-wh_starting_resources = [100, 0, 0]
+wh_starting_resources = [100, 0, 100]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 # warehouse_colours = {
@@ -172,6 +173,9 @@ ammo_info = {
 	}
 }
 turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]
+
+# --Spawner-- #
+nodule_w, nodule_h = 9, 9
 
 # --Location-- #
 loc_colour = [255, 0, 255]

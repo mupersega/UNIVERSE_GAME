@@ -10,14 +10,14 @@ from class_explosion import Explosion
 
 class Roamer:
 	"""Class to manage roaming hostiles which move around and attack miners."""
-	def __init__(self, game, spawner):
+	def __init__(self, game, spawner, location):
 		self.game = game
 		self.screen = game.screen
 		self.spawner = spawner
 		# self.image = random.choice([cfg.big_ship_red, cfg.big_ship_teal, cfg.big_ship_red, cfg.big_ship_purple])
 		self.image = cfg.starsated_image
 		self.target_loc = pygame.math.Vector2(0, 0)
-		self.location = pygame.math.Vector2(spawner.rect.center)
+		self.location = pygame.math.Vector2(location)
 		self.hostile_target = None
 		self.acceleration = pygame.math.Vector2(1, 1)
 		self.bounce_force = pygame.Vector2(1, 1)

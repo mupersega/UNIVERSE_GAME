@@ -20,7 +20,7 @@ class Lance:
 	def charge(self):
 		if self.life < 1:
 			self.rgb[1] = int(self.life * 255)
-			self.life += self.life * .25
+			self.life += self.life * .05
 		else:
 			self.fire()
 

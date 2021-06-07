@@ -101,7 +101,7 @@ class Turret:
 			self.barrel_point += random.choice(cfg.turret_shake)
 			new_projectile = Lance(
 				self.rect.center - self.barrel_point * 16, self.barrel_point, self.hostile_target, self.game, self.owner)
-			self.add_projectile_and_update(new_projectile, 100, 50)
+			self.add_projectile_and_update(new_projectile, 150, 50)
 		# BOLT
 		if self.shot_timer <= 0 and self.ammo_type == "bolt":
 			self.barrel_point += random.choice(cfg.turret_shake)
