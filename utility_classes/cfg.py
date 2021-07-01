@@ -17,8 +17,11 @@ big_ship_purple = pygame.image.load('./assets/bigger_ship_purple.png')
 big_ship_green = pygame.image.load('./assets/bigger_ship_green.png')
 big_ship_red = pygame.image.load('./assets/bigger_ship_red.png')
 
+# FONT SETTINGS #
 leaderboard_font = pygame.font.SysFont("Agency FB", 22)
 leaderboard_font_bold = pygame.font.SysFont("Agency FB", 22, bold=True)
+market_name = pygame.font.SysFont("Agency FB", 18, italic=True)
+market_numbers = pygame.font.SysFont("Bauhaus 93", 20)
 bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 
@@ -41,6 +44,7 @@ watch_queue_phase_time = 2
 force_feed_phase_time = 5
 gather_phase_time = 1
 combat_phase_time = 40
+convert_mineral_to_favour = [10, 20, 100]
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]
@@ -197,7 +201,7 @@ composition_rolls = 10
 max_trade_amt = 50
 cancelled_trade_return = .5
 tradables = ["rubine", "verdite", "ceruliun"]
-mineral_list = ["rubine", "verdite", "ceruliun"]
+mineral_name_list = ["rubine", "verdite", "ceruliun"]
 mineral_colour_list = ["red", "green", "blue"]
 mineral_info = {
 	"rubine": {
@@ -366,10 +370,10 @@ def tally_resources(player):
 
 
 def resource_check(required, available):
-	# check ores available[*, *, *, -]
+	# check ores available[*, *, *]
 	for i in range(3):
 		if required[i] > available[i]:
-			print(f"Not enough {mineral_list[i]}")
+			print(f"Not enough {mineral_name_list[i]}")
 			return False
 	else:
 		print('resources available for withdrawal')
@@ -386,9 +390,9 @@ def withdraw_resources(player, resources):
 			while not done:
 				for facility in reversed(player.hangars[0].facilities):
 					if facility.kind == 'warehouse' and facility.ores[k] > 0:
-						print(f'fac#{k}\nwdl #{i}\npre({facility.ores[k]})')
+						# print(f'fac#{k}\nwdl #{i}\npre({facility.ores[k]})')
 						facility.ores[k] -= 1
-						print(f'post({facility.ores[k]})')
+						# print(f'post({facility.ores[k]})')
 						done = True
 						break
 	print("Transaction complete")
@@ -427,6 +431,31 @@ def on_screen_check_vec(vec):
 def return_mineral_list(mineral, amt):
 	# Take in a mineral name and amount and return a regular hold list ready for distribution.
 	new_list = [0, 0, 0]
-	new_list[mineral_list.index(mineral)] = amt
+	new_list[mineral_name_list.index(mineral)] = amt
 	return new_list
+
+
+def minerals_to_favour(self, resource_list):
+	favour_converted = 0
+	for h, i in enumerate(resource_list):
+		favour_converted += convert_mineral_to_favour[h] * i
+	return favour_converted
+
+
+def return_x_align_offset(alignment, container_left, container_width, obj_width, padding):
+	if alignment == 'left':
+		return padding
+	if alignment == 'centre':
+		return (container_width - obj_width) / 2
+	if alignment == 'right':
+		return container_width - obj_width - padding
+
+
+def return_y_align_offset(alignment, container_top, container_height, obj_height, padding):
+	if alignment == 'bottom':
+		return padding
+	if alignment == 'middle':
+		return (container_height - obj_height) / 2
+	if alignment == 'top':
+		return container_height - obj_height - padding
 

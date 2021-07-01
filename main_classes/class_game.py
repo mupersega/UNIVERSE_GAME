@@ -3,6 +3,7 @@ import sqlite3
 import sys
 import threading
 import time
+import os
 
 import pygame
 
@@ -22,9 +23,9 @@ admins = ['mupersega']
 conn = sqlite3.connect('/C:/db/queue.db')
 c = conn.cursor()
 #
-# x = -1800
-# y = 450
-# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+x = -1920
+y = 420
+os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:

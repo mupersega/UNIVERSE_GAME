@@ -46,10 +46,10 @@ class Hangar:
 	def update_label(self):
 		if self.owner:
 			self.label = self.myfont.render(
-				str(self.owner.name[0:3]).upper(), 0, col.p_one)
+				str(self.owner.name[0:3]).upper(), True, col.p_one)
 		else:
 			self.label = self.myfont.render(
-				(str(self.station.sn) + "." + str(self.index)), 0, col.p_four)
+				(str(self.station.sn) + "." + str(self.index)), True, col.p_four)
 
 	def set_facilities_pos(self):
 		# set pos dependant on index and update rect

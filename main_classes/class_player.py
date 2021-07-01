@@ -27,6 +27,8 @@ class Player:
         # Target management
         self.kill_priority = 0
 
+        self.favour = 0
+        self.total_favour = 0
         self.rubine = 0
         self.verdite = 0
         self.ceruliun = 0
@@ -351,8 +353,8 @@ class Player:
             print(f"Trade syntax incorrect offer {args[0]} ask {args[3]}.")
             return
         # Check if minerals are spelt correctly and in mineral list.
-        if offer_mineral in cfg.mineral_list:
-            if ask_mineral in cfg.mineral_list:
+        if offer_mineral in cfg.mineral_name_list:
+            if ask_mineral in cfg.mineral_name_list:
                 if offer_qty <= cfg.max_trade_amt:
                     self.game.market.new_trade(self,
                                                [offer_mineral, offer_qty],
@@ -374,21 +376,25 @@ class Player:
         mineral = args[1].lower()
         # Check all args validity.
         if amt in allowed_amounts:
-            if mineral in cfg.mineral_list:
+            if mineral in cfg.mineral_name_list:
                 # Calculate the amount to remove dependant on amt.
                 total = cfg.tally_resources(self)
                 # Get amount available of specific mineral from total.
-                mineral_available = total[cfg.mineral_list.index(mineral)]
+                mineral_available = total[cfg.mineral_name_list.index(mineral)]
                 # Apply dispatch amount, dispatch_amount list corresponds to allowed_amounts list.
                 dispatch_amount = [1, .5]
                 mineral_dispatch_amount = int(mineral_available * dispatch_amount[allowed_amounts.index(amt)])
-                # Return new mineral list with dispatch amount AND withdraw those resources.
-                cfg.withdraw_resources(self, cfg.return_mineral_list(mineral, mineral_dispatch_amount))
-
+                # Return new mineral list with dispatch amount, and withdraw those resources.
+                mineral_list = cfg.return_mineral_list(mineral, mineral_dispatch_amount)
+                cfg.withdraw_resources(self, mineral_list)
+                # Payout favour.
+                self.distribute_favour(cfg.convert_mineral_to_favour(mineral_list))
             else:
                 print(f'{mineral.title()} is not a valid mineral type {self.name.title()}.')
         else:
             print(f'{amt} is not a valid amount to tribute {self.name.title()}.')
 
-    def convert_to_favour(self, resource_list):
-        pass
+    def distribute_favour(self, amt):
+        self.favour += amt
+        self.tribute += amt
+        self.total_favour += amt

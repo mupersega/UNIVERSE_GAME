@@ -17,8 +17,8 @@ class Crash:
 		self.target = planet
 		self.size = size
 		self.x, self.y = 0, 0
-		self.primary_type = random.choice(cfg.mineral_list)
-		self.secondary_type = random.choice(cfg.mineral_list)
+		self.primary_type = random.choice(cfg.mineral_name_list)
+		self.secondary_type = random.choice(cfg.mineral_name_list)
 		self.rgb = cfg.set_composition(self.primary_type, self.secondary_type)
 
 		self.width, self.height = size, size

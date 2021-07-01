@@ -45,7 +45,7 @@ class Asteroid:
 			self.decay()
 			print(actor.ores)
 			actor.ores[yielded] += 1
-			print(f"Mined {cfg.mineral_list[yielded]}, hold = {sum(actor.ores)}")
+			print(f"Mined {cfg.mineral_name_list[yielded]}, hold = {sum(actor.ores)}")
 
 	def mine_yield(self):
 		rolls = [random.uniform(0, i ** 2) for i in self.rgb]

@@ -66,7 +66,7 @@ class Warehouse:
 				y = self.rect.bottom - next_y - h - 1
 				w = self.bar_w
 				next_y += h
-				rgb = cfg.warehouse_colours[cfg.mineral_list[i]]["rgb"]
+				rgb = cfg.warehouse_colours[cfg.mineral_name_list[i]]["rgb"]
 				pygame.draw.rect(self.screen, rgb, (x, y, w, h))
 			i += 1
 			if cfg.hold_at_capacity(self):

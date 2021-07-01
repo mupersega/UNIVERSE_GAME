@@ -14,13 +14,16 @@ class Market:
 
 	def __init__(self, game):
 		self.game = game
-		self.total_trades = 22
 
 		self.trades = []
+		self.total_trades = 0
 
-		self.width = 200
-		self.row_height = 35
+		self.width = cfg.screen_width * .15
+		self.row_height = 25
 		self.surface = pygame.Surface((self.width, len(self.trades) * self.row_height))
+		self.top_left = pygame.Vector2(
+			cfg.screen_width - self.width - 6,
+			90 + self.game.leaderboard.row_height * (len(self.game.players) + 1))
 
 	def new_trade(self, trader, offer, ask):
 		# Prepare a new code/ID to the trade.
@@ -46,9 +49,14 @@ class Market:
 		for h, i in enumerate(self.trades):
 			self.surface.blit(i.surface, (0, h * self.row_height))
 
+	def update_top_left(self):
+		self.top_left = pygame.Vector2(
+			cfg.screen_width - self.width - 6,
+			88 + self.game.leaderboard.row_height * (len(self.game.players) + 1))
+
 	def draw(self):
 		# pygame.draw.rect(self.game.screen, [255, 255, 255], self.surface.get_rect(), width=5)
-		self.game.screen.blit(self.surface, (10, 10))
+		self.game.screen.blit(self.surface, self.top_left)
 
 
 class Trade:
@@ -69,7 +77,6 @@ class Trade:
 		self.offer_bg_rgb = cfg.mineral_info[offer[0]]["market_bg_rgb"]
 		self.ask_rgb = cfg.mineral_info[ask[0]]["market_rgb"]
 		self.ask_bg_rgb = cfg.mineral_info[ask[0]]["market_bg_rgb"]
-
 
 		self.labels = None
 		self.surface = None
@@ -114,9 +121,9 @@ class Trade:
 
 	def build_labels(self):
 		self.labels = [
-			cfg.leaderboard_font.render(str(self.code).upper(), True, cfg.col.p_two),
-			cfg.bauhaus.render(str(max(self.offer_list)), True, self.offer_rgb),
-			cfg.bauhaus.render(str(max(self.ask_list)), True, self.ask_rgb)
+			cfg.market_name.render(str(self.code).upper(), True, cfg.col.p_two),
+			cfg.market_numbers.render(str(max(self.offer_list)), True, self.offer_rgb),
+			cfg.market_numbers.render(str(max(self.ask_list)), True, self.ask_rgb)
 		]
 
 	def build_surface(self):
