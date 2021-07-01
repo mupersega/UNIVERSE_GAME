@@ -1,6 +1,6 @@
 import threading
 
-from class_game import Game
+from main_classes.class_game import Game
 
 threads = []
 
