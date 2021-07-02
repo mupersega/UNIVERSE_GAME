@@ -35,15 +35,15 @@ universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 1
 start_suns = 1
-start_spawners = 3
-start_players = 20
+start_spawners = 2
+start_players = 0
 universe_max_asteroids = 300
-max_hostiles = 20
+max_hostiles = 15
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 60
-combat_phase_time = 40
+gather_phase_time = 360
+combat_phase_time = 30
 convert_mineral_to_favour = [10, 20, 100]
 
 # --Entity-- #
@@ -53,12 +53,12 @@ ent_arrived_distance = 2
 ent_size = 5
 ent_start_capacity = 10
 max_miner_lvl = 50
-dropoff_speed = 980  # larger number will make drop off slower out of 1000
+dropoff_speed = 995  # larger number will make drop off slower out of 1000
 
 # --Station-- #
 min_hangars_per = 5
 max_hangars_per = 20
-facility_w, facility_h = 25, 25
+facility_w, facility_h = 21, 21
 facility_w_third = int(facility_w * .33)
 facility_w_two_third = int(facility_w * .66)
 facility_h_third = int(facility_h * .33)
@@ -75,7 +75,7 @@ default_hangars = 30
 lane_width = 15
 x_pad = facility_w / 10
 y_pad = 1
-st_x_offset = 390 # 390 for stream
+st_x_offset = 382 # 382 for stream
 st_y_offset = 55
 station_spacing = station_width + (
 		x_pad * 2 + facility_w * default_max_facilities) + lane_width
@@ -227,12 +227,12 @@ mineral_info = {
 # the values in these lists correspond to [rubine, verdite, ceruliun, mupees]
 upgrade_values = {
 	"bay": {
-		"miner": [5, 0, 0, 0],
-		"hold": [2, 4, 6, 0],
-		"thrusters": [0, 5, 0, 0],
+		"miner": [10, 0, 0, 0],
+		"hold": [10, 10, 10, 0],
+		"thrusters": [0, 10, 0, 0],
 	},
 	"warehouse": {
-		"hold": [20, 20, 10, 0]
+		"hold": [20, 20, 20, 0]
 	}
 }
 upgrade_amounts = {
@@ -249,9 +249,9 @@ set_behaviours = {
 	}
 }
 build_values = {
-	"bay": [0, 50, 0, 0],
-	"warehouse": [50, 0, 0, 0],
-	"turret": [0, 0, 50, 0]
+	"bay": [0, 100, 0, 0],
+	"warehouse": [100, 0, 0, 0],
+	"turret": [0, 0, 100, 0]
 }
 
 poly_coord_array = []

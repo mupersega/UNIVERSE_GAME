@@ -99,7 +99,7 @@ class Turret:
 			self.barrel_point += (random.uniform(-0.1, 0.1), random.uniform(-0.1, 0.1))
 			new_projectile = Maul(
 				self.rect.center - self.barrel_point * 16, self.barrel_point, None, self.game, self.owner)
-			for _ in range(5):
+			for _ in range(2):
 				self.add_projectile_and_update(new_projectile, 0.2, 0)
 		# LANCE
 		if self.shot_timer <= 0 and self.ammo_type == "lance":

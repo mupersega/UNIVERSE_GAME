@@ -34,7 +34,7 @@ class Spawner:
 		self.spinner_vec = self.base_vec.rotate(self.angle)
 		self.spinner_polarity = 1
 
-		self.max_nodules = int((3.14 * self.diameter) / cfg.nodule_w * .9)
+		self.max_nodules = int((3.14 * self.diameter) / cfg.nodule_w * 1.5)
 		self.nodules = []
 
 		self.label = cfg.leaderboard_font.render(f"{self.max_nodules}", True, cfg.col.p_one)

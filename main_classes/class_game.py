@@ -64,7 +64,7 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.round = 20
+		self.round = 0
 		self.round_label = cfg.bauhaus.render(
 			f"Rd. {self.round}", True, cfg.col.p_one)
 		self.round_label_rect = self.round_label.get_rect()
@@ -420,7 +420,7 @@ class Game:
 			for i in self.explosions.copy():
 				i.loop()
 
-			self.hostile_quadtree.draw([100, 0, 0])
+			# self.hostile_quadtree.draw([100, 0, 0])
 			# self.friendly_quadtree.draw([0, 0, 100])
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()

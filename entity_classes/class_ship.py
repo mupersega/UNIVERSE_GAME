@@ -39,7 +39,7 @@ class Ship:
 		self.weapons_lvl = 0
 		self.thrusters_lvl = 0
 		self.hold_lvl = 0
-		self.max_miner_lvl = 50
+		self.max_miner_lvl = 30
 		self.max_weapons_lvl = 30
 		self.max_hold_lvl = 30
 		self.max_thrusters_lvl = 30

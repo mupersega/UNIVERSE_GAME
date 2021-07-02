@@ -19,8 +19,8 @@ class Nodule:
 			self.location.y - cfg.nodule_h / 2, cfg.nodule_w, cfg.nodule_h)
 
 		self.max_lvl = max_lvl
-		# self.level = random.choice([2, 3, 4])
-		self.level = self.max_lvl
+		self.level = random.choice([2])
+		# self.level = self.max_lvl
 		self.upgradeable = self.check_max_lvl()
 		self.hold = 0
 		self.last_hit = 1
