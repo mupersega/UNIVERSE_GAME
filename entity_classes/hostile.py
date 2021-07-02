@@ -24,8 +24,8 @@ class Hostile:
 		self.bounce_force = pygame.Vector2(1, 1)
 		self.last_loc = pygame.math.Vector2(spawner.rect.center)
 		self.ang_vec = pygame.math.Vector2(0, 0)
-		self.velocity = 3
-		self.hunt_velocity = 4
+		self.velocity = 1.5
+		self.hunt_velocity = 3
 		self.top_speed = 1.5
 
 		self.angle = 3
@@ -194,8 +194,8 @@ class HunterDrone(Hostile):
 		self.hold = 0
 		self.image = cfg.hunterdrone_image
 		self.rect = pygame.Rect(0, 0, self.image.get_rect().width, self.image.get_rect().height)
-		self.life = 25
-		self.damage = 1
+		self.life = 50
+		self.damage = 5
 
 		self.set_new_roam_location()
 
@@ -322,8 +322,8 @@ class Soldier(Hostile):
 		self.hold = 0
 		self.image = cfg.soldier_image
 		self.rect = pygame.Rect(0, 0, self.image.get_rect().width, self.image.get_rect().height)
-		self.life = 50
-		self.damage = 5
+		self.life = 200
+		self.damage = 10
 
 	def acquire_target(self, attr):
 		new_target = None
@@ -379,7 +379,7 @@ class Soldier(Hostile):
 		return vec * f
 
 	def rotate(self):
-		self.ang_vec = self.location - self.hostile_target.rect.center
+		self.ang_vec = pygame.Vector2(self.rect.center) - self.hostile_target.rect.center
 		rads = math.atan2(self.ang_vec[0], self.ang_vec[1])
 		deg = math.degrees(rads)
 		self.angle = deg

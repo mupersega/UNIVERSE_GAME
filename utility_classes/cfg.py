@@ -27,8 +27,8 @@ bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 # CLASS SETTINGS #
 # --Game-- #
-# screen_width, screen_height = 1920, 1080
-screen_width, screen_height = 800, 600
+screen_width, screen_height = 1920, 1080
+# screen_width, screen_height = 800, 600
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
@@ -36,13 +36,13 @@ universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
 start_spawners = 3
-start_players = 5
+start_players = 20
 universe_max_asteroids = 300
-max_hostiles = 150
+max_hostiles = 20
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 1
+gather_phase_time = 60
 combat_phase_time = 40
 convert_mineral_to_favour = [10, 20, 100]
 
@@ -70,7 +70,7 @@ st_arm_colour = col.p_four   # [75, 75, 100]
 
 st_arrived_distance = 5
 st_interactable_distance = 10
-station_width = facility_w * 2
+station_width = facility_w * 2.5
 default_hangars = 30
 lane_width = 15
 x_pad = facility_w / 10
@@ -124,7 +124,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = col.medium_grey
-wh_starting_resources = [50, 30, 30]
+wh_starting_resources = [0, 0, 0]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 wh_life = 200
@@ -185,7 +185,7 @@ turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]
 
 # --Spawner-- #
 nodule_w, nodule_h = 18, 18
-level_up_cost = 100
+level_up_cost = 20
 
 # --Location-- #
 loc_colour = [255, 0, 255]

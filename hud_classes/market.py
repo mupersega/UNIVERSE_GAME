@@ -18,7 +18,7 @@ class Market:
 		self.trades = []
 		self.total_trades = 0
 
-		self.width = cfg.screen_width * .15
+		self.width = int(cfg.screen_width * .08)
 		self.row_height = 25
 		self.surface = pygame.Surface((self.width, len(self.trades) * self.row_height))
 		self.top_left = pygame.Vector2(
@@ -51,8 +51,8 @@ class Market:
 
 	def update_top_left(self):
 		self.top_left = pygame.Vector2(
-			cfg.screen_width - self.width - 6,
-			88 + self.game.leaderboard.row_height * (len(self.game.players) + 1))
+			cfg.screen_width - self.width - 5,
+			90 + self.game.leaderboard.row_height * (len(self.game.players) + 1))
 
 	def draw(self):
 		# pygame.draw.rect(self.game.screen, [255, 255, 255], self.surface.get_rect(), width=5)

@@ -10,14 +10,14 @@ class Leaderboard:
 		self.screen = game.screen
 
 		self.row_height = 25
-		self.overall_width = cfg.screen_width * .2
+		self.overall_width = cfg.screen_width * .1
 		self.subdivisions = 12
 		self.subdivision_width = self.overall_width / self.subdivisions
 		self.col_sub_widths = [8, 4]  # Sum of element will ideally equal self.subdivisions.
 		self.col_px_widths = [i * self.subdivision_width for i in self.col_sub_widths]
 		self.col_x = [sum(self.col_px_widths[0:i]) for i in range(len(self.col_sub_widths))]
 
-		self.top_left = pygame.Vector2(cfg.screen_width - self.overall_width - 5, 88)
+		self.top_left = pygame.Vector2(cfg.screen_width - self.overall_width - 5, 90)
 		self.surface = pygame.Surface((self.overall_width, (len(self.game.players) + 1) * self.row_height))
 
 		self.headers = [
@@ -46,7 +46,7 @@ class Leaderboard:
 			col_bg_rgb = [cfg.col.p_three, cfg.col.p_four]
 			# Draw background rects to surface.
 			pygame.draw.rect(self.surface, col_bg_rgb[h], (x, y, self.col_px_widths[h], self.row_height))
-			pygame.draw.rect(self.surface, cfg.col.p_two, (x, y, self.col_px_widths[h], self.row_height), 2)
+			pygame.draw.rect(self.surface, cfg.col.p_two, (x, y, self.col_px_widths[h], self.row_height), 1)
 			# Blit text to surface.
 			self.surface.blit(i, (
 				x + cfg.return_x_align_offset(x_aligns[h], x, self.col_px_widths[h], i.get_width(), pads[h]), (

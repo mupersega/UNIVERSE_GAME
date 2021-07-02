@@ -23,9 +23,9 @@ admins = ['mupersega']
 conn = sqlite3.connect('/C:/db/queue.db')
 c = conn.cursor()
 #
-x = -1920
-y = 420
-os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+# x = -1920
+# y = 420
+# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:
@@ -64,7 +64,7 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.round = 25
+		self.round = 20
 		self.round_label = cfg.bauhaus.render(
 			f"Rd. {self.round}", True, cfg.col.p_one)
 		self.round_label_rect = self.round_label.get_rect()
@@ -84,7 +84,7 @@ class Game:
 		for _ in range(cfg.start_spawners):
 			self.new_spawner()
 
-		self.new_player("mupersega", None)
+		# self.new_player("mupersega", None)
 		for i in range(cfg.start_players):
 			self.new_player(f"P{i}", None)
 		for _ in range(0):
@@ -302,9 +302,10 @@ class Game:
 			if curr_time > self.next_populate_asteroids:
 				self.next_populate_asteroids += cfg.asteroid_pop_phase_time
 				self.populate_asteroids()
-				chosen_trader = random.choice([i for i in self.players if i.name != "mupersega"])
-				args = [20, random.choice(["rubine", "verdite"]), "for", 5, "ceruliun"]
-				chosen_trader.list_trade(args)
+				# ## AI TRADES ## #
+				# chosen_trader = random.choice([i for i in self.players if i.name != "mupersega"])
+				# args = [20, random.choice(["rubine", "verdite"]), "for", 5, "ceruliun"]
+				# chosen_trader.list_trade(args)
 			if curr_time > self.next_force_feed_spawners:
 				self.next_force_feed_spawners += cfg.force_feed_phase_time
 				self.force_feed_spawners()
@@ -419,7 +420,7 @@ class Game:
 			for i in self.explosions.copy():
 				i.loop()
 
-			# self.hostile_quadtree.draw([100, 0, 0])
+			self.hostile_quadtree.draw([100, 0, 0])
 			# self.friendly_quadtree.draw([0, 0, 100])
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()
