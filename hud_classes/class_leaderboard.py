@@ -10,10 +10,10 @@ class Leaderboard:
 		self.screen = game.screen
 
 		self.row_height = 25
-		self.overall_width = cfg.screen_width * .1
-		self.subdivisions = 12
+		self.overall_width = cfg.screen_width * .1 + 1
+		self.subdivisions = 16
 		self.subdivision_width = self.overall_width / self.subdivisions
-		self.col_sub_widths = [8, 4]  # Sum of element will ideally equal self.subdivisions.
+		self.col_sub_widths = [7, 3, 3, 3]  # Sum of element will ideally equal self.subdivisions.
 		self.col_px_widths = [i * self.subdivision_width for i in self.col_sub_widths]
 		self.col_x = [sum(self.col_px_widths[0:i]) for i in range(len(self.col_sub_widths))]
 
@@ -22,7 +22,9 @@ class Leaderboard:
 
 		self.headers = [
 			cfg.leaderboard_font.render(str("PLAYER"), True, cfg.col.white),
-			cfg.leaderboard_font.render(str("KILLS"), True, cfg.col.white)
+			cfg.leaderboard_font.render(str("KIL"), True, cfg.col.white),
+			cfg.leaderboard_font.render(str("TRB"), True, cfg.col.white),
+			cfg.leaderboard_font.render(str("FAV"), True, cfg.col.white)
 		]
 
 	def order_players(self, attr):
@@ -37,13 +39,13 @@ class Leaderboard:
 
 	def blit_headers(self):
 		# Alignment and padding information.
-		x_aligns = ["right", "centre"]
-		y_aligns = ["middle", "middle"]
-		pads = [5, 5]
+		x_aligns = ["right", "centre", "centre", "centre"]
+		y_aligns = ["middle", "middle", "middle", "middle"]
+		pads = [5, 5, 5, 5]
+		y = 0
 		for h, i in enumerate(self.headers):
-			y = 0
 			x = self.col_x[h]
-			col_bg_rgb = [cfg.col.p_three, cfg.col.p_four]
+			col_bg_rgb = [cfg.col.p_three, cfg.col.p_four, cfg.col.p_four, cfg.col.dark_grey]
 			# Draw background rects to surface.
 			pygame.draw.rect(self.surface, col_bg_rgb[h], (x, y, self.col_px_widths[h], self.row_height))
 			pygame.draw.rect(self.surface, cfg.col.p_two, (x, y, self.col_px_widths[h], self.row_height), 1)
@@ -59,20 +61,22 @@ class Leaderboard:
 			# Render/prepare cells.
 			cells = [
 				p.name_plate,
-				cfg.leaderboard_font.render(str(p.kills), True, cfg.col.white),
+				cfg.leaderboard_number_font.render(str(p.kills), True, cfg.col.white),
+				cfg.leaderboard_number_font.render(str(p.total_tributed), True, cfg.col.white),
+				cfg.leaderboard_number_font.render(str(int(p.favour / 1000 * 100)) + "%", True, cfg.col.p_five)
 			]
 			# Alignment and padding information.
-			x_aligns = ["right", "centre"]
-			y_aligns = ["middle", "middle"]
-			pads = [5, 5]
-			col_bg_rgb = [cfg.col.p_five, cfg.col.p_six]
+			x_aligns = ["right", "centre", "centre", "centre"]
+			y_aligns = ["middle", "middle", "middle", "middle"]
+			pads = [5, 5, 5, 5]
+			col_bg_rgb = [cfg.col.p_five, cfg.col.p_six, cfg.col.p_six, cfg.col.p_one]
 			# Blit every cell to row.
 			for h, i in enumerate(cells):
 				y = p.leaderboard_position * self.row_height
 				x = self.col_x[h]
 				# Draw background rects to surface.
 				pygame.draw.rect(self.surface, col_bg_rgb[h], (x, y, self.col_px_widths[h], self.row_height))
-				pygame.draw.rect(self.surface, cfg.static_outline, (x, y, self.col_px_widths[h], self.row_height), 1)
+				pygame.draw.rect(self.surface, cfg.col.light_grey, (x, y, self.col_px_widths[h] + 1, self.row_height), 1)
 				# Blit text to surface.
 				self.surface.blit(i, (
 					x + cfg.return_x_align_offset(x_aligns[h], x, self.col_px_widths[h], i.get_width(), pads[h]), (

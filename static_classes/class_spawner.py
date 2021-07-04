@@ -16,7 +16,7 @@ class Spawner:
 		self.game = game
 		self.screen = game.screen
 		self.diameter = random.randint(25, 65)
-		self.location = pygame.math.Vector2(random.randint(1400, 1920), random.randint(600, 1080))
+		self.location = pygame.math.Vector2(random.randint(0, 1920), random.randint(600, 1080))
 		# self.target_location = pygame.math.Vector2(random.randint(600, 1920), random.randint(400, 1080))
 		self.acceleration = pygame.math.Vector2(0, 0)
 		self.rect = pygame.Rect(self.location[0], self.location[1], self.diameter, self.diameter)
@@ -26,6 +26,7 @@ class Spawner:
 
 		self.active = False
 
+		# Spinner Vecs
 		self.desired_rotation_speed = .01
 		self.rotation_speed = 0
 		self.starting_angle = random.randint(0, 360)
@@ -33,6 +34,9 @@ class Spawner:
 		self.base_vec = pygame.Vector2(0, self.diameter / 2)
 		self.spinner_vec = self.base_vec.rotate(self.angle)
 		self.spinner_polarity = 1
+		# Ring Vecs
+		self.velocity = pygame.Vector2(0, 1)
+		self.ring_bearing = 0
 
 		self.max_nodules = int((3.14 * self.diameter) / cfg.nodule_w * 1.5)
 		self.nodules = []
@@ -99,6 +103,16 @@ class Spawner:
 			loc = pygame.Vector2(self.rect.center + self.base_vec.rotate(nodule_angles[h]))
 			i.reposition_location(loc)
 
+	def rotate(self):
+		ang_vec = pygame.Vector2(self.rect.center) - self.target.rect.center
+		rads = math.atan2(ang_vec[0], ang_vec[1])
+		deg = math.degrees(rads)
+		self.angle += (deg - self.angle) * .01
+
+	def move(self):
+		pass
+		# self.location += self.velocity.rotate()
+
 	def draw(self):
 		# self.screen.blit(self.label, self.rect.bottomright)
 		pygame.draw.circle(self.screen, cfg.col.p_five, self.rect.center, self.diameter / 2, 10)
@@ -108,6 +122,7 @@ class Spawner:
 		pygame.draw.circle(self.screen, cfg.col.p_one, self.spinner_vec, 9)
 
 	def loop(self):
+		self.move()
 		self.update_spinner()
 		# self.check_spawn()
 		self.draw()

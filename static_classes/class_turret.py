@@ -145,13 +145,10 @@ class Turret:
 		if ht:
 			difference = pygame.Vector2(
 				self.rect.center - ht.location).normalize()
-			self.barrel_point += difference * .05
-			self.barrel_point = self.barrel_point.normalize()
-		# if no target, turn turret towards resting position.
 		else:
 			difference = pygame.Vector2(self.rect.center - self.turret_rest_pos).normalize()
-			self.barrel_point += difference * .05
-			self.barrel_point = self.barrel_point.normalize()
+		self.barrel_point += difference * .05
+		self.barrel_point = self.barrel_point.normalize()
 
 	def draw(self):
 		# Draw base

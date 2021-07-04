@@ -14,7 +14,7 @@ class Player:
         self.sub_status = False
         self.max_facilities = cfg.default_max_facilities
 
-        # behaviours
+        # Behaviours
         self.favouring = None
 
         self.entities = []
@@ -29,6 +29,7 @@ class Player:
 
         self.favour = 0
         self.total_favour = 0
+        self.total_tributed = 0
         self.rubine = 0
         self.verdite = 0
         self.ceruliun = 0
@@ -59,7 +60,7 @@ class Player:
         # Else choose a random hangar from available hangars in all stations.
         else:
             choices = []
-            for station in self.game.stations:
+            for station in [s for s in self.game.stations if s.hangar_count > 0]:
                 for hangar in station.hangars:
                     if hangar.owner is None:
                         choices.append(hangar)
@@ -388,7 +389,7 @@ class Player:
                 mineral_list = cfg.return_mineral_list(mineral, mineral_dispatch_amount)
                 cfg.withdraw_resources(self, mineral_list)
                 # Payout favour.
-                self.distribute_favour(cfg.convert_mineral_to_favour(mineral_list))
+                self.distribute_favour(cfg.minerals_to_favour(mineral_list))
             else:
                 print(f'{mineral.title()} is not a valid mineral type {self.name.title()}.')
         else:
@@ -396,5 +397,5 @@ class Player:
 
     def distribute_favour(self, amt):
         self.favour += amt
-        self.tribute += amt
+        self.total_tributed += amt
         self.total_favour += amt

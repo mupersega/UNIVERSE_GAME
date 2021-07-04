@@ -183,7 +183,7 @@ class Carriage:
 	def update(self):
 		if self.rect.colliderect(self.puller.rect):
 			return
-		self.velocity = self.location.distance_to(self.puller.location) / 20
+		self.velocity = self.location.distance_to(self.puller.location) / 30
 		self.target_location = self.puller.location
 		self.direction = pygame.Vector2(self.location - self.target_location).normalize()
 		self.location -= (self.location - self.target_location).normalize() * self.velocity

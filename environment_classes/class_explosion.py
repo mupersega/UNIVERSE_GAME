@@ -5,10 +5,11 @@ import random
 class Explosion:
 	"""A class to manage explosion objects consisting of n particles. Particles are managed in arrays in this class, NOT
 	as their own instantiated objects."""
-	def __init__(self, game, position, size, rgb):
+	def __init__(self, game, position, size, rgb, inherited_velocity=None):
 		self.game = game
 		self.location = position
 		self.size = size
+		self.inherited_velocity = inherited_velocity or pygame.Vector2(0, 0)
 		self.particles = []
 		self.vecs = []
 		self.cycle = 0
@@ -23,9 +24,9 @@ class Explosion:
 		# set their magnitudes
 		for i in range(self.size):
 			self.vecs.append(pygame.Vector2(
-				random.uniform(-1, 1)*(self.size-self.particles[i]),
-				random.uniform(-1, 1)*(self.size-self.particles[i])
-			))
+				random.uniform(-.5, .5)*(self.size-self.particles[i]),
+				random.uniform(-.5, .5)*(self.size-self.particles[i])
+			) - self.inherited_velocity * .4)
 
 	def draw(self):
 		for i in range(self.size):

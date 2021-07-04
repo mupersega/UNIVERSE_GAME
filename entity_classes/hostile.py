@@ -77,6 +77,7 @@ class Hostile:
 			self.game.explosions.append(new_explosion)
 			if self.last_hit:
 				self.last_hit.kills += 1
+				self.last_hit.favour += self.favour
 				self.game.leaderboard.update()
 
 
@@ -90,6 +91,7 @@ class Drone(Hostile):
 		self.image = cfg.starsated_image
 		self.rect = pygame.Rect(0, 0, self.image.get_rect().width, self.image.get_rect().height)
 		self.life = 10
+		self.favour = 1
 
 		self.set_new_roam_location()
 
@@ -101,16 +103,8 @@ class Drone(Hostile):
 		y_reg = random.choice([0, 1, 1, 2, 2, 2, 3, 3, 3, 3])
 		x = random.randint(0 + 10, w - 10)
 		y = random.randint(0 + 10, h - 10)
-		# print(x_reg, x)
 		self.target_loc[0] = x + (x_reg * w)
 		self.target_loc[1] = y + (y_reg * h)
-		# NEARBY ROAM
-		# x_lower = max([0, self.rect.centerx - roam_range])
-		# x_upper = min([cfg.screen_width, self.rect.centerx + roam_range])
-		# y_lower = max([0, self.rect.centery - roam_range])
-		# y_upper = min([cfg.screen_width, self.rect.centery + roam_range])
-		# self.target_loc[0] = self.location.x + random.randint(x_lower, x_upper)
-		# self.target_loc[1] = self.location.y + random.randint(y_lower, y_upper)
 		self.last_loc = pygame.math.Vector2(self.location)
 
 	def roam(self):
@@ -196,6 +190,7 @@ class HunterDrone(Hostile):
 		self.rect = pygame.Rect(0, 0, self.image.get_rect().width, self.image.get_rect().height)
 		self.life = 50
 		self.damage = 5
+		self.favour = 2
 
 		self.set_new_roam_location()
 
@@ -324,6 +319,7 @@ class Soldier(Hostile):
 		self.rect = pygame.Rect(0, 0, self.image.get_rect().width, self.image.get_rect().height)
 		self.life = 200
 		self.damage = 10
+		self.favour = 5
 
 	def acquire_target(self, attr):
 		new_target = None

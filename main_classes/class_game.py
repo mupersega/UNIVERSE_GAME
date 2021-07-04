@@ -17,6 +17,7 @@ from utility_classes.quadtree import Quadtree
 from hud_classes.class_phaseCountDownDisplay import PhaseCountDownDisplay
 from hud_classes.class_leaderboard import Leaderboard
 from hud_classes.market import Market
+from projectile_classes.starseeker import Starseeker
 
 
 admins = ['mupersega']
@@ -64,7 +65,7 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.round = 0
+		self.round = 20
 		self.round_label = cfg.bauhaus.render(
 			f"Rd. {self.round}", True, cfg.col.p_one)
 		self.round_label_rect = self.round_label.get_rect()
@@ -84,7 +85,7 @@ class Game:
 		for _ in range(cfg.start_spawners):
 			self.new_spawner()
 
-		# self.new_player("mupersega", None)
+		self.new_player("mupersega", None)
 		for i in range(cfg.start_players):
 			self.new_player(f"P{i}", None)
 		for _ in range(0):
@@ -203,6 +204,9 @@ class Game:
 			print("Nothing to process.")
 			# print('error in try watch queue try block')
 			return
+
+	def spawn_starseeker(self):
+		random.choice(self.stations).launch_bay.launch(None, "starseeker")
 
 	def process(self, sub_status, name, msg):
 		sub_status = sub_status
@@ -330,6 +334,7 @@ class Game:
 					# BUILD warehouse = w
 					# UPGRADE miner = m
 					# UPGRADE thrusters = t
+					# SPAWN starseeker = l
 
 					if event.key == pygame.K_SPACE:
 						self.random_crash()
@@ -342,6 +347,8 @@ class Game:
 						sys.exit()
 					if event.key == pygame.K_s:
 						self.new_station()
+					if event.key == pygame.K_l:
+						self.spawn_starseeker()
 					if event.key == pygame.K_r:
 						cfg.tally_resources(self.players[0])
 					if event.key == pygame.K_t:
@@ -414,7 +421,7 @@ class Game:
 				for j in i.entities:
 					j.loop()
 
-			for i in self.projectiles.copy():
+			for i in reversed(self.projectiles.copy()):
 				i.loop()
 
 			for i in self.explosions.copy():

@@ -16,7 +16,13 @@ class Maul:
 		self.shooter = shooter
 		self.velocity = 7
 		self.life = random.randint(60, 80) * 1.5
-		self.rect = pygame.Rect(self.location.x, self.location.y, 5, 5)
+		self.rect = pygame.Rect(self.location.x, self.location.y, 10, 10)
+		self.dim = random.randint(1, 2)
+		self.rgb = random.choice([
+				cfg.col.dark_rubine,
+				cfg.col.light_rubine,
+				cfg.col.red
+			])
 		# pygame.draw.circle(self.game.screen, [250, 240, 255], self.location, random.randint(1, 4))
 		self.game.explosions.append(Explosion(self.game, start_loc, 3, [255, 255, 255]))
 
@@ -62,7 +68,7 @@ class Maul:
 		pass
 
 	def draw(self):
-		pygame.draw.circle(self.game.screen, [255, 0, 0], self.location, 1)
+		pygame.draw.circle(self.game.screen, self.rgb, self.rect.center, self.dim)
 
 	def update_rect(self):
 		self.rect.topleft = self.location

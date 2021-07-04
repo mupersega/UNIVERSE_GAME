@@ -3,6 +3,7 @@ import pygame
 from utility_classes import cfg
 from static_classes.class_hangar import Hangar
 from static_classes.class_location import Location
+from static_classes.launch_bay import LaunchBay
 
 
 class Station:
@@ -13,7 +14,7 @@ class Station:
 		self.screen = game.screen
 		self.on_screen = True
 		self.sn = station_number
-		self.hangar_count = 20 if self.sn == 0 else abs(20 - self.sn * 4)
+		self.hangar_count = 8 if self.sn == 0 else abs(8 - self.sn * 2)
 		self.kind = 'station'
 		self.x = cfg.st_x_offset + self.sn * cfg.station_spacing
 		self.y = cfg.st_y_offset
@@ -29,6 +30,7 @@ class Station:
 		self.approach_velocity = False
 
 		# iterables
+		self.launch_bay = LaunchBay(self.game, self)
 		self.hangars = []
 		self.hold = []
 
@@ -36,11 +38,7 @@ class Station:
 
 	def station_setup(self):
 		# construct i hangars
-		if self.sn == 0:
-			h = 20
-		else:
-			h = 6
-		for i in range(h):
+		for _ in range(self.hangar_count):
 			self.new_hangar()
 
 	def new_hangar(self):
@@ -52,4 +50,5 @@ class Station:
 		pygame.draw.rect(self.screen, cfg.static_outline, self.rect, 1)
 
 	def loop(self):
+		self.launch_bay.draw()
 		self.draw()
