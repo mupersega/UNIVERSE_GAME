@@ -26,7 +26,9 @@ c = conn.cursor()
 #
 # x = -1920
 # y = 420
-# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+x = 400
+y = 40
+os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:

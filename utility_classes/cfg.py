@@ -34,8 +34,8 @@ bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width, screen_height = 1920, 1080
-# screen_width, screen_height = 800, 600
+# screen_width, screen_height = 1920, 1080
+screen_width, screen_height = 1500, 700
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
@@ -123,6 +123,23 @@ ast_arrived_distance = 20
 
 # --Player-- #
 player_starting_mupees = 100
+
+# --Empire-- #
+max_favour = 1000
+favour_items = {
+	"starseeker": {
+		"cost": 50,
+	},
+	"compression": {
+		"cost": 50
+	},
+	"reinforce": {
+		"cost": 50,
+	},
+	"amp": {
+		"cost": 50,
+	},
+}
 
 # --Hangar-- #
 hangar_offset = x_pad
@@ -465,4 +482,11 @@ def return_y_align_offset(alignment, container_top, container_height, obj_height
 		return (container_height - obj_height) / 2
 	if alignment == 'top':
 		return container_height - obj_height - padding
+
+
+def calc_distribute_amt(current, amt, roof):
+	output = current + amt
+	if current > roof:
+		output = roof
+	return output
 

@@ -50,6 +50,8 @@ class LaunchBay:
 	def launch(self, player, item):
 		if item.lower() == "starseeker":
 			self.launch_starseeker(player)
+		if item.lower() == "amp":
+			self.launch_amp(player)
 
 	def launch_starseeker(self, player):
 		self.game.projectiles.append(Starseeker(
@@ -57,6 +59,9 @@ class LaunchBay:
 				0, random.uniform(-4, -2)), 0)
 		)
 		self.current_glow_pos = pygame.Vector2(self.start_glow_pos)
+
+	def launch_amp(self, player):
+		pass
 
 	def update_glow_pos(self):
 		difference = self.final_glow_pos.y - self.current_glow_pos.y

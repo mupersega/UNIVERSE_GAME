@@ -77,7 +77,7 @@ class Hostile:
 			self.game.explosions.append(new_explosion)
 			if self.last_hit:
 				self.last_hit.kills += 1
-				self.last_hit.favour += self.favour
+				self.last_hit.favour = cfg.calc_distribute_amt(self.last_hit.favour, self.favour, cfg.max_favour)
 				self.game.leaderboard.update()
 
 

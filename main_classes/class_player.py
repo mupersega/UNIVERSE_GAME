@@ -1,6 +1,7 @@
 import random
 
 from utility_classes import cfg
+from projectile_classes.starseeker import Starseeker
 
 
 class Player:
@@ -27,7 +28,7 @@ class Player:
         # Target management
         self.kill_priority = 0
 
-        self.favour = 0
+        self.favour = 1000
         self.total_favour = 0
         self.total_tributed = 0
         self.rubine = 0
@@ -107,6 +108,8 @@ class Player:
             self.game.market.clear_player_trade(self.name)
         if cmd == '!tribute':
             self.tribute(args)
+        if cmd == '!redeem':
+            self.redeem(args)
 
     def upgrade(self, args):
         # upgrade syntax: ['facility kind', 'facility_index', 'upgrade_request']
@@ -395,7 +398,25 @@ class Player:
         else:
             print(f'{amt} is not a valid amount to tribute {self.name.title()}.')
 
+    def redeem(self, args):
+        # !redeem starseeker
+        item_name = args[0]
+        # Check arg validity
+        if item_name.lower() in cfg.favour_items.keys():
+            # Get favour cost.
+            cost = cfg.favour_items[item_name]["cost"]
+            # If not enough favour, return.
+            if cost > self.favour:
+                return
+        # Remove favour.
+        self.favour -= cfg.favour_items[item_name]["cost"]
+        # Spawn special item
+        self.hangars[0].station.launch_bay.launch(self, item_name)
+
     def distribute_favour(self, amt):
-        self.favour += amt
-        self.total_tributed += amt
+        if self.favour < cfg.max_favour:
+            self.favour += amt
         self.total_favour += amt
+        # Tribute could be added separately.
+        self.total_tributed += amt
+
