@@ -22,6 +22,8 @@ starseeker_imgs = [
 	pygame.image.load('./assets/starseeker_s.png'),
 	pygame.image.load('./assets/starseeker_xs.png')
 ]
+turret_capsule = pygame.image.load('./assets/turret_capsule.png')
+compression_capsule = pygame.image.load('./assets/compression_capsule.png')
 
 # FONT SETTINGS #
 leaderboard_number_font = pygame.font.SysFont("Agency FB", 16)
@@ -34,22 +36,22 @@ bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 # CLASS SETTINGS #
 # --Game-- #
-# screen_width, screen_height = 1920, 1080
-screen_width, screen_height = 1500, 700
+screen_width, screen_height = 1920, 1080
+# screen_width, screen_height = 1500, 700
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
 # st 15 = ent 124
-start_stations = 4
+start_stations = 1
 start_suns = 1
-start_spawners = 5
-start_players = 6
+start_spawners = 2
+start_players = 0
 universe_max_asteroids = 300
 max_hostiles = 15
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 1
+gather_phase_time = 360
 combat_phase_time = 30
 convert_mineral_to_favour = [1, 2, 5]
 
@@ -82,7 +84,7 @@ default_hangars = 30
 lane_width = 15
 x_pad = facility_w / 10
 y_pad = 1
-st_x_offset = 10 # 382 for stream
+st_x_offset = 382 # 382 for stream
 st_y_offset = 55
 station_spacing = station_width + (
 		x_pad * 2 + facility_w * default_max_facilities) + lane_width
@@ -148,7 +150,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = col.medium_grey
-wh_starting_resources = [100, 50, 50]
+wh_starting_resources = [0, 0, 0]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 wh_life = 200
@@ -459,11 +461,9 @@ def return_mineral_list(mineral, amt):
 	return new_list
 
 
-def minerals_to_favour(resource_list):
-	favour_converted = 0
-	for h, i in enumerate(resource_list):
-		favour_converted += convert_mineral_to_favour[h] * i
-	return favour_converted
+def mineral_to_favour_equivalent(resource_list):
+	return sum(
+		convert_mineral_to_favour[h] * i for h, i in enumerate(resource_list))
 
 
 def return_x_align_offset(alignment, container_left, container_width, obj_width, padding):

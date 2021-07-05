@@ -26,9 +26,9 @@ c = conn.cursor()
 #
 # x = -1920
 # y = 420
-x = 400
-y = 40
-os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+# x = 400
+# y = 40
+# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:
@@ -67,7 +67,7 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.round = 20
+		self.round = 0
 		self.round_label = cfg.bauhaus.render(
 			f"Rd. {self.round}", True, cfg.col.p_one)
 		self.round_label_rect = self.round_label.get_rect()
@@ -87,7 +87,7 @@ class Game:
 		for _ in range(cfg.start_spawners):
 			self.new_spawner()
 
-		self.new_player("mupersega", None)
+		# self.new_player("mupersega", None)
 		for i in range(cfg.start_players):
 			self.new_player(f"P{i}", None)
 		for _ in range(0):

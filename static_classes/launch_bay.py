@@ -58,10 +58,13 @@ class LaunchBay:
 			self.game, player, self.rect.center, pygame.Vector2(
 				0, random.uniform(-4, -2)), 0)
 		)
-		self.current_glow_pos = pygame.Vector2(self.start_glow_pos)
+		self.reset_glow_pos()
 
 	def launch_amp(self, player):
 		pass
+
+	def reset_glow_pos(self):
+		self.current_glow_pos = pygame.Vector2(self.start_glow_pos)
 
 	def update_glow_pos(self):
 		difference = self.final_glow_pos.y - self.current_glow_pos.y

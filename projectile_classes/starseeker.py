@@ -49,7 +49,6 @@ class Starseeker:
 		if self.target_locked:
 			return
 		self.velocity *= .98
-		# self.lock_time += 1
 		if self.velocity.magnitude() < .02 + self.split_mod:
 			self.target_locked = True
 			self.thrusters = 7
@@ -72,7 +71,6 @@ class Starseeker:
 			rads = math.atan2(ang_vec[0], ang_vec[1])
 			deg = math.degrees(rads)
 			self.angle = deg
-			# print(self.angle)
 		else:
 			ang_vec = pygame.Vector2(self.rect.center) - self.target.rect.center
 			rads = math.atan2(ang_vec[0], ang_vec[1])

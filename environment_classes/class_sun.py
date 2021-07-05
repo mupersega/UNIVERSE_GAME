@@ -14,9 +14,9 @@ class Sun:
 		self.parent = parent
 		self.screen = parent.screen
 		self.planet_count = planets
-		self.x = int(cfg.screen_width / 2)
+		# self.x = int(cfg.screen_width / 2)
 		# self.y = int(cfg.screen_height / 2)
-		# self.x = cfg.screen_width
+		self.x = cfg.screen_width
 		self.y = cfg.screen_height
 		self.rgb = cfg.sun_colour
 		self.size = cfg.sun_start_size

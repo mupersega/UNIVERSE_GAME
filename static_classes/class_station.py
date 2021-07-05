@@ -14,7 +14,7 @@ class Station:
 		self.screen = game.screen
 		self.on_screen = True
 		self.sn = station_number
-		self.hangar_count = 8 if self.sn == 0 else abs(8 - self.sn * 2)
+		self.hangar_count = 16 if self.sn == 0 else abs(4 - self.sn * 2)
 		self.kind = 'station'
 		self.x = cfg.st_x_offset + self.sn * cfg.station_spacing
 		self.y = cfg.st_y_offset

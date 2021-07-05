@@ -28,7 +28,7 @@ class Player:
         # Target management
         self.kill_priority = 0
 
-        self.favour = 1000
+        self.favour = 0
         self.total_favour = 0
         self.total_tributed = 0
         self.rubine = 0
@@ -392,31 +392,33 @@ class Player:
                 mineral_list = cfg.return_mineral_list(mineral, mineral_dispatch_amount)
                 cfg.withdraw_resources(self, mineral_list)
                 # Payout favour.
-                self.distribute_favour(cfg.minerals_to_favour(mineral_list))
+                favour_earned = cfg.mineral_to_favour_equivalent(mineral_list)
+                self.distribute_favour(favour_earned)
+                self.distribute_tribute(favour_earned)
             else:
                 print(f'{mineral.title()} is not a valid mineral type {self.name.title()}.')
         else:
             print(f'{amt} is not a valid amount to tribute {self.name.title()}.')
 
     def redeem(self, args):
-        # !redeem starseeker
+        # Example command - "!redeem starseeker"
         item_name = args[0]
-        # Check arg validity
-        if item_name.lower() in cfg.favour_items.keys():
-            # Get favour cost.
-            cost = cfg.favour_items[item_name]["cost"]
-            # If not enough favour, return.
-            if cost > self.favour:
-                return
-        # Remove favour.
-        self.favour -= cfg.favour_items[item_name]["cost"]
-        # Spawn special item
-        self.hangars[0].station.launch_bay.launch(self, item_name)
+        # Check arg validity and try pay for item.
+        if item_name.lower() in cfg.favour_items.keys() and self.pay_favour_for_item(item_name):
+            # Launch item from launch bay.
+            self.hangars[0].station.launch_bay.launch(self, item_name)
+
+    def pay_favour_for_item(self, item):
+        cost = cfg.favour_items[item]["cost"]
+        if cost <= self.favour:
+            self.favour -= cost
+            return True
+        return False
 
     def distribute_favour(self, amt):
-        if self.favour < cfg.max_favour:
-            self.favour += amt
+        self.favour = cfg.calc_distribute_amt(self.favour, amt, cfg.max_favour)
         self.total_favour += amt
-        # Tribute could be added separately.
+
+    def distribute_tribute(self, amt):
         self.total_tributed += amt
 
