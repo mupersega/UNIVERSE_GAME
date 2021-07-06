@@ -8,6 +8,7 @@ import utility_classes.colours as col
 
 pygame.font.init()
 
+# IMAGES #
 ship_image = pygame.image.load('./assets/mining_ship_1.png')
 starsated_image = pygame.image.load('./assets/starsated.png')
 hunterdrone_image = pygame.image.load('./assets/hunterdrone.png')
@@ -22,8 +23,6 @@ starseeker_imgs = [
 	pygame.image.load('./assets/starseeker_s.png'),
 	pygame.image.load('./assets/starseeker_xs.png')
 ]
-turret_capsule = pygame.image.load('./assets/turret_capsule.png')
-compression_capsule = pygame.image.load('./assets/compression_capsule.png')
 
 # FONT SETTINGS #
 leaderboard_number_font = pygame.font.SysFont("Agency FB", 16)
@@ -36,8 +35,8 @@ bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 # CLASS SETTINGS #
 # --Game-- #
-screen_width, screen_height = 1920, 1080
-# screen_width, screen_height = 1500, 700
+# screen_width, screen_height = 1920, 1080
+screen_width, screen_height = 1500, 700
 fps = 120
 universe_primary = "rubine"
 universe_secondary = "verdite"
@@ -45,13 +44,13 @@ universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
 start_spawners = 2
-start_players = 0
+start_players = 5
 universe_max_asteroids = 300
 max_hostiles = 15
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 360
+gather_phase_time = 30
 combat_phase_time = 30
 convert_mineral_to_favour = [1, 2, 5]
 
@@ -68,10 +67,10 @@ dropoff_speed = 995  # larger number will make drop off slower out of 1000
 min_hangars_per = 5
 max_hangars_per = 20
 facility_w, facility_h = 21, 21
-facility_w_third = int(facility_w * .33)
-facility_w_two_third = int(facility_w * .66)
-facility_h_third = int(facility_h * .33)
-facility_h_two_third = int(facility_w * .66)
+facility_w_third = int(facility_w / 3)
+facility_w_two_third = int(facility_w / 3 * 2)
+facility_h_third = int(facility_h / 3)
+facility_h_two_third = int(facility_h / 3 * 2)
 default_max_facilities = 7
 static_outline = col.p_three
 st_colour = col.p_five  # [102, 102, 153]
@@ -150,7 +149,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = col.medium_grey
-wh_starting_resources = [0, 0, 0]
+wh_starting_resources = [50, 50, 50]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 wh_life = 200
@@ -221,6 +220,35 @@ loc_arrived_distance = 3
 # --Freighter-- #
 engine_life = 1000
 carriage_life = 200
+
+# --Capsule-- #
+capsule_info = {
+	"compression": {
+		"img": pygame.image.load('./assets/compression_capsule.png'),
+		"target_facility": "bay",
+		"ring_rgb": [255, 255, 0],
+		"glow_rgb": [255, 255, 0],
+		"beam_rgb": [255, 255, 0],
+		"attribute": "hold",
+		"attribute_change": 50,
+		"duration": 1000,
+		"padding": 1
+	},
+	"turret": {
+		"img": pygame.image.load('./assets/turret_capsule.png'),
+		"target_facility": "turret",
+		"ring_rgb": col.light_ceruliun,
+		"glow_rgb": col.light_ceruliun,
+		"beam_rgb": col.light_ceruliun,
+		"attribute": "level",
+		"attribute_change": 2,
+		"duration": 1000,
+		"padding": 1
+	}
+}
+
+turret_capsule = pygame.image.load('./assets/turret_capsule.png')
+compression_capsule = pygame.image.load('./assets/compression_capsule.png')
 
 # --Miscellaneous-- #
 composition_rolls = 10

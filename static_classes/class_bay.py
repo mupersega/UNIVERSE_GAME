@@ -124,7 +124,7 @@ class Bay:
 
 	def draw(self):
 		# Draw bay outline
-		pygame.draw.circle(self.screen, cfg.col.medium_grey, self.rect.center, cfg.facility_h / 3, width=2)
+		pygame.draw.circle(self.screen, cfg.col.medium_grey, self.rect.center, cfg.facility_h_third, width=2)
 		# Draw Attribute bars
 		for i in range(4):
 			pygame.draw.line(self.screen, cfg.bay_bar_colours[i], self.bar_coords[i][0], self.bar_coords[i][1], width=2)

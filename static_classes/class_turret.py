@@ -26,7 +26,7 @@ class Turret:
 		self.hostile_target = None
 		self.width = cfg.facility_w
 		self.height = cfg.facility_h
-		self.diameter = cfg.facility_w * .5
+		self.diameter = cfg.facility_w_two_third
 		self.approach_velocity = 1
 		self.approach_angle = .9
 		self.barrel_point = pygame.math.Vector2(1, 1)
@@ -42,6 +42,7 @@ class Turret:
 		self.approach_velocity = 1
 
 		# Weapons
+		self.level = 1
 		self.active = True
 		self.turret_rest_pos = pygame.Vector2(1920, self.hangar.rect.y)
 		self.ammo_type = random.choice(["lance", "maul", "bolt"])
@@ -95,23 +96,26 @@ class Turret:
 			self.shot_timer = 200
 			return
 		# MAUL
+		# LEVEL EFFECTS - Number of projectiles launched. #
 		if self.shot_timer <= 0 and self.ammo_type == "maul":
 			self.barrel_point += (random.uniform(-0.1, 0.1), random.uniform(-0.1, 0.1))
 			new_projectile = Maul(
 				self.rect.center - self.barrel_point * 16, self.barrel_point, None, self.game, self.owner)
-			for _ in range(2):
+			for _ in range(self.level):
 				self.add_projectile_and_update(new_projectile, 0.2, 0)
 		# LANCE
+		# LEVEL EFFECTS - Number of projectiles launched. #
 		if self.shot_timer <= 0 and self.ammo_type == "lance":
 			self.barrel_point += random.choice(cfg.turret_shake)
 			new_projectile = Lance(
 				self.rect.center - self.barrel_point * 16, self.barrel_point, self.hostile_target, self.game, self.owner)
 			self.add_projectile_and_update(new_projectile, 150, 50)
 		# BOLT
+		# LEVEL EFFECTS - Extra targets after first. #
 		if self.shot_timer <= 0 and self.ammo_type == "bolt":
 			self.barrel_point += random.choice(cfg.turret_shake)
 			new_projectile = Bolt(
-				self.rect.center - self.barrel_point * 16, self.barrel_point, self.hostile_target, self.game, self.owner)
+				self.rect.center - self.barrel_point * 16, self.barrel_point, self.hostile_target, self.game, self.owner, self.level)
 			self.add_projectile_and_update(new_projectile, 250, 1)
 
 	def add_projectile_and_update(self, new_projectile, shot_time, heat_change):

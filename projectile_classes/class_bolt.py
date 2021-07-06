@@ -9,11 +9,12 @@ class Bolt:
 	"""The bolt ammunition type is the 'missile' class, it is assigned a target on init and will move towards it. It is
 	the ammo type that has the most physics applied to it. It will adopt an initial velocity vector derived from the
 	turrets barrel direction."""
-	def __init__(self, start_loc, trajectory, target, game, shooter):
+	def __init__(self, start_loc, trajectory, target, game, shooter, level):
 		self.game = game
 		self.target = target
 		self.location = pygame.Vector2(start_loc - trajectory * 10)
 		self.shooter = shooter
+		self.level = level
 		self.thrust = pygame.Vector2(0, 0)
 		self.velocity = pygame.Vector2(0, 0)
 		self.acceleration = pygame.Vector2(0, 0)

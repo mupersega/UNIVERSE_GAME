@@ -26,9 +26,9 @@ c = conn.cursor()
 #
 # x = -1920
 # y = 420
-# x = 400
-# y = 40
-# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+x = 400
+y = 100
+os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:
@@ -53,6 +53,7 @@ class Game:
 		self.entities = []
 		self.freighters = []
 		self.projectiles = []
+		self.boosts = []
 		self.explosions = []
 		self.spawners = []
 		self.hostiles = []
@@ -208,7 +209,8 @@ class Game:
 			return
 
 	def spawn_starseeker(self):
-		random.choice(self.stations).launch_bay.launch(None, "starseeker")
+		player = random.choice(self.players)
+		random.choice(self.stations).launch_bay.launch(player, random.choice(["turret", "compression"]))
 
 	def process(self, sub_status, name, msg):
 		sub_status = sub_status
@@ -398,6 +400,9 @@ class Game:
 					j.loop()
 					for k in j.asteroids:
 						k.loop()
+
+			for i in self.boosts:
+				i.loop()
 
 			for i in self.stations:
 				i.loop()
