@@ -22,7 +22,7 @@ class LaunchBay:
 
 		self.start_glow_pos = pygame.Vector2(
 			self.rect.centerx - self.launch_glow.get_width() * .5,
-			self.rect.centery
+			self.rect.centery - 3
 		)
 		self.final_glow_pos = pygame.Vector2(
 			self.rect.centerx - self.launch_glow.get_width() * .5,
@@ -46,35 +46,27 @@ class LaunchBay:
 		pygame.draw.line(self.launch_glow, cfg.col.p_one, (0, 1), (1, 1))
 		pygame.draw.line(self.launch_glow, [0, 0, 0], (0, 2), (2, 2))
 		self.launch_glow = pygame.transform.smoothscale(
-			self.launch_glow, (cfg.facility_w + 3, cfg.facility_h))
+			self.launch_glow, (cfg.facility_w + 5, cfg.facility_h))
 
 	def launch(self, player, item):
 		if item.lower() == "starseeker":
 			self.launch_starseeker(player)
 		if item.lower() == "compression":
-			self.launch_compression_capsule(player)
-		if item.lower() == "turret":
-			self.launch_turret_capsule(player)
+			self.launch_capsule(player, item)
+		if item.lower() == "overclock":
+			self.launch_capsule(player, item)
 
 	def launch_starseeker(self, player):
 		self.game.projectiles.append(Starseeker(
 			self.game, player, self.rect.center, pygame.Vector2(
-				random.uniform(-.5, .5), random.uniform(-4, -2)), 0, "starseeker")
+				random.uniform(-.5, .5), random.uniform(-4, -2)), 0)
 		)
 		self.reset_glow_pos()
 
-	def launch_compression_capsule(self, player):
+	def launch_capsule(self, player, capsule_type):
 		self.game.boosts.append(Capsule(
 			self.game, player, self.rect.center, pygame.Vector2(
-				random.uniform(-.5, .5), random.uniform(-4, -2)), "compression")
-		)
-		self.reset_glow_pos()
-
-
-	def launch_turret_capsule(self, player):
-		self.game.boosts.append(Capsule(
-			self.game, player, self.rect.center, pygame.Vector2(
-				random.uniform(-.5, .5), random.uniform(-4, -2)), "turret")
+				random.uniform(-.5, .5), random.uniform(-4, -2)), capsule_type)
 		)
 		self.reset_glow_pos()
 

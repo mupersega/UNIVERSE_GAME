@@ -63,10 +63,10 @@ p_six = [255 % i for i in p_five]
 # p_six = [255 % i for i in p_five]
 
 # # TURQUOISE # #
-# p_one = [13, 204, 255]
-# p_two = [20, 164, 204]
-# p_three = [255, 183, 0]
-# p_four = [76, 13, 255]
-# p_five = [49, 14, 143]
-# p_six = [255 % i for i in p_five]
+p_one = [13, 204, 255]
+p_two = [20, 164, 204]
+p_three = [255, 183, 0]
+p_four = [76, 13, 255]
+p_five = [49, 14, 143]
+p_six = [255 % i for i in p_five]
 

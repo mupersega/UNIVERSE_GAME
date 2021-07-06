@@ -41,6 +41,7 @@ class Starseeker:
 	
 	def get_detonate_distance(self, percent):
 		this_vec = pygame.Vector2(self.rect.center)
+		print(self.target)
 		target_vec = pygame.Vector2(self.target.rect.center)
 		return this_vec.distance_to(target_vec) * percent
 

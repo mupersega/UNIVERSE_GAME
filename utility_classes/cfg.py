@@ -44,13 +44,13 @@ universe_secondary = "verdite"
 start_stations = 1
 start_suns = 1
 start_spawners = 2
-start_players = 5
+start_players = 0
 universe_max_asteroids = 300
 max_hostiles = 15
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 30
+gather_phase_time = 1
 combat_phase_time = 30
 convert_mineral_to_favour = [1, 2, 5]
 
@@ -134,10 +134,10 @@ favour_items = {
 	"compression": {
 		"cost": 50
 	},
-	"reinforce": {
+	"overclock": {
 		"cost": 50,
 	},
-	"amp": {
+	"embolden": {
 		"cost": 50,
 	},
 }
@@ -234,12 +234,23 @@ capsule_info = {
 		"duration": 1000,
 		"padding": 1
 	},
-	"turret": {
+	"overclock": {
 		"img": pygame.image.load('./assets/turret_capsule.png'),
 		"target_facility": "turret",
 		"ring_rgb": col.light_ceruliun,
 		"glow_rgb": col.light_ceruliun,
 		"beam_rgb": col.light_ceruliun,
+		"attribute": "level",
+		"attribute_change": 2,
+		"duration": 1000,
+		"padding": 1
+	},
+	"embolden": {
+		"img": pygame.image.load('./assets/turret_capsule.png'),
+		"target_facility": "turret",
+		"ring_rgb": col.light_verdite,
+		"glow_rgb": col.light_verdite,
+		"beam_rgb": col.light_verdite,
 		"attribute": "level",
 		"attribute_change": 2,
 		"duration": 1000,

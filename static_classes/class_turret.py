@@ -19,6 +19,7 @@ class Turret:
 		self.kind = 'turret'
 		self.index = 1
 		self.on_screen = True
+		self.boosted = False
 
 		self.x = 1
 		self.y = 1

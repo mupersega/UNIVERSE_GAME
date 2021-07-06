@@ -47,11 +47,12 @@ class Capsule:
 				self.ring_radius -= (self.ring_radius + 50) ** -.1
 				if self.ring_radius <= self.rect.width * .5:
 					self.ready = True
-					self.create_beams()
+					self.create_beams_and_pulses()
+					self.apply_boons()
 		else:
 			self.ring_radius += (self.ring_radius + 50) ** -.4
 
-	def create_beams(self):
+	def create_beams_and_pulses(self):
 		for i in self.targets:
 			self.beams.append(Beam(
 				self, cfg.facility_w_third,
@@ -78,11 +79,12 @@ class Capsule:
 	def kill(self):
 		if self in self.game.projectiles.copy():
 			self.game.projectiles.remove(self)
+			self.retract_boons()
 
 	def draw(self):
 		self.game.screen.blit(self.image, self.rect.topleft)
 		pygame.draw.circle(
-			self.game.screen, [255, 240, 0], self.rect.center, self.ring_radius, 1)
+			self.game.screen, self.ring_rgb, self.rect.center, self.ring_radius, 1)
 	
 	def update_beams(self):
 		for i in self.beams:
@@ -91,7 +93,20 @@ class Capsule:
 	def update_pulses(self):
 		for i in self.pulses:
 			i.loop()
-	
+
+	def apply_boons(self):
+		# Only apply boosts to those that are not already boosted.
+		for i in [t for t in self.targets if t.boosted is False]:
+			i.boosted = True
+			setattr(i, self.attribute_mod,
+					getattr(i, self.attribute_mod) + self.attrib_change)
+
+	def retract_boons(self):
+		for i in [t for t in self.targets if t.boosted is True]:
+			i.boosted = False
+			setattr(i, self.attribute_mod,
+					getattr(i, self.attribute_mod) - self.attrib_change)
+
 	def loop(self):
 		self.move()
 		if not self.ready:

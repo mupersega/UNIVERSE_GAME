@@ -68,7 +68,7 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.round = 0
+		self.round = 20
 		self.round_label = cfg.bauhaus.render(
 			f"Rd. {self.round}", True, cfg.col.p_one)
 		self.round_label_rect = self.round_label.get_rect()
@@ -210,7 +210,7 @@ class Game:
 
 	def spawn_starseeker(self):
 		player = random.choice(self.players)
-		random.choice(self.stations).launch_bay.launch(player, random.choice(["turret", "compression"]))
+		player.hangars[0].station.launch_bay.launch(player, random.choice(["overclock", "compression"]))
 
 	def process(self, sub_status, name, msg):
 		sub_status = sub_status

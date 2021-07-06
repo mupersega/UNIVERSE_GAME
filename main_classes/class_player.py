@@ -28,7 +28,7 @@ class Player:
         # Target management
         self.kill_priority = 0
 
-        self.favour = 200
+        self.favour = 1000
         self.total_favour = 0
         self.total_tributed = 0
         self.rubine = 0
