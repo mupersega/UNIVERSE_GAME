@@ -17,18 +17,18 @@ from utility_classes.quadtree import Quadtree
 from hud_classes.class_phaseCountDownDisplay import PhaseCountDownDisplay
 from hud_classes.class_leaderboard import Leaderboard
 from hud_classes.market import Market
-from projectile_classes.starseeker import Starseeker
 
 
 admins = ['mupersega']
 conn = sqlite3.connect('/C:/db/queue.db')
 c = conn.cursor()
-#
+
+# These dims control window placement if needed for dual screen.
 # x = -1920
 # y = 420
-x = 400
-y = 100
-os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+# x = 400
+# y = 100
+# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:
@@ -88,7 +88,7 @@ class Game:
 		for _ in range(cfg.start_spawners):
 			self.new_spawner()
 
-		# self.new_player("mupersega", None)
+		self.new_player("mupersega", None)
 		for i in range(cfg.start_players):
 			self.new_player(f"P{i}", None)
 		for _ in range(0):
@@ -210,6 +210,10 @@ class Game:
 
 	def spawn_starseeker(self):
 		player = random.choice(self.players)
+		player.hangars[0].station.launch_bay.launch(player, "starseeker")
+
+	def spawn_random_boost(self):
+		player = random.choice(self.players)
 		player.hangars[0].station.launch_bay.launch(player, random.choice(["overclock", "compression"]))
 
 	def process(self, sub_status, name, msg):
@@ -268,6 +272,8 @@ class Game:
 			i.desired_rotation_speed = self.round / 50 * len(self.players)
 		for i in self.players:
 			self.new_freight_train(int(self.round / 10) + 1, i.hangars[0].station)
+		for i in self.boosts:
+			i.spool_down()
 		self.force_feed_spawners()
 
 	def initiate_gather_phase(self, phase_duration):
@@ -285,11 +291,8 @@ class Game:
 				j.set_behaviour("mine")
 		for i in self.spawners:
 			i.desired_rotation_speed = 0
-		for i in self.stations:
-			for j in i.hangars:
-				for k in j.turrets:
-					return
-					# k.deactivate()
+		for i in self.boosts:
+			i.spool_down()
 
 	def phase_change_check(self, current_time):
 		if current_time > self.next_phase:
@@ -297,11 +300,6 @@ class Game:
 				self.initiate_combat_phase(cfg.combat_phase_time)
 			else:
 				self.initiate_gather_phase(cfg.gather_phase_time)
-
-		if self.combat_phase:
-			pygame.draw.circle(self.screen, [255, 0, 0], (300, 40), 20)
-		elif self.gather_phase:
-			pygame.draw.circle(self.screen, [0, 255, 0], (300, 40), 20)
 
 	def mainloop(self):  # sourcery no-metrics
 		while True:
@@ -339,6 +337,7 @@ class Game:
 					# UPGRADE miner = m
 					# UPGRADE thrusters = t
 					# SPAWN starseeker = l
+					# SPAWN random boost = o
 
 					if event.key == pygame.K_SPACE:
 						self.random_crash()
@@ -353,6 +352,8 @@ class Game:
 						self.new_station()
 					if event.key == pygame.K_l:
 						self.spawn_starseeker()
+					if event.key == pygame.K_o:
+						self.spawn_random_boost()
 					if event.key == pygame.K_r:
 						cfg.tally_resources(self.players[0])
 					if event.key == pygame.K_t:

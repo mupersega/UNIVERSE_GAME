@@ -17,6 +17,7 @@ class Bay:
 		self.index = 1
 		self.on_screen = True
 		self.boosted = False
+		self.hold = 0
 
 		self.x = 1
 		self.y = 1
@@ -48,10 +49,10 @@ class Bay:
 		self.approach_location = Location((self.rect.right, self.rect.top + 2), 1, False)
 		self.depart_location = Location((self.rect.right, self.rect.bottom - 2), 1, False)
 
-		# class specific
+		# Bay specific
 		self.occupant = None
 
-		# each bay always comes with a ship at init
+		# Each bay always comes with a ship on init.
 		self.owner.bays.append(self)
 		self.new_ship()
 

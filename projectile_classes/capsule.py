@@ -52,6 +52,12 @@ class Capsule:
 		else:
 			self.ring_radius += (self.ring_radius + 50) ** -.4
 
+	def spool_down(self):
+		for i in self.pulses:
+			i.kill()
+		for i in self.beams:
+			i.kill()
+
 	def create_beams_and_pulses(self):
 		for i in self.targets:
 			self.beams.append(Beam(
@@ -65,8 +71,9 @@ class Capsule:
 				i.rect.center,
 				self.attribute_mod,
 				self.attrib_change,
-				self.duration,
-				self.glow_rgb))
+				self.glow_rgb,
+				i
+			))
 
 	def establish_targets(self, kind):
 		return [facility for facility in self.player.hangars[0].facilities if facility.kind == kind]
@@ -98,8 +105,13 @@ class Capsule:
 		# Only apply boosts to those that are not already boosted.
 		for i in [t for t in self.targets if t.boosted is False]:
 			i.boosted = True
-			setattr(i, self.attribute_mod,
-					getattr(i, self.attribute_mod) + self.attrib_change)
+			if i.kind == "bay":
+				ship = i.occupant
+				setattr(ship, self.attribute_mod,
+						getattr(ship, self.attribute_mod) + self.attrib_change)
+			else:
+				setattr(i, self.attribute_mod,
+						getattr(i, self.attribute_mod) + self.attrib_change)
 
 	def retract_boons(self):
 		for i in [t for t in self.targets if t.boosted is True]:
@@ -159,12 +171,12 @@ class Beam:
 class Pulse:
 	"""Supporting visual class of capsules drawn underneath target object, with a glowing pulse
 	effect. This object has a lifespan and a boost attribute which is considered by the player."""
-	def __init__(self, parent, pos, attr, amt, lifespan, glow_rgb):
+	def __init__(self, parent, pos, attr, amt, glow_rgb, boosting):
 		self.parent = parent
 		self.pos = pygame.Vector2(pos)
 		self.attr = attr
 		self.amount = amt
-		self.lifespan = lifespan
+		self.boosting = boosting
 		# Glow information.
 		self.base_colour = glow_rgb
 		self.padding = cfg.capsule_info[self.parent.capsule_type]["padding"]
@@ -173,14 +185,14 @@ class Pulse:
 		self.glow_value = 100
 
 	def decay(self):
-		# Life decay
-		self.lifespan -= 1
-		if self.lifespan <= 0:
+		# Check that the boosted object is alive.
+		if self.boosting.life > 0:
+			# Glow decay
+			self.glow_value -= self.glow_value ** -.1
+			if self.glow_value <= 1:
+				self.glow_value = self.max_glow_value
+		else:
 			self.kill()
-		# Glow decay
-		self.glow_value -= self.glow_value ** -.1
-		if self.glow_value <= 1:
-			self.glow_value = self.max_glow_value
 
 	def update_rgb(self):
 		# Glow mechanic will pulse rgb from full value to black on repeat.
