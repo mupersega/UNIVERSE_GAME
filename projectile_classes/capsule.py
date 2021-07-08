@@ -57,6 +57,7 @@ class Capsule:
 			i.kill()
 		for i in self.beams:
 			i.kill()
+		self.retract_boons()
 
 	def create_beams_and_pulses(self):
 		for i in self.targets:
@@ -116,9 +117,13 @@ class Capsule:
 	def retract_boons(self):
 		for i in [t for t in self.targets if t.boosted is True]:
 			i.boosted = False
-			setattr(i, self.attribute_mod,
-					getattr(i, self.attribute_mod) - self.attrib_change)
-
+			if i.kind == "bay":
+				ship = i.occupant
+				setattr(ship, self.attribute_mod,
+						getattr(ship, self.attribute_mod) - self.attrib_change)
+			else:
+				setattr(i, self.attribute_mod,
+						getattr(i, self.attribute_mod) - self.attrib_change)
 	def loop(self):
 		self.move()
 		if not self.ready:
