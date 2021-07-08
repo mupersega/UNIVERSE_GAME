@@ -247,7 +247,7 @@ class Game:
 				print('beginning perform')
 
 	def force_feed_spawners(self):
-		if self.combat_phase:
+		if self.combat_phase and len(self.players):
 			for _ in range(len(self.players)):
 				sp = random.choice(self.spawners)
 				sp.hold += self.round

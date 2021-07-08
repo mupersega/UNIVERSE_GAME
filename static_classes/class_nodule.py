@@ -20,11 +20,11 @@ class Nodule:
 
 		self.max_lvl = max_lvl
 		self.level = random.choice([2])
-		# self.level = self.max_lvl
 		self.upgradeable = self.check_max_lvl()
 		self.hold = 0
 		self.last_hit = 1
 		self.glow = 0
+		self.life = cfg.nodule_life * self.level
 
 		self.draw_shapes = []
 		self.poly_points = []
@@ -47,6 +47,16 @@ class Nodule:
 		self.hold += amt
 		self.check_level_up()
 
+	def take_damage(self, amt):
+		self.life -= amt
+		if self.life <= 0:
+			self.kill()
+			self.parent.take_damage(amt)
+
+	def kill(self):
+		if self in self.parent.nodules.copy():
+			self.parent.nodules.remove(self)
+
 	def check_level_up(self):
 		if self.hold >= self.level * cfg.level_up_cost:
 			self.level_up()
@@ -60,6 +70,7 @@ class Nodule:
 			self.hold = 0
 			self.setup()
 			self.upgradeable = self.check_max_lvl()
+			self.life = cfg.nodule_life * self.level
 		else:
 			self.parent.accept_resources(self.hold)
 			self.hold = 0

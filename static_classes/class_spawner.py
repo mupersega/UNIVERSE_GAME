@@ -23,6 +23,7 @@ class Spawner:
 		self.hold = 0
 		self.spawn_threshold = 5
 		self.level = 1
+		self.life = cfg.spawner_life
 
 		self.active = False
 
@@ -102,6 +103,17 @@ class Spawner:
 		for h, i in enumerate(self.nodules):
 			loc = pygame.Vector2(self.rect.center + self.base_vec.rotate(nodule_angles[h]))
 			i.reposition_location(loc)
+
+	def take_damage(self, amt):
+		self.life -= amt
+		if self.life <= 0:
+			self.kill()
+
+	def kill(self):
+		for i in self.nodules.copy():
+			i.kill()
+		if self in self.game.spawners.copy():
+			self.game.spawners.remove(self)
 
 	def rotate(self):
 		ang_vec = pygame.Vector2(self.rect.center) - self.target.rect.center

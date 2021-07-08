@@ -25,6 +25,9 @@ class Sun:
 		self.interactable_distance = self.size + cfg.sun_interactable_distance
 		self.approach_velocity = False
 		self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
+		self.rect.center = self.rect.topleft
+		self.damage_taken = 1
+		self.life = 1
 
 		self.available_positions = []
 		self.planets = []
@@ -55,6 +58,9 @@ class Sun:
 			self.available_positions.append(
 				self.max_size + cfg.sun_exclusion_range + i * increment_size)
 
+	def take_damage(self, amt):
+		self.damage_taken += amt
+
 	def resize(self):
 		# pulse effect potentially here
 		if self.size < self.max_size:
@@ -62,7 +68,7 @@ class Sun:
 
 	def draw(self):
 		pygame.draw.circle(
-			self.screen, self.rgb, (self.x, self.y), int(self.size))
+			self.screen, self.rgb, self.rect.center, self.size / 2)
 
 	def loop(self):
 		self.resize()

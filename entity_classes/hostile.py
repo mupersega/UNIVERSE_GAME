@@ -92,6 +92,7 @@ class Drone(Hostile):
 		self.rect = pygame.Rect(0, 0, self.image.get_rect().width, self.image.get_rect().height)
 		self.life = 10
 		self.favour = 1
+		self.max_hold = 2
 
 		self.set_new_roam_location()
 
@@ -108,15 +109,21 @@ class Drone(Hostile):
 		self.last_loc = pygame.math.Vector2(self.location)
 
 	def roam(self):
-		if self.hold > 1:
+		if self.hold >= self.max_hold:
 			if self.drop_nodule:
 				if self.location.distance_to(self.target_loc) < 3:
 					self.drop_nodule.accept_resources(self.hold)
 					self.hold = 0
 					self.drop_nodule = None
 			else:
-				self.drop_nodule = self.find_nearby_random_dropoff()
-				self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
+				# If there are spawners in the world then go drop off
+				if len(self.game.spawners):
+					self.drop_nodule = self.find_nearby_random_dropoff()
+					self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
+				# If there are no spawners, keep increasing hold size and feeding until there are some.
+				else:
+					self.max_hold += 1
+
 		if self.location.distance_to(self.target_loc) < 3 and self.hold < 2:
 			self.set_new_roam_location()
 			self.feed()
@@ -191,6 +198,7 @@ class HunterDrone(Hostile):
 		self.life = 50
 		self.damage = 5
 		self.favour = 2
+		self.max_hold = 2
 
 		self.set_new_roam_location()
 
@@ -224,15 +232,20 @@ class HunterDrone(Hostile):
 		self.last_loc = pygame.math.Vector2(self.location)
 
 	def roam(self):
-		if self.hold > 1:
+		if self.hold > self.max_hold:
 			if self.drop_nodule:
 				if self.location.distance_to(self.target_loc) < 3:
 					self.drop_nodule.accept_resources(self.hold)
 					self.hold = 0
 					self.drop_nodule = None
 			else:
-				self.drop_nodule = self.find_nearby_random_dropoff()
-				self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
+				# If there are spawners in the world then go drop off
+				if len(self.game.spawners):
+					self.drop_nodule = self.find_nearby_random_dropoff()
+					self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
+				# If there are no spawners, keep increasing hold size and feeding until there are some.
+				else:
+					self.max_hold += 1
 		if self.location.distance_to(self.target_loc) < 3 and self.hold < 2:
 			self.set_new_roam_location()
 			self.feed()

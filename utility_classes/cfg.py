@@ -92,7 +92,7 @@ station_spacing = station_width + (
 sun_colour = [245, 245, 100]
 sun_interactable_distance = 20
 sun_arrived_distance = 10
-sun_start_size = 1
+sun_start_size = 100
 sun_max_size = 100
 max_planets_per_sun = 8
 sun_exclusion_range = 140
@@ -209,8 +209,12 @@ ammo_info = {
 turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]
 
 # --Spawner-- #
-nodule_w, nodule_h = 18, 18
 level_up_cost = 20
+spawner_life = 5000
+
+# --Nodule-- #
+nodule_w, nodule_h = 18, 18
+nodule_life = 100
 
 # --Location-- #
 loc_colour = [255, 0, 255]
@@ -220,6 +224,9 @@ loc_arrived_distance = 3
 # --Freighter-- #
 engine_life = 1000
 carriage_life = 200
+
+# --Starseeker-- #
+starseeker_base_damage = 500
 
 # --Capsule-- #
 capsule_info = {

@@ -2,6 +2,8 @@ import pygame
 import random
 import math
 
+from environment_classes.class_sun import Sun
+from static_classes.class_nodule import Nodule
 from utility_classes import cfg
 from environment_classes.class_explosion import Explosion
 
@@ -16,6 +18,7 @@ class Starseeker:
 		self.player = player
 		self.split = split
 		self.split_mod = split / 6
+		self.damage = int(cfg.starseeker_base_damage / (split + 1))
 		self.clusters = 2
 		self.image = cfg.starseeker_imgs[self.split]
 
@@ -30,6 +33,7 @@ class Starseeker:
 		self.rect = pygame.Rect(self.location, self.image.get_size())
 
 		self.target = target or self.find_target()
+		self.target_hit_range = self.target.rect.width / 1.5
 		self.detonate_distance = self.get_detonate_distance(.9)
 		self.target_locked = False
 		self.thrusters = 1
@@ -37,7 +41,7 @@ class Starseeker:
 		# self.set_start_angle()
 
 	def find_target(self):
-		return random.choice(self.game.spawners)
+		return random.choice(self.game.spawners) if len(self.game.spawners) else random.choice(self.game.suns)
 	
 	def get_detonate_distance(self, percent):
 		this_vec = pygame.Vector2(self.rect.center)
@@ -59,6 +63,7 @@ class Starseeker:
 			return
 		if self.velocity.magnitude() < .1 + self.split_mod:
 			self.thrusters = 2
+		# self.check_target_alive()
 
 	def set_start_angle(self):
 		ang_vec = pygame.Vector2(self.location) - pygame.Vector2(self.location - self.velocity)
@@ -85,6 +90,18 @@ class Starseeker:
 			self.speed += self.speed ** -.6
 		self.location -= self.velocity
 		self.rect.topleft = self.location
+
+	def check_target_alive(self):
+		if isinstance(self.target, Nodule):
+			if self.target.life > 0:
+				return
+			if self.target.parent.life > 0:
+				return
+			else:
+				self.kill()
+
+		if isinstance(self.target, Sun):
+			return
 
 	def make_trail(self):
 		for i in range(self.thrusters):
@@ -114,7 +131,7 @@ class Starseeker:
 			if d > 300 and self.split < 3:
 				# Spawn things and die.
 				for _ in range(self.clusters):
-					new_target = random.choice(self.target.nodules) if hasattr(self.target, "nodules") else self.target
+					new_target = random.choice(self.target.nodules) if hasattr(self.target, "nodules") and len(self.target.nodules) else self.target
 					self.game.projectiles.append(Starseeker(
 						self.game,
 						self.player,
@@ -125,7 +142,10 @@ class Starseeker:
 					))
 					self.kill()
 			# If in Kill range
-			elif d < 20:
+			elif d < self.target_hit_range:
+				print(d)
+				print(self.target_hit_range)
+				self.target.take_damage(self.damage)
 				self.kill()
 
 	def draw(self):
@@ -159,9 +179,6 @@ class StarseekerTrail:
 			cfg.col.p_four,
 		])
 
-	def sparkle(self):
-		pass
-
 	def decay(self):
 		self.life -= 1
 		if self.life <= 0:
@@ -172,11 +189,11 @@ class StarseekerTrail:
 		self.location += self.velocity * self.parent.thrusters
 
 	def draw(self):
+		# Sparkling built into modulo sparkle window.
 		if self.life % self.sparkle_window == 0:
 			pygame.draw.rect(self.game.screen, self.rgb, (self.location, self.dim))
 
 	def loop(self):
-		self.sparkle()
 		self.decay()
 		self.move()
 		self.draw()
