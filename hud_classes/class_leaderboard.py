@@ -17,7 +17,7 @@ class Leaderboard:
 		self.col_px_widths = [i * self.subdivision_width for i in self.col_sub_widths]
 		self.col_x = [sum(self.col_px_widths[0:i]) for i in range(len(self.col_sub_widths))]
 
-		self.top_left = pygame.Vector2(cfg.screen_width - self.overall_width - 5, 90)
+		self.top_left = pygame.Vector2(cfg.screen_width - self.overall_width - 5, 125)
 		self.surface = pygame.Surface((self.overall_width, (len(self.game.players) + 1) * self.row_height))
 
 		self.headers = [

@@ -17,6 +17,7 @@ from utility_classes.quadtree import Quadtree
 from hud_classes.class_phaseCountDownDisplay import PhaseCountDownDisplay
 from hud_classes.class_leaderboard import Leaderboard
 from hud_classes.market import Market
+from hud_classes.freightRatioDisplay import FreightRatioDisplay
 
 
 admins = ['mupersega']
@@ -65,10 +66,12 @@ class Game:
 		self.next_force_feed_spawners = time.time() + cfg.force_feed_phase_time
 		self.next_phase = time.time() + cfg.gather_phase_time
 		self.max_kill_prio = 0
+		self.freight_request_priority = cfg.default_freight_priority
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.round = 20
+		self.round = 10
+		# HUD elements.
 		self.round_label = cfg.bauhaus.render(
 			f"Rd. {self.round}", True, cfg.col.p_one)
 		self.round_label_rect = self.round_label.get_rect()
@@ -76,6 +79,7 @@ class Game:
 		self.phase_cd = PhaseCountDownDisplay(self)
 		self.leaderboard = Leaderboard(self)
 		self.market = Market(self)
+		self.freight_ratio_bar = FreightRatioDisplay(self)
 
 		self.game_setup()
 
@@ -160,22 +164,36 @@ class Game:
 		chosen_planet = random.choice(potentials)
 		chosen_planet.spawn_asteroids()
 
+	def spawn_starseeker(self):
+		player = random.choice(self.players)
+		player.hangars[0].station.launch_bay.launch(player, "starseeker")
+
+	def spawn_random_boost(self):
+		player = random.choice(self.players)
+		player.hangars[0].station.launch_bay.launch(player, random.choice(["overclock", "compression"]))
+
 	def count_asteroids(self):
-		total_asteroids = 0
-		for sun in self.suns:
-			for planet in sun.planets:
-				total_asteroids += len(planet.asteroids)
-		return total_asteroids
+		return sum(len(planet.asteroids) for sun in self.suns for planet in sun.planets)
+		# OLD CODE BEFORE I LEARNT GENERATOR
+		# total_asteroids = 0
+		# for sun in self.suns:
+		# 	for planet in sun.planets:
+		# 		total_asteroids += len(planet.asteroids)
+		# total_asteroids = (len(planet.asteroids) for planet in sun.planets for sun in self.suns)
+		# return total_asteroids
 
 	def populate_asteroids(self):
 		# I need to connect the spawning of asteroids to the current amount of asteroids in the world.
 		if random.randint(0, 1000) > ((self.count_asteroids() / cfg.universe_max_asteroids) * 1000):
 			self.random_crash()
 
-	def clear_old_projectiles(self):
-		for i in self.projectiles.copy():
-			if i.life < 1:
-				self.projectiles.remove(i)
+	def update_freight_request_priority(self, mineral_name):
+		self.freight_request_priority[cfg.mineral_name_list.index(mineral_name)] += 1
+		self.freight_ratio_bar.update_bars()
+
+	def reset_freight_request_priority(self):
+		self.freight_request_priority = cfg.default_freight_priority.copy()
+		self.freight_ratio_bar.update_bars()
 
 	def watch_queue(self):
 		# clear any completed rows
@@ -208,14 +226,6 @@ class Game:
 			# print('error in try watch queue try block')
 			return
 
-	def spawn_starseeker(self):
-		player = random.choice(self.players)
-		player.hangars[0].station.launch_bay.launch(player, "starseeker")
-
-	def spawn_random_boost(self):
-		player = random.choice(self.players)
-		player.hangars[0].station.launch_bay.launch(player, random.choice(["overclock", "compression"]))
-
 	def process(self, sub_status, name, msg):
 		sub_status = sub_status
 		user = name.lower()
@@ -247,7 +257,7 @@ class Game:
 				print('beginning perform')
 
 	def force_feed_spawners(self):
-		if self.combat_phase and len(self.players):
+		if self.combat_phase and len(self.players) and len(self.spawners):
 			for _ in range(len(self.players)):
 				sp = random.choice(self.spawners)
 				sp.hold += self.round
@@ -275,6 +285,7 @@ class Game:
 		for i in self.boosts:
 			i.spool_down()
 		self.force_feed_spawners()
+		self.reset_freight_request_priority()
 
 	def initiate_gather_phase(self, phase_duration):
 		# set environment for gather phase
@@ -383,6 +394,7 @@ class Game:
 			self.screen.blit(hostile_count, (20, 20))
 			self.leaderboard.draw()
 			self.market.draw()
+			self.freight_ratio_bar.draw()
 
 			# Prep Quadtrees
 			# HOSTILE QUAD
@@ -436,7 +448,7 @@ class Game:
 				i.loop()
 
 			# self.hostile_quadtree.draw([100, 0, 0])
-			# self.friendly_quadtree.draw([0, 0, 100])
+			self.friendly_quadtree.draw([0, 0, 100])
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()
 			pygame.display.update()

@@ -43,14 +43,14 @@ universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 1
 start_suns = 1
-start_spawners = 2
-start_players = 5
+start_spawners = 1
+start_players = 10
 universe_max_asteroids = 300
-max_hostiles = 15
+max_hostiles = 25
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 60
+gather_phase_time = 1
 combat_phase_time = 30
 convert_mineral_to_favour = [1, 2, 5]
 
@@ -127,19 +127,29 @@ player_starting_mupees = 100
 
 # --Empire-- #
 max_favour = 1000
+default_freight_priority = [3, 2, 1]
 favour_items = {
 	"starseeker": {
-		"cost": 50,
+		"cost": 200,
 	},
 	"compression": {
-		"cost": 50
+		"cost": 100
 	},
 	"overclock": {
-		"cost": 50,
+		"cost": 100,
 	},
 	"embolden": {
-		"cost": 50,
+		"cost": 100,
 	},
+	"request_rubine": {
+		"cost": 10,
+	},
+	"request_verdite": {
+		"cost": 20,
+	},
+	"request_ceruliun": {
+		"cost": 50,
+	}
 }
 
 # --Hangar-- #
@@ -149,7 +159,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = col.medium_grey
-wh_starting_resources = [50, 50, 50]
+wh_starting_resources = [0, 0, 0]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 wh_life = 200
@@ -209,12 +219,12 @@ ammo_info = {
 turret_shake = [[0.002, 0.001], [-0.01, 0.030], [0.009, -0.009]]
 
 # --Spawner-- #
-level_up_cost = 20
-spawner_life = 5000
+level_up_cost = 15
+spawner_life = 2000
 
 # --Nodule-- #
 nodule_w, nodule_h = 18, 18
-nodule_life = 100
+nodule_life = 250
 
 # --Location-- #
 loc_colour = [255, 0, 255]
@@ -226,7 +236,7 @@ engine_life = 1000
 carriage_life = 200
 
 # --Starseeker-- #
-starseeker_base_damage = 500
+starseeker_base_damage = 200
 
 # --Capsule-- #
 capsule_info = {
@@ -278,7 +288,7 @@ mineral_colour_list = ["red", "green", "blue"]
 mineral_info = {
 	"rubine": {
 		"rgb": col.red,
-		"market_rgb": col.red,
+		"market_rgb": col.light_rubine,
 		"market_bg_rgb": col.dark_rubine,
 		"carriage_carry": [20, 0, 0],
 		"colour": "red"},
@@ -382,8 +392,8 @@ def turn(self):
 def move(self):
 	# if not in arrived distance of target, turn and move toward target
 	if distance_to_target(self) > self.target.arrived_distance:
-		self.trajectory = (math.cos(self.angle), -math.sin(self.angle))
-		self.location += self.trajectory + self.location
+		self.velocity = (math.cos(self.angle), -math.sin(self.angle))
+		self.location += self.velocity + self.location
 
 
 def find_bar_length(current_lvl, max_lvl, total_px):

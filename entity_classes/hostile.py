@@ -39,7 +39,7 @@ class Hostile:
 	def find_nearby_random_dropoff(self):
 		s = self.spawner
 		d = self.location.distance_to(s.location)
-		for i in self.game.spawners:
+		for i in [s for s in self.game.spawners if len(s.nodules)]:
 			if self.location.distance_to(i.location) < d:
 				d = self.location.distance_to(i.location)
 				s = i
@@ -119,12 +119,15 @@ class Drone(Hostile):
 				# If there are spawners in the world then go drop off
 				if len(self.game.spawners):
 					self.drop_nodule = self.find_nearby_random_dropoff()
-					self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
+					try:
+						self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
+					except:
+						returnll
 				# If there are no spawners, keep increasing hold size and feeding until there are some.
 				else:
 					self.max_hold += 1
 
-		if self.location.distance_to(self.target_loc) < 3 and self.hold < 2:
+		if self.location.distance_to(self.target_loc) < 3 and self.hold < self.max_hold:
 			self.set_new_roam_location()
 			self.feed()
 
@@ -219,16 +222,8 @@ class HunterDrone(Hostile):
 		y_reg = random.choice([0, 1, 1, 2, 2, 2, 3, 3, 3, 3])
 		x = random.randint(0 + 10, w - 10)
 		y = random.randint(0 + 10, h - 10)
-		# print(x_reg, x)
 		self.target_loc[0] = x + (x_reg * w)
 		self.target_loc[1] = y + (y_reg * h)
-		# NEARBY ROAM
-		# x_lower = max([0, self.rect.centerx - roam_range])
-		# x_upper = min([cfg.screen_width, self.rect.centerx + roam_range])
-		# y_lower = max([0, self.rect.centery - roam_range])
-		# y_upper = min([cfg.screen_width, self.rect.centery + roam_range])
-		# self.target_loc[0] = self.location.x + random.randint(x_lower, x_upper)
-		# self.target_loc[1] = self.location.y + random.randint(y_lower, y_upper)
 		self.last_loc = pygame.math.Vector2(self.location)
 
 	def roam(self):
@@ -246,7 +241,7 @@ class HunterDrone(Hostile):
 				# If there are no spawners, keep increasing hold size and feeding until there are some.
 				else:
 					self.max_hold += 1
-		if self.location.distance_to(self.target_loc) < 3 and self.hold < 2:
+		if self.location.distance_to(self.target_loc) < 3 and self.hold < self.max_hold:
 			self.set_new_roam_location()
 			self.feed()
 

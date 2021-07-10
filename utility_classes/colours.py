@@ -39,12 +39,12 @@ p_six = [255 % i for i in p_five]
 # p_six = [255 % i for i in p_five]
 
 # # # YELLOW-PURPLE # #
-# p_one = [234, 235, 84]
-# p_two = [235, 202, 74]
-# p_three = [235, 165, 61]
-# p_four = [96, 176, 235]
-# p_five = [141, 49, 235]
-# p_six = [70, 25, 160]
+p_one = [234, 235, 84]
+p_two = [235, 202, 74]
+p_three = [235, 165, 61]
+p_four = [96, 176, 235]
+p_five = [141, 49, 235]
+p_six = [70, 25, 160]
 
 # # PASTELS # #
 # p_one = [235, 207, 141]
@@ -63,10 +63,10 @@ p_six = [255 % i for i in p_five]
 # p_six = [255 % i for i in p_five]
 
 # # TURQUOISE # #
-p_one = [13, 204, 255]
-p_two = [20, 164, 204]
-p_three = [255, 183, 0]
-p_four = [76, 13, 255]
-p_five = [49, 14, 143]
-p_six = [255 % i for i in p_five]
+# p_one = [13, 204, 255]
+# p_two = [20, 164, 204]
+# p_three = [255, 183, 0]
+# p_four = [76, 13, 255]
+# p_five = [49, 14, 143]
+# p_six = [255 % i for i in p_five]
 

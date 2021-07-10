@@ -89,39 +89,6 @@ class Engine:
 					# self.collision_correction(i.rect)
 					self.velocity *= .5
 
-	def collision_correction(self, rect):
-		# if top edge collided take other's bottom y
-		if self.check_top_edge_coll(rect):
-			self.location.y = rect.bottom + 1
-			return
-		# if bottom edge collided take other's top y
-		if self.check_bottom_edge_coll(rect):
-			self.location.y = rect.top - self.rect.height - 1
-			return
-		# if left edge collide take other's right
-		if self.check_left_edge_coll(rect):
-			self.location.x = rect.right + 1
-			return
-		else:
-			self.location.x = rect.left - self.rect.width - 1
-			return
-
-	def check_left_edge_coll(self, rect):
-		if self.rect.left <= rect.right:
-			return True
-
-	def check_right_edge_coll(self, rect):
-		if self.rect.right >= rect.left:
-			return True
-
-	def check_top_edge_coll(self, rect):
-		if self.rect.top <= rect.bottom:
-			return True
-
-	def check_bottom_edge_coll(self, rect):
-		if self.rect.bottom >= rect.top:
-			return True
-
 	def update(self):
 		if self.check_collision():
 			return
@@ -163,7 +130,7 @@ class Engine:
 
 
 class Carriage:
-	def __init__(self, puller) -> object:
+	def __init__(self, puller):
 		self.game = puller.game
 		self.screen = puller.screen
 		self.puller = puller
@@ -177,8 +144,16 @@ class Carriage:
 		self.life = cfg.carriage_life
 		self.active = True
 
-		self.carrying = random.choice(cfg.planet_probability)
+		self.carrying = self.choose_cargo()
+		self.ring_rgb = cfg.mineral_info[self.carrying]["market_rgb"]
+		self.hold_rgb = cfg.mineral_info[self.carrying]["market_bg_rgb"]
 		self.hold = cfg.mineral_info[self.carrying]["carriage_carry"]
+
+	def choose_cargo(self):
+		# Choose a mineral and return by using the game's freight request prio.
+		# Roll by prio, find max's index, and return corresponding mineral.
+		rolls = [random.uniform(0, i) for i in self.game.freight_request_priority]
+		return cfg.mineral_name_list[rolls.index(max(rolls))]
 
 	def update(self):
 		if self.rect.colliderect(self.puller.rect):
@@ -212,8 +187,8 @@ class Carriage:
 
 	def draw(self):
 		if self.active:
-			pygame.draw.circle(self.screen, cfg.warehouse_colours[self.carrying]["rgb"], self.rect.center, 10)
-		pygame.draw.circle(self.screen, cfg.col.light_grey, self.rect.center, 10, width=3)
+			pygame.draw.circle(self.screen, self.hold_rgb, self.rect.center, 10)
+		pygame.draw.circle(self.screen, self.ring_rgb, self.rect.center, 10, width=3)
 		# pygame.draw.rect(self.screen, [200, 20, 200], self.rect, 1)
 
 	def loop(self):

@@ -11,26 +11,27 @@ class Maul:
 	def __init__(self, start_loc, trajectory, target, game, shooter):
 		self.game = game
 		self.location = pygame.Vector2(start_loc)
-		self.trajectory = trajectory
-		self.acceleration = pygame.Vector2(0, 0)
+		self.speed = 7
+		self.velocity = pygame.Vector2(trajectory) * self.speed
 		self.shooter = shooter
-		self.velocity = 7
+		self.damage = 1
 		self.life = random.randint(60, 80) * 1.5
 		self.rect = pygame.Rect(self.location.x, self.location.y, 10, 10)
-		self.dim = random.randint(1, 2)
-		self.rgb = random.choice([
-				cfg.col.dark_rubine,
-				cfg.col.light_rubine,
-				cfg.col.red
-			])
+		# self.rgb = random.choice([
+		# 		cfg.col.dark_rubine,
+		# 		cfg.col.light_rubine,
+		# 		cfg.col.red
+		# 	])
+		self.dim = 1
+		self.rgb = cfg.col.red
 		# pygame.draw.circle(self.game.screen, [250, 240, 255], self.location, random.randint(1, 4))
-		self.game.explosions.append(Explosion(self.game, start_loc, 3, [255, 255, 255]))
+		self.game.explosions.append(Explosion(self.game, start_loc, 3, [255, 255, 255], self.velocity))
 
 	def move(self):
-		self.location -= self.trajectory * self.velocity
+		self.location -= self.velocity
 		self.update_rect()
 		self.life -= 1
-		self.velocity -= self.velocity * .0005
+		self.velocity *= 0.998
 
 	def kill(self):
 		if self.life < 1 and self in self.game.projectiles:
@@ -41,9 +42,9 @@ class Maul:
 		self.game.hostile_quadtree.query(self.rect, nearby_hits)
 		for i in nearby_hits:
 			if pygame.Rect.colliderect(self.rect, i.rect):
-				i.location -= self.trajectory * 2
+				i.location -= self.velocity * 2
 				self.poly_explosion()
-				i.life -= 1
+				i.life -= self.damage
 				i.last_hit = self.shooter
 				self.life = 0
 				self.kill()
@@ -69,6 +70,7 @@ class Maul:
 
 	def draw(self):
 		pygame.draw.circle(self.game.screen, self.rgb, self.rect.center, self.dim)
+		# pygame.draw.rect(self.game.screen, self.rgb, (self.rect.center, (1, 1)))
 
 	def update_rect(self):
 		self.rect.topleft = self.location

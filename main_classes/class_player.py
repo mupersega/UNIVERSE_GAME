@@ -28,7 +28,7 @@ class Player:
         # Target management
         self.kill_priority = 0
 
-        self.favour = 1000
+        self.favour = 300
         self.total_favour = 0
         self.total_tributed = 0
         self.rubine = 0
@@ -110,6 +110,8 @@ class Player:
             self.tribute(args)
         if cmd == '!redeem':
             self.redeem(args)
+        if cmd == '!request':
+            self.request(args)
 
     def upgrade(self, args):
         # upgrade syntax: ['facility kind', 'facility_index', 'upgrade_request']
@@ -407,6 +409,15 @@ class Player:
         if item_name.lower() in cfg.favour_items.keys() and self.pay_favour_for_item(item_name):
             # Launch item from launch bay.
             self.hangars[0].station.launch_bay.launch(self, item_name)
+
+    def request(self, args):
+        # Make a special request string for use in favour items dict.
+        mineral = args[0].lower()
+        favour_item_string = f"request_{mineral}"
+        if mineral in cfg.mineral_name_list and self.pay_favour_for_item(favour_item_string):
+            self.game.update_freight_request_priority(mineral)
+        else:
+            print(f"Mineral {mineral} is invalid or not enough favour available.")
 
     def pay_favour_for_item(self, item):
         cost = cfg.favour_items[item]["cost"]
