@@ -30,7 +30,7 @@ class Turret:
 		self.diameter = cfg.facility_w_two_third
 		self.approach_velocity = 1
 		self.approach_angle = .9
-		self.barrel_point = pygame.math.Vector2(1, 1)
+		self.barrel_point = pygame.math.Vector2(-1, 0)
 
 		# Damage information
 		self.life = 100
@@ -103,7 +103,7 @@ class Turret:
 			new_projectile = Maul(
 				self.rect.center - self.barrel_point * 16, self.barrel_point, None, self.game, self.owner)
 			for _ in range(self.level):
-				self.add_projectile_and_update(new_projectile, 0.2, 0)
+				self.add_projectile_and_update(new_projectile, 2, 2)
 		# LANCE
 		# LEVEL EFFECTS - Number of projectiles launched. #
 		if self.shot_timer <= 0 and self.ammo_type == "lance":
@@ -145,14 +145,16 @@ class Turret:
 			self.hostile_target = self.choose_a_rand_target()
 
 	def turn_turret(self):
-		# if turret has a target, turn towards the target.
+		# If turret has a target, turn towards the target.
 		ht = self.hostile_target
 		if ht:
 			difference = pygame.Vector2(
 				self.rect.center - ht.location).normalize()
+			self.barrel_point += difference * .08
 		else:
-			difference = pygame.Vector2(self.rect.center - self.turret_rest_pos).normalize()
-		self.barrel_point += difference * .05
+			self.turret_rest_pos = self.barrel_point.normalize()
+			# difference = pygame.Vector2(self.rect.center - self.turret_rest_pos).normalize()
+
 		self.barrel_point = self.barrel_point.normalize()
 
 	def draw(self):

@@ -45,7 +45,6 @@ class Starseeker:
 	
 	def get_detonate_distance(self, percent):
 		this_vec = pygame.Vector2(self.rect.center)
-		print(self.target)
 		target_vec = pygame.Vector2(self.target.rect.center)
 		return this_vec.distance_to(target_vec) * percent
 
@@ -143,8 +142,6 @@ class Starseeker:
 					self.kill()
 			# If in Kill range
 			elif d < self.target_hit_range:
-				print(d)
-				print(self.target_hit_range)
 				self.target.take_damage(self.damage)
 				self.kill()
 

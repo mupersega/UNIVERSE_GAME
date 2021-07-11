@@ -37,13 +37,16 @@ class Asteroid:
 		self.arrived_distance = cfg.ast_arrived_distance
 		self.approach_velocity = False
 
+		# DEBUGGING
+		self.main_rgb = cfg.mineral_info[cfg.mineral_name_list[self.rgb.index(max(self.rgb))]]["market_rgb"]
+
 	def mine(self, actor):
 		cfg.draw_beam(self, actor)
 		if random.randint(0, 1000) >= (998 - actor.miner_lvl * .5):
 			cfg.draw_explosion(self)
 			yielded = self.mine_yield()
 			self.decay()
-			print(actor.ores)
+			# print(actor.ores)
 			actor.ores[yielded] += 1
 			print(f"Mined {cfg.mineral_name_list[yielded]}, hold = {sum(actor.ores)}")
 
@@ -59,7 +62,8 @@ class Asteroid:
 
 	def draw(self):
 		# pygame.draw.rect(self.game.screen, self.rgb, self.rect)
-		pygame.draw.rect(self.screen, self.rgb, self.rect)
+		# pygame.draw.rect(self.screen, self.rgb, self.rect)
+		pygame.draw.rect(self.screen, self.main_rgb, self.rect)
 
 	def orbit(self):
 		dist = self.orbit_distance + self.planet.size

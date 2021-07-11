@@ -35,9 +35,9 @@ class Ship:
 		self.agility = self.normal_agility
 		self.angle = 0
 
-		self.miner_lvl = 0
+		self.miner_lvl = 30
 		self.weapons_lvl = 0
-		self.thrusters_lvl = 0
+		self.thrusters_lvl = 30
 		self.hold_lvl = 0
 		self.max_miner_lvl = 30
 		self.max_weapons_lvl = 30
@@ -91,6 +91,8 @@ class Ship:
 				new_asteroid = self.find_asteroid()
 				if new_asteroid is not None and new_asteroid.on_screen:
 					self.target = new_asteroid
+				else:
+					self.return_to_base()
 			else:
 				self.return_to_base()
 
@@ -126,7 +128,7 @@ class Ship:
 		t = self.target
 		dist = cfg.distance_to_target(self)
 		# if the target is a dead asteroid
-		if isinstance(t, Asteroid) and t.size <= 0:\
+		if isinstance(t, Asteroid) and t.size <= 0:
 			# find another asteroid
 			self.target = self.find_asteroid()
 			# if can not find a new asteroid: return to base
@@ -140,6 +142,7 @@ class Ship:
 				if cfg.hold_at_capacity(self):
 					self.return_to_base()
 					return
+				self.check_for_better_asteroid()
 				t.mine(self)
 			# If target is home bay, return to bay and unload.
 			if t is self.bay:
@@ -176,15 +179,33 @@ class Ship:
 
 	def find_asteroid(self):
 		choices = []
-		for sun in self.game.suns:
-			for planet in sun.planets:
-				if planet.on_screen:
-					for asteroid in planet.asteroids:
-						if asteroid.on_screen:
-							choices.append(asteroid)
-
+		if self.bay.mine_priority:
+			mineral_index = cfg.mineral_name_list.index(self.bay.mine_priority)
+			[choices.append(asteroid) for asteroid in self.game.sorted_asteroid_lists[mineral_index] if asteroid.on_screen and asteroid.size > 0]
+		# If no asteroids available
+		if len(choices) == 0 or not self.bay.mine_priority:
+			for sun in self.game.suns:
+				for planet in sun.planets:
+					if planet.on_screen:
+						for asteroid in planet.asteroids:
+							if asteroid.on_screen:
+								choices.append(asteroid)
 		if choices:
 			return random.choice(choices)
+
+	def check_for_better_asteroid(self):
+		"""Check to see if the current asteroid you are mining is a priority if you have a priority set.
+		if it is not a prioritized asteroid and there ARE priority asteroids on the field, then change target to
+		one of them using the find_asteroid function."""
+		# If a priority is set.
+		if self.bay.mine_priority:
+			mineral_index = cfg.mineral_name_list.index(self.bay.mine_priority)
+			# If current target isn't a priority asteroid.
+			if self.target not in self.game.sorted_asteroid_lists[mineral_index]:
+				# If there is priority asteroid on field.
+				if len([asteroid for asteroid in self.game.sorted_asteroid_lists[mineral_index] if asteroid.on_screen]):
+					self.target = self.find_asteroid()
+
 
 	def die(self):
 		if self in self.owner.entities.copy():
@@ -195,7 +216,8 @@ class Ship:
 	def draw(self):
 		draw_image = pygame.transform.rotate(self.image, self.angle)
 		self.screen.blit(draw_image, self.rect)
-		# pygame.draw.rect(self.screen, self.rgb, self.rect)
+		if self.bay.mine_priority:
+			pygame.draw.circle(self.screen, cfg.mineral_info[self.bay.mine_priority]["rgb"], self.rect.center, 3)
 
 	def draw_beam(self, origin, target, colour=None):
 		if colour is None:

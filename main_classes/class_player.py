@@ -112,6 +112,10 @@ class Player:
             self.redeem(args)
         if cmd == '!request':
             self.request(args)
+        if cmd == '!prioritize' or '!prio':
+            self.prioritize(args)
+        if cmd == '!cxprio':
+            self.cancel_priority(args)
 
     def upgrade(self, args):
         # upgrade syntax: ['facility kind', 'facility_index', 'upgrade_request']
@@ -325,8 +329,8 @@ class Player:
                             distribute_amt[i] -= 1
                             f.ores[i] += 1
                             break
-        print("after")
-        print(distribute_amt)
+        # print("after")
+        # print(distribute_amt)
         self.unpause_autos()
 
     def load(self, args):
@@ -334,7 +338,6 @@ class Player:
         if len(args) == 3:
             if args[0] == "turret":
                 for f in self.hangars[0].facilities:
-                    print(f.index)
                     if f.kind == args[0] and f.index == int(args[1]):
                         f.load(args[2])
                     print(f"There is no {args[0]} with an index position of {args[1]}")
@@ -418,6 +421,31 @@ class Player:
             self.game.update_freight_request_priority(mineral)
         else:
             print(f"Mineral {mineral} is invalid or not enough favour available.")
+
+    def prioritize(self, args):
+        if len(args) != 3:
+            print("Incorrect number of args, check prioritize syntax.")
+        fk = args[0].lower()
+        priority = args[2]
+        try:
+            fac_ind = int(args[1])
+        except ValueError:
+            print(f'{args[0]} is not a valid facility index, also can not be spelt with letters.')
+            return
+        if priority in cfg.mineral_name_list:
+            # ALL CHECKS ON SYNTAX PASSED BY HERE
+            for f in self.hangars[0].facilities:
+                if f.kind == fk and f.index == fac_ind:
+                    f.set_mine_priority(priority)
+        else:
+            print(f'{priority} is not a valid mineral.')
+            
+    def cancel_priority(self, args):
+        fk = args[0].lower()
+        f_id = int(args[1])
+        for i in self.hangars[0].facilities:
+            if i.kind == fk and i.index == f_id:
+                i.set_mine_priority(None)
 
     def pay_favour_for_item(self, item):
         cost = cfg.favour_items[item]["cost"]

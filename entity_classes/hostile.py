@@ -37,9 +37,9 @@ class Hostile:
 		# 	pygame.draw.line(self.screen, [255, 255, 255], self.location, self.hostile_target.location, 1)
 
 	def find_nearby_random_dropoff(self):
-		s = self.spawner
-		d = self.location.distance_to(s.location)
-		for i in [s for s in self.game.spawners if len(s.nodules)]:
+		s = None
+		d = 2000
+		for i in [sp for sp in self.game.spawners if len(sp.nodules)]:
 			if self.location.distance_to(i.location) < d:
 				d = self.location.distance_to(i.location)
 				s = i
@@ -119,10 +119,7 @@ class Drone(Hostile):
 				# If there are spawners in the world then go drop off
 				if len(self.game.spawners):
 					self.drop_nodule = self.find_nearby_random_dropoff()
-					try:
-						self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
-					except:
-						returnll
+					self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
 				# If there are no spawners, keep increasing hold size and feeding until there are some.
 				else:
 					self.max_hold += 1
@@ -133,18 +130,6 @@ class Drone(Hostile):
 
 	def feed(self):
 		self.hold += 1
-
-	def hunt(self):
-		if self.hostile_target:
-			if self.rect.colliderect(self.hostile_target.rect):
-				self.hostile_target.take_damage(.5)
-				self.bounce_force = pygame.Vector2(random.uniform(-4, 4), random.uniform(-4, 4))
-				self.poly_explosion()
-				return
-			self.bounce_force *= 0.95
-			self.acceleration = self.location - self.hostile_target.rect.center
-			self.location -= self.acceleration.normalize() * self.hunt_velocity + self.bounce_force
-			self.rect.topleft = self.location
 
 	def choose_hostile_target(self):
 		if self.hostile_target:
@@ -227,7 +212,7 @@ class HunterDrone(Hostile):
 		self.last_loc = pygame.math.Vector2(self.location)
 
 	def roam(self):
-		if self.hold > self.max_hold:
+		if self.hold >= self.max_hold:
 			if self.drop_nodule:
 				if self.location.distance_to(self.target_loc) < 3:
 					self.drop_nodule.accept_resources(self.hold)
@@ -241,7 +226,7 @@ class HunterDrone(Hostile):
 				# If there are no spawners, keep increasing hold size and feeding until there are some.
 				else:
 					self.max_hold += 1
-		if self.location.distance_to(self.target_loc) < 3 and self.hold < self.max_hold:
+		if self.location.distance_to(self.target_loc) < 3:
 			self.set_new_roam_location()
 			self.feed()
 
@@ -301,7 +286,7 @@ class HunterDrone(Hostile):
 			self.hostile = True
 		else:
 			self.hostile = False
-			self.hostile_target = False
+			self.hostile_target = None
 
 		if self.hostile:
 			self.choose_hostile_target()

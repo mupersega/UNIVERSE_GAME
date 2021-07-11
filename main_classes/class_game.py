@@ -25,11 +25,11 @@ conn = sqlite3.connect('/C:/db/queue.db')
 c = conn.cursor()
 
 # These dims control window placement if needed for dual screen.
-# x = -1920
-# y = 420
+x = -1920
+y = 420
 # x = 400
 # y = 100
-# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:
@@ -48,6 +48,7 @@ class Game:
 		self.screen_rect = pygame.Rect(0, 0, cfg.screen_width, cfg.screen_height)
 		self.hostile_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
 		self.friendly_quadtree = Quadtree(self, self.screen_rect, max_objects=4, depth=0)
+		self.sorted_asteroid_lists = [[], [], []]
 
 		self.suns = []
 		self.stations = []
@@ -70,6 +71,7 @@ class Game:
 
 		self.gather_phase = True
 		self.combat_phase = False
+		self.freighters_active = False
 		self.round = 10
 		# HUD elements.
 		self.round_label = cfg.bauhaus.render(
@@ -222,7 +224,7 @@ class Game:
 			for i in threads:
 				i.join()
 		else:
-			print("Nothing to process.")
+			print("No queue items to process.")
 			# print('error in try watch queue try block')
 			return
 
@@ -262,6 +264,14 @@ class Game:
 				sp = random.choice(self.spawners)
 				sp.hold += self.round
 
+	def sort_asteroids(self):
+		# Create three empty lists to store asteroids with maximum values
+		self.sorted_asteroid_lists = [[], [], []]
+		for a in [asteroid for sun in self.suns for planet in sun.planets for asteroid in planet.asteroids]:
+			# Index of max value.
+			imv = a.rgb.index(max(a.rgb))
+			self.sorted_asteroid_lists[imv].append(a)
+
 	def initiate_combat_phase(self, phase_duration):
 		# set environment for combat phase
 		self.next_phase += phase_duration
@@ -280,8 +290,9 @@ class Game:
 			i.hostile = True
 		for i in self.spawners:
 			i.desired_rotation_speed = self.round / 50 * len(self.players)
-		for i in self.players:
-			self.new_freight_train(int(self.round / 10) + 1, i.hangars[0].station)
+		if self.freighters_active:
+			for i in self.players:
+				self.new_freight_train(int(self.round / 10) + 1, i.hangars[0].station)
 		for i in self.boosts:
 			i.spool_down()
 		self.force_feed_spawners()
@@ -319,6 +330,7 @@ class Game:
 			if curr_time > self.next_populate_asteroids:
 				self.next_populate_asteroids += cfg.asteroid_pop_phase_time
 				self.populate_asteroids()
+				self.sort_asteroids()
 				# ## AI TRADES ## #
 				# chosen_trader = random.choice([i for i in self.players if i.name != "mupersega"])
 				# args = [20, random.choice(["rubine", "verdite"]), "for", 5, "ceruliun"]
@@ -448,7 +460,7 @@ class Game:
 				i.loop()
 
 			# self.hostile_quadtree.draw([100, 0, 0])
-			self.friendly_quadtree.draw([0, 0, 100])
+			# self.friendly_quadtree.draw([0, 0, 100])
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()
 			pygame.display.update()

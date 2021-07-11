@@ -34,6 +34,7 @@ class Bay:
 		# Auto commands
 		self.auto = False
 		self.auto_upgrade = None
+		self.mine_priority = None
 
 		# Bars on bays correspond to [w = miner, n = weapons, e = thrusters, s = hold]
 		self.bar_lengths = [0, 0, 0, 0]
@@ -86,6 +87,9 @@ class Bay:
 							f.ores[i] += 1
 							self.owner.unpause_autos()
 							break
+
+	def set_mine_priority(self, mineral):
+		self.mine_priority = mineral
 
 	def update_vector(self):
 		self.location = (self.x + self.width * 0.5, self.y + self.width * 0.5)

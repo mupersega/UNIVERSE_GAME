@@ -92,10 +92,11 @@ class Spawner:
 
 	def check_spawn(self):
 		# where 1000 is dust required for new "sated".
-		if self.hold >= 50 and len(self.nodules) < self.max_nodules:
-			self.nodules.append(Nodule(self.game, self.nodules[-1].location, self, self.get_next_max_level()))
-			self.hold = 0
-			self.reposition_nodules()
+		if self.life > 0:
+			if self.hold >= 50 and len(self.nodules) < self.max_nodules:
+				self.nodules.append(Nodule(self.game, self.location, self, self.get_next_max_level()))
+				self.hold = 0
+				self.reposition_nodules()
 
 	def reposition_nodules(self):
 		angle_step = 360 / len(self.nodules)

@@ -11,21 +11,21 @@ class Maul:
 	def __init__(self, start_loc, trajectory, target, game, shooter):
 		self.game = game
 		self.location = pygame.Vector2(start_loc)
-		self.speed = 7
+		self.speed = 10
 		self.velocity = pygame.Vector2(trajectory) * self.speed
 		self.shooter = shooter
 		self.damage = 1
-		self.life = random.randint(60, 80) * 1.5
-		self.rect = pygame.Rect(self.location.x, self.location.y, 10, 10)
-		# self.rgb = random.choice([
-		# 		cfg.col.dark_rubine,
-		# 		cfg.col.light_rubine,
-		# 		cfg.col.red
-		# 	])
+		self.life = random.randint(40, 60)
+		self.rect = pygame.Rect(self.location.x, self.location.y, 15, 15)
+		self.rgb = random.choice([
+				cfg.col.dark_rubine,
+				cfg.col.light_rubine,
+				cfg.col.red
+			])
 		self.dim = 1
-		self.rgb = cfg.col.red
+		# self.rgb = cfg.col.red
 		# pygame.draw.circle(self.game.screen, [250, 240, 255], self.location, random.randint(1, 4))
-		self.game.explosions.append(Explosion(self.game, start_loc, 3, [255, 255, 255], self.velocity))
+		self.game.explosions.append(Explosion(self.game, start_loc, 3, [255, 255, 255]))
 
 	def move(self):
 		self.location -= self.velocity
@@ -42,8 +42,8 @@ class Maul:
 		self.game.hostile_quadtree.query(self.rect, nearby_hits)
 		for i in nearby_hits:
 			if pygame.Rect.colliderect(self.rect, i.rect):
-				i.location -= self.velocity * 2
-				self.poly_explosion()
+				i.location -= self.velocity
+				self.game.explosions.append(Explosion(self.game, self.location, 5, self.rgb, self.velocity))
 				i.life -= self.damage
 				i.last_hit = self.shooter
 				self.life = 0
@@ -73,7 +73,7 @@ class Maul:
 		# pygame.draw.rect(self.game.screen, self.rgb, (self.rect.center, (1, 1)))
 
 	def update_rect(self):
-		self.rect.topleft = self.location
+		self.rect.center = self.location
 
 	def loop(self):
 		self.kill()

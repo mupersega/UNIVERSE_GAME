@@ -43,15 +43,15 @@ universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 1
 start_suns = 1
-start_spawners = 1
+start_spawners = 0
 start_players = 10
 universe_max_asteroids = 300
-max_hostiles = 25
+max_hostiles = 20
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 1
-combat_phase_time = 30
+gather_phase_time = 90
+combat_phase_time = 1
 convert_mineral_to_favour = [1, 2, 5]
 
 # --Entity-- #

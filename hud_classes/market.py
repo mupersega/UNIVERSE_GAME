@@ -68,7 +68,7 @@ class Trade:
 		self.market = market
 		self.lister = lister
 		self.code = str(lister.name)[0:2].lower() + "-" + str(market.total_trades)
-		print(self.code)
+		# print(self.code)
 
 		self.offer_list = cfg.return_mineral_list(offer[0], offer[1])
 		self.ask_list = cfg.return_mineral_list(ask[0], ask[1])

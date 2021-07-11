@@ -35,7 +35,6 @@ class FreightRatioDisplay:
 	def draw_bars_to_surface(self):
 		self.surface.fill(cfg.col.p_five)
 		pygame.draw.rect(self.surface, cfg.col.white, ((0, 0), (self.outer_width, self.outer_height)), 1)
-		print(len(self.bars))
 		for h, i in enumerate(self.bars):
 			pygame.draw.rect(self.surface, cfg.mineral_info[cfg.mineral_name_list[h]]["market_bg_rgb"], (
 				(sum(self.bars[0:h]) + self.padding, self.padding), (self.bars[h], self.inner_height - self.padding))

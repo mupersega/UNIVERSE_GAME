@@ -53,7 +53,7 @@ class Engine:
 
 	def take_damage(self, amt):
 		self.life -= amt
-		print(self.life)
+		# print(self.life)
 		if self.life <= 0:
 			self.kill()
 
@@ -123,7 +123,7 @@ class Engine:
 		if self.active:
 			if len(self.game.players) > 0:
 				split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
-				print(split_distribution)
+				# print(split_distribution)
 				for j in self.game.players:
 					j.distribute_resources(split_distribution)
 			self.active = False
@@ -173,7 +173,7 @@ class Carriage:
 		if self.active:
 			if len(self.game.players) > 0:
 				split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
-				print(split_distribution)
+				# print(split_distribution)
 				for j in self.game.players:
 					j.distribute_resources(split_distribution)
 			self.active = False
