@@ -37,7 +37,7 @@ class Bay:
 
 		# Priority info.
 		self.mine_priority = None
-		self.mine_priority = random.choice(["rubine", "verdite", "ceruliun"])
+		# self.mine_priority = random.choice(["rubine", "verdite", "ceruliun"])
 		self.prio_rgb = cfg.col.white
 
 		# Bars on bays correspond to [w = miner, n = weapons, e = thrusters, s = hold]

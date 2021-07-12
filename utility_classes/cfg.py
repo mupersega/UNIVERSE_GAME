@@ -35,6 +35,14 @@ bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 
 # CLASS SETTINGS #
+# --MAIN DEBUGGING VARS-- #
+start_spawners = 3
+start_players = 0
+player_starting_favour = 50
+wh_starting_resources = [0, 0, 0]
+gather_phase_time = 360
+combat_phase_time = 40
+
 # --Game-- #
 screen_width, screen_height = 1920, 1080
 # screen_width, screen_height = 1500, 700
@@ -44,15 +52,15 @@ universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 1
 start_suns = 1
-start_spawners = 3
-start_players = 10
+# start_spawners = 3
+# start_players = 0
 universe_max_asteroids = 300
 max_hostiles = 20
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 10
-combat_phase_time = 60
+# gather_phase_time = 10
+# combat_phase_time = 60
 convert_mineral_to_favour = [1, 2, 5]
 
 # --Entity-- #
@@ -124,6 +132,7 @@ ast_interactable_distance = 40
 ast_arrived_distance = 20
 
 # --Player-- #
+# player_starting_favour = 50
 player_starting_mupees = 100
 
 # --Empire-- #
@@ -163,7 +172,7 @@ fac_border_width = 2
 
 # --Warehouse-- #
 wh_colour = col.medium_grey
-wh_starting_resources = [0, 0, 0]
+# wh_starting_resources = [0, 0, 0]
 wh_interactable_distance = 2
 wh_arrived_distance = 1
 wh_life = 200
