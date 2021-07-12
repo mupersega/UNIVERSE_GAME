@@ -42,7 +42,7 @@ class Maul:
 		self.game.hostile_quadtree.query(self.rect, nearby_hits)
 		for i in nearby_hits:
 			if pygame.Rect.colliderect(self.rect, i.rect):
-				i.location -= self.velocity
+				i.location -= self.velocity / i.mass
 				self.game.explosions.append(Explosion(self.game, self.location, 5, self.rgb, self.velocity))
 				i.life -= self.damage
 				i.last_hit = self.shooter

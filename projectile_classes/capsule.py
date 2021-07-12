@@ -34,7 +34,7 @@ class Capsule:
 
 		self.ready = False
 		self.finished = False
-		self.targets = self.establish_targets(cfg.capsule_info[capsule_type]["target_facility"])
+		self.targets = self.establish_targets(cfg.capsule_info[capsule_type]["target_kind"])
 		self.ring_radius = self.rect.width * .5
 
 		self.beams = []
@@ -77,7 +77,15 @@ class Capsule:
 			))
 
 	def establish_targets(self, kind):
-		return [facility for facility in self.player.hangars[0].facilities if facility.kind == kind]
+		# Facility specials.
+		if kind in ["turret", "bay"]:
+			return [facility for facility in self.player.hangars[0].facilities if facility.kind == kind]
+		# Freighter specials.
+		if kind == "engine":
+			return [engine for engine in self.game.freighters]
+		if kind == "carriage":
+			return [carriage for freighter in self.game.freighters for carriage in freighter.full_train[1:] if carriage.life > 0]
+		# asteroid for sun in self.suns for planet in sun.planets for asteroid in planet.asteroids
 
 	def move(self):
 		self.location -= self.velocity
@@ -93,7 +101,7 @@ class Capsule:
 		self.game.screen.blit(self.image, self.rect.topleft)
 		pygame.draw.circle(
 			self.game.screen, self.ring_rgb, self.rect.center, self.ring_radius, 1)
-	
+
 	def update_beams(self):
 		for i in self.beams:
 			i.loop()
@@ -124,6 +132,9 @@ class Capsule:
 			else:
 				setattr(i, self.attribute_mod,
 						getattr(i, self.attribute_mod) - self.attrib_change)
+			for pulse in self.pulses.copy():
+				pulse.kill()
+
 	def loop(self):
 		self.move()
 		if not self.ready:
@@ -211,7 +222,7 @@ class Pulse:
 				self.parent.kill()
 
 	def draw(self):
-		pygame.draw.circle(self.parent.game.screen, self.glow_rgb, self.pos, cfg.facility_w_third + self.padding)
+		pygame.draw.circle(self.parent.game.screen, self.glow_rgb, self.boosting.rect.center, cfg.facility_w_third + self.padding)
 
 	def loop(self):
 		self.decay()

@@ -25,11 +25,11 @@ conn = sqlite3.connect('/C:/db/queue.db')
 c = conn.cursor()
 
 # These dims control window placement if needed for dual screen.
-x = -1920
-y = 420
-# x = 400
-# y = 100
-os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
+# x = -1920
+# y = 420
+# # x = 400
+# # y = 100
+# os.environ['SDL_VIDEO_WINDOW_POS'] = f"{x},{y}"
 
 
 class Game:
@@ -67,11 +67,11 @@ class Game:
 		self.next_force_feed_spawners = time.time() + cfg.force_feed_phase_time
 		self.next_phase = time.time() + cfg.gather_phase_time
 		self.max_kill_prio = 0
-		self.freight_request_priority = cfg.default_freight_priority
+		self.freight_request_priority = self.randomize_freight_request_priority()
 
 		self.gather_phase = True
 		self.combat_phase = False
-		self.freighters_active = False
+		self.freighters_active = True
 		self.round = 10
 		# HUD elements.
 		self.round_label = cfg.bauhaus.render(
@@ -172,7 +172,7 @@ class Game:
 
 	def spawn_random_boost(self):
 		player = random.choice(self.players)
-		player.hangars[0].station.launch_bay.launch(player, random.choice(["overclock", "compression"]))
+		player.hangars[0].station.launch_bay.launch(player, random.choice(["overclock", "compression", "turbo", "shields"]))
 
 	def count_asteroids(self):
 		return sum(len(planet.asteroids) for sun in self.suns for planet in sun.planets)
@@ -194,8 +194,14 @@ class Game:
 		self.freight_ratio_bar.update_bars()
 
 	def reset_freight_request_priority(self):
-		self.freight_request_priority = cfg.default_freight_priority.copy()
+		# self.freight_request_priority = cfg.default_freight_priority.copy()
+		self.freight_request_priority = self.randomize_freight_request_priority()
 		self.freight_ratio_bar.update_bars()
+
+	def randomize_freight_request_priority(self):
+		start_parts = 6
+		random_ratios = cfg.return_random_ratios(3)
+		return [int(start_parts * r) for r in random_ratios]
 
 	def watch_queue(self):
 		# clear any completed rows

@@ -9,7 +9,7 @@ import utility_classes.colours as col
 pygame.font.init()
 
 # IMAGES #
-ship_image = pygame.image.load('./assets/mining_ship_1.png')
+ship_image = pygame.image.load('./assets/mining_ship_2.png')
 starsated_image = pygame.image.load('./assets/starsated.png')
 hunterdrone_image = pygame.image.load('./assets/hunterdrone.png')
 soldier_image = pygame.image.load('./assets/soldier.png')
@@ -17,6 +17,7 @@ big_ship_teal = pygame.image.load('./assets/bigger_ship.png')
 big_ship_purple = pygame.image.load('./assets/bigger_ship_purple.png')
 big_ship_green = pygame.image.load('./assets/bigger_ship_green.png')
 big_ship_red = pygame.image.load('./assets/bigger_ship_red.png')
+freighter_img = pygame.image.load('./assets/freighter.png')
 starseeker_imgs = [
 	pygame.image.load('./assets/starseeker.png'),
 	pygame.image.load('./assets/starseeker_m.png'),
@@ -43,15 +44,15 @@ universe_secondary = "verdite"
 # st 15 = ent 124
 start_stations = 1
 start_suns = 1
-start_spawners = 0
+start_spawners = 3
 start_players = 10
 universe_max_asteroids = 300
 max_hostiles = 20
 asteroid_pop_phase_time = 10
 watch_queue_phase_time = 2
 force_feed_phase_time = 5
-gather_phase_time = 90
-combat_phase_time = 1
+gather_phase_time = 10
+combat_phase_time = 60
 convert_mineral_to_favour = [1, 2, 5]
 
 # --Entity-- #
@@ -138,8 +139,11 @@ favour_items = {
 	"overclock": {
 		"cost": 100,
 	},
-	"embolden": {
-		"cost": 100,
+	"turbo": {
+		"cost": 200,
+	},
+	"shields": {
+		"cost": 200,
 	},
 	"request_rubine": {
 		"cost": 10,
@@ -242,7 +246,7 @@ starseeker_base_damage = 200
 capsule_info = {
 	"compression": {
 		"img": pygame.image.load('./assets/compression_capsule.png'),
-		"target_facility": "bay",
+		"target_kind": "bay",
 		"ring_rgb": [255, 255, 0],
 		"glow_rgb": [255, 255, 0],
 		"beam_rgb": [255, 255, 0],
@@ -253,7 +257,7 @@ capsule_info = {
 	},
 	"overclock": {
 		"img": pygame.image.load('./assets/turret_capsule.png'),
-		"target_facility": "turret",
+		"target_kind": "turret",
 		"ring_rgb": col.light_ceruliun,
 		"glow_rgb": col.light_ceruliun,
 		"beam_rgb": col.light_ceruliun,
@@ -262,16 +266,27 @@ capsule_info = {
 		"duration": 1000,
 		"padding": 1
 	},
-	"embolden": {
-		"img": pygame.image.load('./assets/turret_capsule.png'),
-		"target_facility": "turret",
-		"ring_rgb": col.light_verdite,
-		"glow_rgb": col.light_verdite,
-		"beam_rgb": col.light_verdite,
-		"attribute": "level",
-		"attribute_change": 2,
+	"turbo": {
+		"img": pygame.image.load('./assets/turbo_capsule.png'),
+		"target_kind": "engine",
+		"ring_rgb": col.green,
+		"glow_rgb": col.green,
+		"beam_rgb": col.green,
+		"attribute": "top_speed",
+		"attribute_change": 1,
 		"duration": 1000,
-		"padding": 1
+		"padding": 3
+	},
+	"shields": {
+		"img": pygame.image.load('./assets/shields_capsule.png'),
+		"target_kind": "carriage",
+		"ring_rgb": col.light_rubine,
+		"glow_rgb": col.white,
+		"beam_rgb": col.light_rubine,
+		"attribute": "life",
+		"attribute_change": 200,
+		"duration": 1000,
+		"padding": 6
 	}
 }
 
@@ -546,3 +561,8 @@ def calc_distribute_amt(current, amt, roof):
 		output = roof
 	return output
 
+
+def return_random_ratios(num_elements):
+	roll_order = [random.uniform(0, 1) for _ in range(num_elements)]
+	total_pct = sum(roll_order)
+	return [e / total_pct for e in roll_order]

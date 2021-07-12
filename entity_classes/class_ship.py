@@ -45,7 +45,7 @@ class Ship:
 		self.max_thrusters_lvl = 30
 		self.hold_capacity = 10
 
-		self.rect = pygame.Rect(self.location.x, self.location.y, self.size, self.size)
+		self.rect = pygame.Rect(self.location.x, self.location.y, self.image.get_width(), self.image.get_height())
 		self.rgb = cfg.ent_rgb
 		self.interactable_distance = cfg.ent_interactable_distance
 		self.arrived_distance = cfg.ent_arrived_distance
@@ -56,15 +56,15 @@ class Ship:
 		self.target = self.bay
 		self.target_queue = []
 		self.ores = [0, 0, 0]
-		# print(self.ores)
 
 		self.owner.entities.append(self)
 
 		# self.choose_start_bay()
-		cfg.update_rect(self)
+		self.rect.center = self.location
+		# cfg.update_rect(self)
 
 	def update_current_target(self):
-		# if no target make current target the next target in queue.
+		# If no target make current target the next target in queue.
 		if not self.target:
 			# no current target? make next in queue the current target
 			if self.target_queue:
@@ -112,8 +112,6 @@ class Ship:
 		self.trajectory = proposed_trajectory.normalize()
 		self.location -= self.trajectory * self.vel * mod
 		self.rect.center = self.location
-		self.x = self.location[0]
-		self.y = self.location[1]
 
 	def set_behaviour(self, behaviour):
 		self.behaviour = behaviour
@@ -142,8 +140,9 @@ class Ship:
 				if cfg.hold_at_capacity(self):
 					self.return_to_base()
 					return
-				self.check_for_better_asteroid()
 				t.mine(self)
+				self.draw_beam(self.target)
+				self.check_for_better_asteroid()
 			# If target is home bay, return to bay and unload.
 			if t is self.bay:
 				if cfg.hold_empty(self):
@@ -206,7 +205,6 @@ class Ship:
 				if len([asteroid for asteroid in self.game.sorted_asteroid_lists[mineral_index] if asteroid.on_screen]):
 					self.target = self.find_asteroid()
 
-
 	def die(self):
 		if self in self.owner.entities.copy():
 			self.owner.entities.remove(self)
@@ -215,16 +213,11 @@ class Ship:
 
 	def draw(self):
 		draw_image = pygame.transform.rotate(self.image, self.angle)
+		pygame.draw.circle(self.screen, self.bay.prio_rgb, self.rect.center, 3)
 		self.screen.blit(draw_image, self.rect)
-		if self.bay.mine_priority:
-			pygame.draw.circle(self.screen, cfg.mineral_info[self.bay.mine_priority]["rgb"], self.rect.center, 3)
 
-	def draw_beam(self, origin, target, colour=None):
-		if colour is None:
-			colour = [250, 250, 250]
-		ox, oy = origin.x, origin.y
-		tx, ty = target.x, target.y
-		pygame.draw.line(self.screen, colour, (ox, oy), (tx, ty), 1)
+	def draw_beam(self, target):
+		pygame.draw.line(self.screen, self.bay.prio_rgb, self.rect.center, target.rect.center, 1)
 
 	def draw_explosion(self, target):
 		tx, ty = int(target.x), int(target.y)

@@ -55,6 +55,10 @@ class LaunchBay:
 			self.launch_capsule(player, item)
 		if item.lower() == "overclock":
 			self.launch_capsule(player, item)
+		if item.lower() == "turbo":
+			self.launch_capsule(player, item)
+		if item.lower() == "shields":
+			self.launch_capsule(player, item)
 
 	def launch_starseeker(self, player):
 		self.game.projectiles.append(Starseeker(

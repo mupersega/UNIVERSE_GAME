@@ -37,13 +37,24 @@ class Hostile:
 		# 	pygame.draw.line(self.screen, [255, 255, 255], self.location, self.hostile_target.location, 1)
 
 	def find_nearby_random_dropoff(self):
-		s = None
+		if not len(self.game.spawners):
+			return None
 		d = 2000
-		for i in [sp for sp in self.game.spawners if len(sp.nodules)]:
+		chosen = None
+		for i in self.game.spawners:
 			if self.location.distance_to(i.location) < d:
 				d = self.location.distance_to(i.location)
-				s = i
-		return random.choice(s.nodules)
+				chosen = i
+		if len(chosen.nodules):
+			chosen = random.choice(chosen.nodules)
+		return chosen
+		# s = None
+		# d = 2000
+		# for i in [sp for sp in self.game.spawners if len(sp.nodules)]:
+		# 	if self.location.distance_to(i.location) < d:
+		# 		d = self.location.distance_to(i.location)
+		# 		s = i
+		# return random.choice(s.nodules)
 
 	def rotate(self):
 		t = self.target_loc
@@ -93,6 +104,7 @@ class Drone(Hostile):
 		self.life = 10
 		self.favour = 1
 		self.max_hold = 2
+		self.mass = 1
 
 		self.set_new_roam_location()
 
@@ -187,6 +199,7 @@ class HunterDrone(Hostile):
 		self.damage = 5
 		self.favour = 2
 		self.max_hold = 2
+		self.mass = 2
 
 		self.set_new_roam_location()
 
@@ -313,6 +326,7 @@ class Soldier(Hostile):
 		self.life = 200
 		self.damage = 10
 		self.favour = 5
+		self.mass = 4
 
 	def acquire_target(self, attr):
 		new_target = None

@@ -16,7 +16,8 @@ class Engine:
 		self.screen = game.screen
 		self.number_carriages = number_carriages
 		self.collision_priority = len(game.freighters)
-		self.engine_image = cfg.big_ship_green
+		self.kind = "engine"
+		self.engine_image = cfg.freighter_img
 		self.full_train = [self]
 		self.carriage_lines = []
 
@@ -28,11 +29,13 @@ class Engine:
 		self.velocity = .8
 		self.angle = 1
 
-		self.rect = pygame.Rect(self.location.x, self.location.y, 20, 20)
+		self.rect = pygame.Rect(
+			self.location.x, self.location.y, self.engine_image.get_width(), self.engine_image.get_height())
 
 		self.life = cfg.engine_life
 		self.hold = [0, 0, 0]
 		self.active = True
+		self.boosted = False
 
 		self.build_carriages()
 
@@ -105,6 +108,14 @@ class Engine:
 		deg = math.degrees(rads)
 		self.angle = deg
 
+	def distribute_hold_resources(self):
+		if self.active:
+			if len(self.game.players) > 0:
+				split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
+				for j in self.game.players:
+					j.distribute_resources(split_distribution)
+			self.active = False
+
 	def draw(self):
 		pygame.draw.lines(
 			self.screen, cfg.col.medium_grey, closed=False, points=[i.rect.center for i in self.full_train], width=5)
@@ -119,34 +130,27 @@ class Engine:
 		self.rotate()
 		self.load_next_location()
 
-	def distribute_hold_resources(self):
-		if self.active:
-			if len(self.game.players) > 0:
-				split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
-				# print(split_distribution)
-				for j in self.game.players:
-					j.distribute_resources(split_distribution)
-			self.active = False
-
 
 class Carriage:
 	def __init__(self, puller):
 		self.game = puller.game
 		self.screen = puller.screen
 		self.puller = puller
+		self.kind = "carriage"
 		self.collision_priority = self.puller.collision_priority
 		self.target_location = pygame.Vector2(puller.location)
 		self.location = pygame.Vector2(puller.location.x + 50, puller.location.y + 20)
 		self.direction = pygame.Vector2(self.location - self.target_location).normalize()
 
 		self.rect = pygame.Rect(self.location.x, self.location.y, 20, 20)
-		self.velocity = random.uniform(.5, 3)
+		self.velocity = 3
 		self.life = cfg.carriage_life
 		self.active = True
+		self.boosted = False
 
 		self.carrying = self.choose_cargo()
-		self.ring_rgb = cfg.mineral_info[self.carrying]["market_rgb"]
-		self.hold_rgb = cfg.mineral_info[self.carrying]["market_bg_rgb"]
+		self.ring_rgb = cfg.mineral_info[self.carrying]["market_bg_rgb"]
+		self.hold_rgb = cfg.mineral_info[self.carrying]["market_rgb"]
 		self.hold = cfg.mineral_info[self.carrying]["carriage_carry"]
 
 	def choose_cargo(self):
@@ -158,11 +162,11 @@ class Carriage:
 	def update(self):
 		if self.rect.colliderect(self.puller.rect):
 			return
-		self.velocity = self.location.distance_to(self.puller.location) / 30
-		self.target_location = self.puller.location
+		self.velocity = self.location.distance_to(self.puller.rect.center) / 25
+		self.target_location = self.puller.rect.center
 		self.direction = pygame.Vector2(self.location - self.target_location).normalize()
 		self.location -= (self.location - self.target_location).normalize() * self.velocity
-		self.rect.topleft = self.location
+		self.rect.center = self.location
 
 	def take_damage(self, amt):
 		self.life -= amt
@@ -173,9 +177,9 @@ class Carriage:
 		if self.active:
 			if len(self.game.players) > 0:
 				split_distribution = [math.ceil(i / len(self.game.players)) for i in self.hold]
-				# print(split_distribution)
 				for j in self.game.players:
 					j.distribute_resources(split_distribution)
+			self.life = 0
 			self.active = False
 
 	def kill(self):

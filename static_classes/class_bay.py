@@ -34,7 +34,11 @@ class Bay:
 		# Auto commands
 		self.auto = False
 		self.auto_upgrade = None
+
+		# Priority info.
 		self.mine_priority = None
+		self.mine_priority = random.choice(["rubine", "verdite", "ceruliun"])
+		self.prio_rgb = cfg.col.white
 
 		# Bars on bays correspond to [w = miner, n = weapons, e = thrusters, s = hold]
 		self.bar_lengths = [0, 0, 0, 0]
@@ -54,6 +58,7 @@ class Bay:
 		self.occupant = None
 
 		# Each bay always comes with a ship on init.
+		self.set_mine_priority(self.mine_priority)
 		self.owner.bays.append(self)
 		self.new_ship()
 
@@ -90,6 +95,7 @@ class Bay:
 
 	def set_mine_priority(self, mineral):
 		self.mine_priority = mineral
+		self.prio_rgb = cfg.col.white if not mineral else cfg.mineral_info[mineral]["market_rgb"]
 
 	def update_vector(self):
 		self.location = (self.x + self.width * 0.5, self.y + self.width * 0.5)
