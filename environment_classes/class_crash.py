@@ -50,7 +50,7 @@ class Crash:
 			self.explode()
 		# if not in arrived distance of target, turn and move toward target
 		if cfg.distance_to_target(self) > (
-			self.target.size + self.target.arrived_distance):
+				self.target.radius + self.target.arrived_distance):
 			self.angle = cfg.angle_to_target(self) * self.agility
 			self.x += math.cos(self.angle) * self.vel
 			self.y -= math.sin(self.angle) * self.vel

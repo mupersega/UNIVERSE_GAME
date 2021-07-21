@@ -23,7 +23,7 @@ class Market:
 		self.surface = pygame.Surface((self.width, len(self.trades) * self.row_height))
 		self.top_left = pygame.Vector2(
 			cfg.screen_width - self.width - 6,
-			90 + self.game.leaderboard.row_height * (len(self.game.players) + 1))
+			135 + self.game.leaderboard.row_height * (len(self.game.players) + 1))
 
 	def new_trade(self, trader, offer, ask):
 		# Prepare a new code/ID to the trade.
@@ -52,7 +52,7 @@ class Market:
 	def update_top_left(self):
 		self.top_left = pygame.Vector2(
 			cfg.screen_width - self.width - 5,
-			90 + self.game.leaderboard.row_height * (len(self.game.players) + 1))
+			135 + self.game.leaderboard.row_height * (len(self.game.players) + 1))
 
 	def draw(self):
 		# pygame.draw.rect(self.game.screen, [255, 255, 255], self.surface.get_rect(), width=5)

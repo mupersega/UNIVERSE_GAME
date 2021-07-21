@@ -52,21 +52,19 @@ class Hangar:
 				(str(self.station.sn) + "." + str(self.index)), True, col.p_four)
 
 	def set_facilities_pos(self):
-		# set pos dependant on index and update rect
-		i = 0
 		bay_count = 1
 		wh_count = 1
 		turr_count = 1
-		for facility in self.facilities:
+		for i, facility in enumerate(self.facilities):
 			if facility.kind == 'bay':
 				facility.index = bay_count
 				bay_count += 1
-			elif facility.kind == 'warehouse':
-				facility.index = wh_count
-				wh_count += 1
 			elif facility.kind == 'turret':
 				facility.index = turr_count
 				turr_count += 1
+			elif facility.kind == 'warehouse':
+				facility.index = wh_count
+				wh_count += 1
 			facility.x = self.station.rect.right + cfg.x_pad + (cfg.facility_w + cfg.x_pad) * i
 			facility.y = self.rect.top + cfg.y_pad
 			facility.update_vector()
@@ -75,8 +73,6 @@ class Hangar:
 			for facility in self.facilities:
 				if facility.kind == "bay":
 					facility.update_bar_lengths()
-
-			i += 1
 
 	def new_warehouse(self):
 		new_wh = Warehouse(self)
@@ -105,10 +101,12 @@ class Hangar:
 		screen = self.station.game.screen
 		x_offset = (self.station.rect.width - self.label.get_width()) / 2
 		if self.owner and self.facilities:
+			pygame.draw.rect(self.game.screen,[50, 0, 0], self.rect)
 			screen.blit(self.label, (self.station.rect.left + x_offset, self.rect.top))
 			pygame.draw.line(screen, cfg.st_arm_colour, [self.station.rect.right, self.rect.center[1] - 1],
 							 [self.facilities[-1].rect.center[0], self.rect.center[1] - 1], width=4)
 		else:
+			self.game.screen.blit(cfg.hangar_image, (self.station.rect.left, self.y))
 			screen.blit(self.label, (self.station.rect.left + x_offset, self.rect.top))
 
 	def draw_turrets(self):

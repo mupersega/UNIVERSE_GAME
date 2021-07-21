@@ -18,6 +18,9 @@ big_ship_purple = pygame.image.load('./assets/bigger_ship_purple.png')
 big_ship_green = pygame.image.load('./assets/bigger_ship_green.png')
 big_ship_red = pygame.image.load('./assets/bigger_ship_red.png')
 freighter_img = pygame.image.load('./assets/freighter.png')
+hangar_image = pygame.image.load('./assets/hangar_overlay.png')
+planet_alpha_img = pygame.image.load('./assets/planet_mask.png')
+sun_mask_img = pygame.image.load('./assets/sun_mask.png')
 starseeker_imgs = [
 	pygame.image.load('./assets/starseeker.png'),
 	pygame.image.load('./assets/starseeker_m.png'),
@@ -34,15 +37,15 @@ market_numbers = pygame.font.SysFont("Bauhaus 93", 20)
 bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 
-# CLASS SETTINGS #
 # --MAIN DEBUGGING VARS-- #
-start_spawners = 3
+start_spawners = 2
 start_players = 0
 player_starting_favour = 50
 wh_starting_resources = [0, 0, 0]
 gather_phase_time = 360
 combat_phase_time = 40
 
+# CLASS SETTINGS #
 # --Game-- #
 screen_width, screen_height = 1920, 1080
 # screen_width, screen_height = 1500, 700
@@ -92,8 +95,8 @@ default_hangars = 30
 lane_width = 15
 x_pad = facility_w / 10
 y_pad = 1
-st_x_offset = 382 # 382 for stream
-st_y_offset = 55
+st_x_offset = 382  # 382 for stream
+st_y_offset = 40  # 40 for stream
 station_spacing = station_width + (
 		x_pad * 2 + facility_w * default_max_facilities) + lane_width
 
@@ -515,13 +518,13 @@ def hold_empty(self):
 
 
 def on_screen_check(self):
-	if self.x < 0:
+	if self.location.x < 0:
 		return False
-	if self.x > screen_width:
+	if self.location.x > screen_width:
 		return False
-	if self.y < 0:
+	if self.location.y < 0:
 		return False
-	return self.y <= screen_height
+	return self.location.y <= screen_height
 
 
 def on_screen_check_vec(vec):

@@ -16,34 +16,39 @@ class Planet:
 		self.on_screen = False
 		self.x = 0
 		self.y = 0
-		self.distance_from_sun = distance_from_sun
+		self.location = pygame.Vector2(distance_from_sun, 0)
+		self.orbit_distance = distance_from_sun
 		self.rgb = cfg.set_composition(self.primary_type, self.secondary_type)
-		self.size = self.set_size()
-		self.width, self.height = self.size, self.size
-		self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-		self.orbit_step = random.randint(0, 360)
-		self.angular_velocity = random.randint(2, 6) / 10000
+		self.radius = random.randint(cfg.min_planet_size, cfg.max_planet_size)
+		self.width, self.height = self.radius, self.radius
+		self.rect = pygame.Rect(self.location, (self.width, self.height))
+		self.angle = random.randint(0, 360)
+		self.angular_velocity = random.uniform(0.01, 0.05)
 		self.polarity = random.choice([-1, 1])
 		self.interactable_distance = cfg.pl_interactable_distance
 		self.arrived_distance = cfg.pl_arrived_distance
 		self.approach_velocity = False
 		self.belt_width = [random.randint(0, cfg.belt_width_min), random.randint(
 			cfg.belt_width_min + 5, cfg.belt_width_max)]
+
 		self.asteroids = []
 		self.crashes = []
 
-	def set_size(self):
-		# random.randint(10, 36)
-		max = cfg.max_planet_size
-		min = cfg.min_planet_size
-		return random.randint(min, max + 1)
+		self.img_surface = pygame.Surface((self.radius * 2, self.radius * 2))
 
-	def orbit(self):
-		dist = self.distance_from_sun
-		self.orbit_step += self.angular_velocity
-		self.x = self.sun.x + math.cos(self.orbit_step) * dist
-		self.y = self.sun.y - math.sin(self.orbit_step) * dist
-		self.update_rect()
+		self.setup_display_surface()
+
+	def setup_display_surface(self):
+		# Draw base colour
+		pygame.draw.circle(self.img_surface, self.rgb, (self.radius, self.radius), self.radius)
+		# Blit alpha to surface
+		self.img_surface.blit(
+			pygame.transform.smoothscale(cfg.planet_alpha_img, (self.radius * 2, self.radius * 2)), (0, 0))
+
+	def update_orbit(self):
+		self.angle -= self.angular_velocity if self.angle > 0 else - 360
+		self.location = self.sun.location + pygame.Vector2(self.orbit_distance, 0).rotate(self.angle)
+		self.rect.center = self.location
 
 	def spawn_asteroids(self):
 		# asteroids spawned is determined on asteroid size.
@@ -51,18 +56,19 @@ class Planet:
 		new_crash = Crash(self, asteroid_size)
 		self.crashes.append(new_crash)
 
-	def update_rect(self):
-		x, y = self.x - self.size * .5, self.y - self.size * .5
-		self.rect.x = x
-		self.rect.y = y
-
 	def draw(self):
 		pygame.draw.circle(
-			self.screen, self.rgb, (int(self.x), int(self.y)), self.size)
+			self.screen, self.rgb, self.rect.center, self.radius)
+		image = pygame.transform.rotate(self.img_surface, - self.angle + 180)
+		img_size = image.get_size()
+		self.screen.blit(image, (
+			self.rect.centerx - img_size[0] / 2,
+			self.rect.centery - img_size[1] / 2
+		))
 
 	def loop(self):
 		self.on_screen = cfg.on_screen_check(self)
 		for i in self.crashes:
 			i.loop()
-		self.orbit()
+		self.update_orbit()
 		self.draw()

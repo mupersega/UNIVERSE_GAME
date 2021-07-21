@@ -18,19 +18,22 @@ class Sun:
 		# self.y = int(cfg.screen_height / 2)
 		self.x = cfg.screen_width
 		self.y = cfg.screen_height
+		self.location = pygame.Vector2(cfg.screen_width / 2, cfg.screen_height)
 		self.rgb = cfg.sun_colour
-		self.size = cfg.sun_start_size
+		self.radius = cfg.sun_start_size
 		self.max_size = cfg.sun_max_size
-		self.arrived_distance = self.size + cfg.sun_arrived_distance
-		self.interactable_distance = self.size + cfg.sun_interactable_distance
+		self.arrived_distance = self.radius + cfg.sun_arrived_distance
+		self.interactable_distance = self.radius + cfg.sun_interactable_distance
 		self.approach_velocity = False
-		self.rect = pygame.Rect(self.x, self.y, self.size, self.size)
+		self.rect = pygame.Rect(self.location, (self.radius * 2, self.radius * 2))
 		self.rect.center = self.rect.topleft
 		self.damage_taken = 1
 		self.life = 1
 
 		self.available_positions = []
 		self.planets = []
+
+		self.mask = pygame.transform.smoothscale(cfg.sun_mask_img, self.rect.size)
 
 		self.sun_setup()
 		# print(len(self.planets))
@@ -39,7 +42,7 @@ class Sun:
 		# get potential planet placements
 		self.set_available_positions()
 		# construct planets
-		for i in range(self.planet_count):
+		for _ in range(self.planet_count):
 			self.new_planet()
 
 	def new_planet(self):
@@ -63,12 +66,13 @@ class Sun:
 
 	def resize(self):
 		# pulse effect potentially here
-		if self.size < self.max_size:
-			self.size += self.size * (1 - self.size / self.max_size)
+		if self.radius < self.max_size:
+			self.radius += self.radius * (1 - self.radius / self.max_size)
 
 	def draw(self):
 		pygame.draw.circle(
-			self.screen, self.rgb, self.rect.center, self.size / 2)
+			self.screen, self.rgb, self.rect.center, self.radius)
+		self.screen.blit(self.mask, self.rect.topleft)
 
 	def loop(self):
 		self.resize()

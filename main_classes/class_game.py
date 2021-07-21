@@ -72,7 +72,7 @@ class Game:
 		self.gather_phase = True
 		self.combat_phase = False
 		self.freighters_active = True
-		self.round = 10
+		self.round = 1
 		# HUD elements.
 		self.round_label = cfg.bauhaus.render(
 			f"Rd. {self.round}", True, cfg.col.p_one)
@@ -94,7 +94,7 @@ class Game:
 		for _ in range(cfg.start_spawners):
 			self.new_spawner()
 
-		self.new_player("mupersega", None)
+		# self.new_player("mupersega", None)
 		for i in range(cfg.start_players):
 			self.new_player(f"P{i}", None)
 		for _ in range(0):

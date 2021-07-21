@@ -180,7 +180,7 @@ class Ship:
 		choices = []
 		if self.bay.mine_priority:
 			mineral_index = cfg.mineral_name_list.index(self.bay.mine_priority)
-			[choices.append(asteroid) for asteroid in self.game.sorted_asteroid_lists[mineral_index] if asteroid.on_screen and asteroid.size > 0]
+			[choices.append(asteroid) for asteroid in self.game.sorted_asteroid_lists[mineral_index] if asteroid.on_screen and asteroid.radius > 0]
 		# If no asteroids available
 		if len(choices) == 0 or not self.bay.mine_priority:
 			for sun in self.game.suns:
