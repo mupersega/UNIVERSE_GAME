@@ -42,6 +42,7 @@ class Warehouse:
 		self.occupant = None
 
 		self.capacity_glow = [100, 0, 100]
+		self.mask = pygame.transform.smoothscale(cfg.warehouse_mask_img, self.rect.size)
 
 	def take_damage(self, amt):
 		self.life -= amt
@@ -73,6 +74,7 @@ class Warehouse:
 				pygame.draw.rect(self.screen, [200, 30, 30], self.rect, 1)
 			else:
 				pygame.draw.rect(self.screen, cfg.static_outline, self.rect, 1)
+		self.screen.blit(self.mask, self.rect.topleft)
 		# 	else:
 		# 		pass
 		# 		# if self.capacity_glow[1] >= 100:

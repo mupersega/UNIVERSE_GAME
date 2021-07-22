@@ -18,7 +18,8 @@ big_ship_purple = pygame.image.load('./assets/bigger_ship_purple.png')
 big_ship_green = pygame.image.load('./assets/bigger_ship_green.png')
 big_ship_red = pygame.image.load('./assets/bigger_ship_red.png')
 freighter_img = pygame.image.load('./assets/freighter.png')
-hangar_image = pygame.image.load('./assets/hangar_overlay.png')
+hangar_mask_img = pygame.image.load('./assets/hangar_overlay.png')
+warehouse_mask_img = pygame.image.load('./assets/warehouse_mask.png')
 planet_alpha_img = pygame.image.load('./assets/planet_mask.png')
 sun_mask_img = pygame.image.load('./assets/sun_mask.png')
 starseeker_imgs = [
@@ -39,7 +40,8 @@ bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 # --MAIN DEBUGGING VARS-- #
 start_spawners = 2
-start_players = 0
+start_players = 2
+start_round = 0
 player_starting_favour = 50
 wh_starting_resources = [0, 0, 0]
 gather_phase_time = 360
@@ -57,6 +59,7 @@ start_stations = 1
 start_suns = 1
 # start_spawners = 3
 # start_players = 0
+# start_round = 0
 universe_max_asteroids = 300
 max_hostiles = 20
 asteroid_pop_phase_time = 10
@@ -106,7 +109,7 @@ sun_interactable_distance = 20
 sun_arrived_distance = 10
 sun_start_size = 100
 sun_max_size = 100
-max_planets_per_sun = 8
+max_planets_per_sun = 6
 sun_exclusion_range = 140
 
 # --Planet-- #
@@ -117,7 +120,7 @@ planet_probability = [
 ]
 pl_interactable_distance = 20
 pl_arrived_distance = 15
-max_planet_size = 30
+max_planet_size = 45
 min_planet_size = 10
 belt_exclusion_range = 10
 belt_width_min = 10
@@ -438,8 +441,8 @@ def draw_beam(self, actor, colour=None):
 
 
 def draw_explosion(explode_object):
-	tx = int(explode_object.x)
-	ty = int(explode_object.y)
+	tx = int(explode_object.location.x)
+	ty = int(explode_object.location.y)
 	variance = [-4, -2, 2, 4]
 	for _ in range(random.randint(20, 50)):
 		pygame.draw.circle(explode_object.screen, [255, 255, 255], (tx + random.choice(

@@ -74,7 +74,7 @@ class Ship:
 			else:
 				self.return_to_base()
 
-		if cfg.on_screen_check(self.target):
+		if cfg.on_screen_check_vec(self.target.location):
 			# update to next target if in stop_distance of current, if none then return
 			# print(self.target_queue)
 			if len(self.target_queue) > 0:

@@ -18,7 +18,7 @@ class Sun:
 		# self.y = int(cfg.screen_height / 2)
 		self.x = cfg.screen_width
 		self.y = cfg.screen_height
-		self.location = pygame.Vector2(cfg.screen_width / 2, cfg.screen_height)
+		self.location = pygame.Vector2(cfg.screen_width, cfg.screen_height)
 		self.rgb = cfg.sun_colour
 		self.radius = cfg.sun_start_size
 		self.max_size = cfg.sun_max_size
@@ -57,7 +57,7 @@ class Sun:
 		placeable_pixel_range = (
 				cfg.screen_height - self.max_size - cfg.sun_exclusion_range)
 		increment_size = placeable_pixel_range / cfg.max_planets_per_sun
-		for i in range(cfg.max_planets_per_sun + 1):
+		for i in range(cfg.max_planets_per_sun):
 			self.available_positions.append(
 				self.max_size + cfg.sun_exclusion_range + i * increment_size)
 
@@ -66,12 +66,16 @@ class Sun:
 
 	def resize(self):
 		# pulse effect potentially here
-		if self.radius < self.max_size:
-			self.radius += self.radius * (1 - self.radius / self.max_size)
+		if self.radius > 142:
+			self.radius *= .9999
+			return
+		self.radius = random.randint(145, 150)
 
 	def draw(self):
 		pygame.draw.circle(
-			self.screen, self.rgb, self.rect.center, self.radius)
+			self.screen, self.rgb, self.rect.center, self.radius * .6)
+		pygame.draw.circle(
+			self.screen, [125, 125, 5], self.rect.center, self.radius * .5)
 		self.screen.blit(self.mask, self.rect.topleft)
 
 	def loop(self):

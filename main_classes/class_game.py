@@ -72,7 +72,7 @@ class Game:
 		self.gather_phase = True
 		self.combat_phase = False
 		self.freighters_active = True
-		self.round = 1
+		self.round = cfg.start_round
 		# HUD elements.
 		self.round_label = cfg.bauhaus.render(
 			f"Rd. {self.round}", True, cfg.col.p_one)
@@ -410,9 +410,6 @@ class Game:
 			self.screen.fill((0, 0, 0))
 			hostile_count = cfg.bauhaus.render(f"{len(self.hostiles)} enemies", True, cfg.col.p_two)
 			self.screen.blit(hostile_count, (20, 20))
-			self.leaderboard.draw()
-			self.market.draw()
-			self.freight_ratio_bar.draw()
 
 			# Prep Quadtrees
 			# HOSTILE QUAD
@@ -469,6 +466,9 @@ class Game:
 			# self.friendly_quadtree.draw([0, 0, 100])
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()
+			self.leaderboard.draw()
+			self.market.draw()
+			self.freight_ratio_bar.draw()
 			pygame.display.update()
 			pygame.time.Clock().tick(self.fps)
 			# print(f'|{len(self.freighters)}|')

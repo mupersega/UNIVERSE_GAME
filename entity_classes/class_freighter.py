@@ -47,7 +47,7 @@ class Engine:
 		else:
 			# if all carriages are off screen and no more locations, then arrive and distribute all resources
 			for i in self.full_train:
-				if not cfg.on_screen_check(i.location) and i.active:
+				if not cfg.on_screen_check_vec(i.location) and i.active:
 					i.distribute_hold_resources()
 				if len([j for j in self.full_train if j.active]) == 0:
 					if self in self.game.freighters.copy():

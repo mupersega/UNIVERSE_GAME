@@ -1,4 +1,5 @@
 import pygame
+import random
 
 from static_classes.class_bay import Bay
 from static_classes.class_location import Location
@@ -22,7 +23,7 @@ class Hangar:
 		# x and y values exist for the top left from which to space facilities.
 		self.x = station.rect.right
 		self.y = station.y + (cfg.facility_h + cfg.y_pad) * self.index
-		self.rect = pygame.Rect(self.x, self.y, cfg.facility_w + cfg.x_pad * 2, cfg.y_pad * 2 + cfg.facility_h)
+		self.rect = pygame.Rect(self.x, self.y, self.station.rect.width, cfg.y_pad * 2 + cfg.facility_h)
 		self.distance_to_sun = pygame.Vector2(self.x, self.y).distance_to(self.station.game.suns[0].rect.center)
 		# warehouses to be inserted and bays appended
 		self.facilities = []
@@ -34,6 +35,7 @@ class Hangar:
 		self.approach_velocity = False
 
 		self.myfont = pygame.font.SysFont("Agency FB", cfg.facility_h, bold=True)
+		self.mask = pygame.transform.smoothscale(cfg.hangar_mask_img, self.rect.size)
 		self.label = None
 
 		# for i in range(random.randint(1, 2)):
@@ -100,13 +102,12 @@ class Hangar:
 	def draw(self):
 		screen = self.station.game.screen
 		x_offset = (self.station.rect.width - self.label.get_width()) / 2
+		self.game.screen.blit(self.mask, (self.station.rect.left, self.y))
 		if self.owner and self.facilities:
-			pygame.draw.rect(self.game.screen,[50, 0, 0], self.rect)
 			screen.blit(self.label, (self.station.rect.left + x_offset, self.rect.top))
 			pygame.draw.line(screen, cfg.st_arm_colour, [self.station.rect.right, self.rect.center[1] - 1],
 							 [self.facilities[-1].rect.center[0], self.rect.center[1] - 1], width=4)
 		else:
-			self.game.screen.blit(cfg.hangar_image, (self.station.rect.left, self.y))
 			screen.blit(self.label, (self.station.rect.left + x_offset, self.rect.top))
 
 	def draw_turrets(self):

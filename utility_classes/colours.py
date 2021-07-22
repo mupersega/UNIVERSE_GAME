@@ -23,28 +23,28 @@ p_five = [47, 72, 88]
 p_six = [255 % i for i in p_five]
 
 # # # VAPORWAVE # #
-p_one = [237, 72, 12]
-p_two = [247, 131, 147]
-p_three = [202, 0, 224]
-p_four = [54, 0, 158]
-p_five = [4, 19, 71]
-p_six = [255 % i for i in p_five]
-
-# # BEACH # #
-# p_one = [138, 202, 255]
-# p_two = [183, 223, 247]
-# p_three = [153, 207, 240]
-# p_four = [219, 186, 140]
-# p_five = [148, 115, 70]
+# p_one = [237, 72, 12]
+# p_two = [247, 131, 147]
+# p_three = [202, 0, 224]
+# p_four = [54, 0, 158]
+# p_five = [4, 19, 71]
 # p_six = [255 % i for i in p_five]
 
+# # BEACH # #
+p_one = [138, 202, 255]
+p_two = [183, 223, 247]
+p_three = [153, 207, 240]
+p_four = [219, 186, 140]
+p_five = [148, 115, 70]
+p_six = [255 % i for i in p_five]
+
 # # # YELLOW-PURPLE # #
-p_one = [234, 235, 84]
-p_two = [235, 202, 74]
-p_three = [235, 165, 61]
-p_four = [96, 176, 235]
-p_five = [141, 49, 235]
-p_six = [70, 25, 160]
+# p_one = [234, 235, 84]
+# p_two = [235, 202, 74]
+# p_three = [235, 165, 61]
+# p_four = [96, 176, 235]
+# p_five = [141, 49, 235]
+# p_six = [70, 25, 160]
 
 # # PASTELS # #
 # p_one = [235, 207, 141]
