@@ -88,7 +88,10 @@ class Hostile:
 			self.game.explosions.append(new_explosion)
 			if self.last_hit:
 				self.last_hit.kills += 1
-				self.last_hit.favour = cfg.calc_distribute_amt(self.last_hit.favour, self.favour, cfg.max_favour)
+				self.game.all_kills += 1
+				favour_earned = cfg.calc_distribute_amt(self.last_hit.favour, self.favour, cfg.max_favour)
+				self.last_hit.favour = favour_earned
+				self.game.all_favour = favour_earned
 				self.game.leaderboard.update()
 
 
@@ -127,14 +130,11 @@ class Drone(Hostile):
 					self.drop_nodule.accept_resources(self.hold)
 					self.hold = 0
 					self.drop_nodule = None
+			elif len(self.game.spawners):
+				self.drop_nodule = self.find_nearby_random_dropoff()
+				self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
 			else:
-				# If there are spawners in the world then go drop off
-				if len(self.game.spawners):
-					self.drop_nodule = self.find_nearby_random_dropoff()
-					self.target_loc = pygame.math.Vector2(self.drop_nodule.location)
-				# If there are no spawners, keep increasing hold size and feeding until there are some.
-				else:
-					self.max_hold += 1
+				self.max_hold += 1
 
 		if self.location.distance_to(self.target_loc) < 3 and self.hold < self.max_hold:
 			self.set_new_roam_location()

@@ -36,9 +36,8 @@ class LaunchBay:
 	def make_image_surface(self):
 		img_rect = self.image_surface.get_rect()
 		pygame.draw.rect(self.image_surface, cfg.col.p_one, img_rect)
-		pygame.draw.rect(self.image_surface, cfg.col.white, img_rect, 1)
 		pygame.draw.circle(self.image_surface, [0, 0, 0], img_rect.midbottom, cfg.facility_w_two_third)
-		pygame.draw.circle(self.image_surface, cfg.col.white, img_rect.midbottom, cfg.facility_w_two_third, 1)
+		self.image_surface.blit(pygame.transform.smoothscale(cfg.launch_bay_mask_img, self.rect.size), (0, 0))
 		self.image_surface.set_colorkey([0, 0, 0])
 		
 	def make_launch_glow_surface(self):

@@ -9,6 +9,8 @@ import utility_classes.colours as col
 pygame.font.init()
 
 # IMAGES #
+space_bg_image = pygame.image.load('./assets/space_bg.png')
+space_bg_image = pygame.transform.scale(space_bg_image, (1920, 1080))
 ship_image = pygame.image.load('./assets/mining_ship_2.png')
 starsated_image = pygame.image.load('./assets/starsated.png')
 hunterdrone_image = pygame.image.load('./assets/hunterdrone.png')
@@ -20,6 +22,8 @@ big_ship_red = pygame.image.load('./assets/bigger_ship_red.png')
 freighter_img = pygame.image.load('./assets/freighter.png')
 hangar_mask_img = pygame.image.load('./assets/hangar_overlay.png')
 warehouse_mask_img = pygame.image.load('./assets/warehouse_mask.png')
+launch_bay_mask_img = pygame.image.load('./assets/launch_bay.png')
+capsule_mask_img = pygame.image.load('./assets/capsule_mask.png')
 planet_alpha_img = pygame.image.load('./assets/planet_mask.png')
 sun_mask_img = pygame.image.load('./assets/sun_mask.png')
 starseeker_imgs = [
@@ -68,6 +72,9 @@ force_feed_phase_time = 5
 # gather_phase_time = 10
 # combat_phase_time = 60
 convert_mineral_to_favour = [1, 2, 5]
+
+# --Mission-- #
+
 
 # --Entity-- #
 ent_rgb = [250, 200, 100]

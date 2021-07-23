@@ -14,7 +14,7 @@ class Capsule:
 		self.capsule_type = capsule_type
 
 		# Type specifics
-		self.image = cfg.capsule_info[capsule_type]["img"]
+		self.image = cfg.capsule_mask_img
 		self.ring_rgb = cfg.capsule_info[capsule_type]["ring_rgb"]
 		self.beam_rgb = cfg.capsule_info[capsule_type]["beam_rgb"]
 		self.glow_rgb = cfg.capsule_info[capsule_type]["glow_rgb"]
@@ -98,6 +98,7 @@ class Capsule:
 			self.retract_boons()
 
 	def draw(self):
+		pygame.draw.circle(self.game.screen, self.beam_rgb, self.rect.center, self.rect.width / 2)
 		self.game.screen.blit(self.image, self.rect.topleft)
 		pygame.draw.circle(
 			self.game.screen, self.ring_rgb, self.rect.center, self.ring_radius, 1)

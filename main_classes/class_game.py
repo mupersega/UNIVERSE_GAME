@@ -3,7 +3,6 @@ import sqlite3
 import sys
 import threading
 import time
-import os
 
 import pygame
 
@@ -14,6 +13,7 @@ from environment_classes.class_sun import Sun
 from static_classes.class_spawner import Spawner
 from entity_classes.class_freighter import Engine
 from utility_classes.quadtree import Quadtree
+from utility_classes.mission import Mission
 from hud_classes.class_phaseCountDownDisplay import PhaseCountDownDisplay
 from hud_classes.class_leaderboard import Leaderboard
 from hud_classes.market import Market
@@ -83,6 +83,15 @@ class Game:
 		self.market = Market(self)
 		self.freight_ratio_bar = FreightRatioDisplay(self)
 
+		# Mission Attributes
+		self.mission = Mission(self)
+		self.all_kills = 0
+		self.all_favour = 0
+		self.all_tribute = [0, 0, 0]
+		self.nodules_destroyed = 0
+		self.spawn_rings_destroyed = 0
+		self.lifeboats_built = 0
+		self.battleships_built = 0
 		self.game_setup()
 
 	def game_setup(self):
@@ -408,6 +417,7 @@ class Game:
 
 			# Clear screen.
 			self.screen.fill((0, 0, 0))
+			# self.screen.blit(cfg.space_bg_image, (0, 0))
 			hostile_count = cfg.bauhaus.render(f"{len(self.hostiles)} enemies", True, cfg.col.p_two)
 			self.screen.blit(hostile_count, (20, 20))
 

@@ -44,7 +44,8 @@ class Planet:
 		# Blit alpha to surface
 		self.img_surface.blit(
 			pygame.transform.smoothscale(cfg.planet_alpha_img, (self.radius * 2, self.radius * 2)), (0, 0))
-
+		self.img_surface.set_colorkey([0, 0, 0])
+		
 	def update_orbit(self):
 		self.angle -= self.angular_velocity if self.angle > 0 else - 360
 		self.location = self.sun.location + pygame.Vector2(self.orbit_distance, 0).rotate(self.angle)
@@ -58,7 +59,7 @@ class Planet:
 
 	def draw(self):
 		pygame.draw.circle(
-			self.screen, self.rgb, self.rect.center, self.radius)
+			self.screen, self.rgb, self.rect.center, self.radius - 3)
 		image = pygame.transform.rotate(self.img_surface, - self.angle + 180)
 		img_size = image.get_size()
 		self.screen.blit(image, (
