@@ -43,12 +43,12 @@ bauhaus = pygame.font.SysFont("Bauhaus 93", 25)
 
 
 # --MAIN DEBUGGING VARS-- #
-start_spawners = 2
-start_players = 2
-start_round = 0
-player_starting_favour = 50
-wh_starting_resources = [0, 0, 0]
-gather_phase_time = 360
+start_spawners = 5
+start_players = 10
+start_round = 20
+player_starting_favour = 500
+wh_starting_resources = [50, 50, 20]
+gather_phase_time = 10
 combat_phase_time = 40
 
 # CLASS SETTINGS #

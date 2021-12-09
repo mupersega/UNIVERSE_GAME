@@ -18,7 +18,7 @@ class Sun:
 		# self.y = int(cfg.screen_height / 2)
 		self.x = cfg.screen_width
 		self.y = cfg.screen_height
-		self.location = pygame.Vector2(cfg.screen_width / 2, cfg.screen_height)
+		self.location = pygame.Vector2(cfg.screen_width, cfg.screen_height)
 		self.rgb = cfg.sun_colour
 		self.radius = cfg.sun_start_size
 		self.max_size = cfg.sun_max_size

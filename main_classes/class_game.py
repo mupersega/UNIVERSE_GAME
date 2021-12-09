@@ -21,8 +21,10 @@ from hud_classes.freightRatioDisplay import FreightRatioDisplay
 
 
 admins = ['mupersega']
-conn = sqlite3.connect('/C:/db/queue.db')
-c = conn.cursor()
+CHECK_DB = False
+if CHECK_DB:
+	conn = sqlite3.connect('/C:/db/queue.db')
+	c = conn.cursor()
 
 # These dims control window placement if needed for dual screen.
 # x = -1920
@@ -185,13 +187,6 @@ class Game:
 
 	def count_asteroids(self):
 		return sum(len(planet.asteroids) for sun in self.suns for planet in sun.planets)
-		# OLD CODE BEFORE I LEARNT GENERATOR
-		# total_asteroids = 0
-		# for sun in self.suns:
-		# 	for planet in sun.planets:
-		# 		total_asteroids += len(planet.asteroids)
-		# total_asteroids = (len(planet.asteroids) for planet in sun.planets for sun in self.suns)
-		# return total_asteroids
 
 	def populate_asteroids(self):
 		# I need to connect the spawning of asteroids to the current amount of asteroids in the world.
@@ -353,7 +348,7 @@ class Game:
 			if curr_time > self.next_force_feed_spawners:
 				self.next_force_feed_spawners += cfg.force_feed_phase_time
 				self.force_feed_spawners()
-			if curr_time > self.next_watch_queue:
+			if curr_time > self.next_watch_queue and CHECK_DB:
 				self.next_watch_queue += cfg.watch_queue_phase_time
 				self.watch_queue()
 				self.leaderboard.order_players("kills")
@@ -472,8 +467,10 @@ class Game:
 			for i in self.explosions.copy():
 				i.loop()
 
+			# QUADTREE VISUALIZATIONS
 			# self.hostile_quadtree.draw([100, 0, 0])
 			# self.friendly_quadtree.draw([0, 0, 100])
+
 			self.phase_change_check(curr_time)
 			self.phase_cd.loop()
 			self.leaderboard.draw()

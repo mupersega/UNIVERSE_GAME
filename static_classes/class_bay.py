@@ -1,5 +1,4 @@
 import pygame
-import random
 
 from utility_classes import cfg
 from entity_classes.class_ship import Ship

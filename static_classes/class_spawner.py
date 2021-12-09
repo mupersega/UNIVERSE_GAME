@@ -15,7 +15,7 @@ class Spawner:
 	def __init__(self, game):
 		self.game = game
 		self.screen = game.screen
-		self.diameter = random.randint(25, 65)
+		self.diameter = random.randint(25, 50)
 		self.location = pygame.math.Vector2(random.randint(0, 1920), random.randint(600, 1080))
 		# self.target_location = pygame.math.Vector2(random.randint(600, 1920), random.randint(400, 1080))
 		self.acceleration = pygame.math.Vector2(0, 0)
@@ -50,7 +50,10 @@ class Spawner:
 		self.game.hostiles.append(new_roamer)
 
 	def prepare_nodules(self, number_of_nodules):
-		angle_step = 360 / number_of_nodules
+		try:
+			angle_step = 360 / number_of_nodules
+		except ZeroDivisionError:
+			angle_step = 1
 		nodule_locations = [(self.angle + i * angle_step) % 360 for i in range(number_of_nodules)]
 		for h, i in enumerate(nodule_locations):
 			loc = pygame.Vector2(self.rect.center + self.base_vec.rotate(i))
@@ -60,7 +63,7 @@ class Spawner:
 	def setup(self):
 		for _ in range(0):
 			self.spawn_roamer(self.location)
-		self.prepare_nodules(random.randint(1, math.ceil(self.diameter / 25)))
+		self.prepare_nodules(random.randint(0, math.ceil(self.diameter / 25)))
 
 	def update_spinner(self):
 		# spool up or down
